@@ -1,6 +1,5 @@
 import os
 from PySide6.QtWidgets import QWidget, QRadioButton, QFileDialog, QMessageBox
-from core.services import SynchronizationService
 from core.manager.DashboardSession import DashboardSession
 from ui.windows.origin_interface import Ui_LanguagesPage
 from .LanguagesServiceController import LanguagesServiceController
@@ -161,9 +160,9 @@ class LanguagesPageController(QWidget):
                     QMessageBox.warning(self,"Thiếu thông tin",f"'{field_name}' không được trống!")
                     return
 
-            self.language_core_service.save_changes(setting_dict)
-
-            QMessageBox.information(self, "Thành công", "Đã lưu tất cả thay đổi!")
+            result = self.language_core_service.save_changes(setting_dict)
+            QMessageBox.information(self, "Thành công", "Đã lưu tất cả thay đổi!") \
+                if result else QMessageBox.critical(self,"Lỗi","Có lỗi xảy ra trong quá trình lưu cấu hình!")
 
         except AttributeError as e:
             # Lỗi này xảy ra nếu tên widget không khớp (ví dụ: 'php_combobox' không tìm thấy)

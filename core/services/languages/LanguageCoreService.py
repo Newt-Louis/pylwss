@@ -1,5 +1,7 @@
 from core.database.model import LanguageSetting
 from core.manager.EventBus import EventBus
+from core.manager import DirectoryWatcher
+from core.services import SynchronizationService
 from core.repository import LanguageRepository, WebserverRepository
 
 
@@ -43,6 +45,11 @@ class LanguageCoreService:
             if success:
                 print("Lưu ngôn ngữ thành công")
                 EventBus.language_saved.emit(setting_model.__dict__)
+                schedule_callback_function = lambda: SynchronizationService.sync_language_projects(
+                    setting_model.language,
+                    setting_model.root_folder
+                )
+                DirectoryWatcher.add_or_update_dynamic_watch('projects_root_directory',setting_model.root_folder,schedule_callback_function)
 
             if data_to_save["ssl_port"] is not None:
                 self.webserver_repository.update_ssl_port(data_to_save["ssl_port"])

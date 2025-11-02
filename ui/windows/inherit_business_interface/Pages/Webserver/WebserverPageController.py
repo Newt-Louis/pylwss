@@ -101,10 +101,7 @@ class WebserverPageController(QWidget):
                 QMessageBox.warning(self, "Thiếu thông tin", f"'{field_name}' không được để trống!")
                 return
 
-        # Nếu tất cả các trường bắt buộc đều hợp lệ, bạn có thể tiến hành lưu
-        print("Dữ liệu hợp lệ, đang tiến hành lưu...")
         result = self.service_controller.save_changes(config_data)
-
         QMessageBox.information(self, "Thành công", "Đã lưu cấu hình webserver thành công!") \
             if result else QMessageBox.critical(self,"Lỗi","Có lỗi xảy ra trong quá trình lưu cấu hình!")
 
