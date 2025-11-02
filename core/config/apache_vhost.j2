@@ -1,0 +1,76 @@
+# File: core/templates/apache_vhost.j2
+
+<VirtualHost *:{{ http_port }}>
+    ServerName {{ domain }}
+    DocumentRoot "{{ document_root }}"
+
+    ErrorLog "{{ error_log_path }}"
+    CustomLog "{{ access_log_path }}" common
+
+    <Directory "{{ document_root }}">
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    # ==========================================================
+    # Logic xử lý chính dựa trên loại dự án
+    # ==========================================================
+
+    {% if project_type == 'proxy' %}
+
+    # ---- Dành cho dự án Proxy ----
+    ProxyRequests Off
+    ProxyPreserveHost On
+    ProxyPass / http://127.0.0.1:{{ app_port }}/
+    ProxyPassReverse / http://127.0.0.1:{{ app_port }}/
+
+    {% elif project_type == 'static_php' %}
+
+    # ---- Dành cho dự án Static/PHP ----
+    <FilesMatch \.php$>
+        # SỬ DỤNG SOCKET PHP-FPM
+        SetHandler "proxy:fcgi://{{ php_fpm_socket }}"
+    </FilesMatch>
+
+    {% endif %}
+
+</VirtualHost>
+
+{% if is_ssl_enabled %}
+<IfModule mod_ssl.c>
+    <VirtualHost *:{{ ssl_port }}>
+        ServerName {{ domain }}
+        DocumentRoot "{{ document_root }}"
+
+        ErrorLog "{{ error_log_path }}"
+        CustomLog "{{ access_log_path }}" common
+
+        SSLEngine on
+        SSLCertificateFile "{{ ssl_certificate_path }}"
+        SSLCertificateKeyFile "{{ ssl_key_path }}"
+
+        <Directory "{{ document_root }}">
+            Options Indexes FollowSymLinks MultiViews
+            AllowOverride All
+            Require all granted
+        </Directory>
+
+        {% if project_type == 'proxy' %}
+
+        ProxyRequests Off
+        ProxyPreserveHost On
+        ProxyPass / http://127.0.0.1:{{ app_port }}/
+        ProxyPassReverse / http://127.0.0.1:{{ app_port }}/
+
+        {% elif project_type == 'static_php' %}
+
+        <FilesMatch \.php$>
+            SetHandler "proxy:fcgi://{{ php_fpm_socket }}"
+        </FilesMatch>
+
+        {% endif %}
+
+    </VirtualHost>
+</IfModule>
+{% endif %}

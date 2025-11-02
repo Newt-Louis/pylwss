@@ -1,0 +1,81 @@
+# File: core/templates/nginx_vhost.j2
+
+server {
+    listen {{ http_port }};
+    {% if is_ssl_enabled %}
+    listen {{ ssl_port }} ssl http2;
+    {% endif %}
+
+    server_name {{ domain }};
+    root {{ document_root }};
+
+    index index.php index.html index.htm;
+
+    # Cấu hình logs
+    access_log {{ access_log_path }};
+    error_log {{ error_log_path }};
+
+    {% if is_ssl_enabled %}
+    # Cấu hình SSL
+    ssl_certificate {{ ssl_certificate_path }};
+    ssl_certificate_key {{ ssl_key_path }};
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384';
+    ssl_prefer_server_ciphers off;
+    {% endif %}
+
+    # ==========================================================
+    # Logic xử lý chính dựa trên loại dự án
+    # ==========================================================
+
+    {% if project_type == 'proxy' %}
+
+    # ---- Dành cho dự án Proxy (Node, Python, v.v.) ----
+    location / {
+        proxy_pass http://127.0.0.1:{{ app_port }};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    {% elif project_type == 'static_php' %}
+
+    # ---- Dành cho dự án Static/PHP (Laravel, WP) ----
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+        # SỬ DỤNG SOCKET PHP-FPM
+        fastcgi_pass {{ php_fpm_socket }};
+
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    {% endif %}
+
+    # Chặn truy cập file .ht
+    location ~ /\.ht {
+        deny all;
+    }
+}
+
+{% if is_ssl_enabled and http_port == 80 %}
+# Tự động chuyển hướng HTTP sang HTTPS
+server {
+    listen 80;
+    server_name {{ domain }};
+    return 301 https://$host$request_uri;
+}
+{% endif %}

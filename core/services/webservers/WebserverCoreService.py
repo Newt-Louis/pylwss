@@ -1,6 +1,7 @@
 from core.repository import WebserverRepository
 from core.database.model import WebserverSetting
 from core.manager.EventBus import EventBus
+from core.services import ConfigGeneratorService
 
 class WebserverCoreService:
     webserver_repository = WebserverRepository
@@ -49,3 +50,45 @@ class WebserverCoreService:
 
     def load_webservers_versions(self):
         return self.__class__.webserver_repository.get_all_webserver_versions()
+
+    def start_nginx_service(self,language,data):
+        if language == 'php':
+            project_data = {
+                "project_name": "my-laravel-app",
+                "domain": "my-laravel-app.test",
+                "http_port": 80,
+                "ssl_port": 443,
+                "is_ssl_enabled": True,
+                "ssl_certificate_path": "C:/laragon-clone/ssl/my-laravel-app.crt",
+                "ssl_key_path": "C:/laragon-clone/ssl/my-laravel-app.key",
+                "document_root": "C:/laragon-clone/www/my-laravel-app/public",
+                "access_log_path": "C:/laragon-clone/logs/nginx/my-laravel-app.access.log",
+                "error_log_path": "C:/laragon-clone/logs/nginx/my-laravel-app.error.log",
+
+                # ---- Dữ liệu quan trọng ----
+                "project_type": "static_php",  # Báo cho template đây là project PHP
+                "php_fpm_socket": "127.0.0.1:9001"  # Cổng PHP-FPM của bản PHP 8.1
+            }
+        else:
+            project_data = {
+                "project_name": "my-node-api",
+                "domain": "my-node-api.test",
+                "http_port": 80,
+                "ssl_port": 443,
+                "is_ssl_enabled": False,
+                # (bỏ qua các biến ssl_*)
+
+                # Document root vẫn cần cho Nginx, dù không phải là ưu tiên
+                "document_root": "C:/laragon-clone/www/my-node-api",
+                "access_log_path": "C:/laragon-clone/logs/nginx/my-node-api.access.log",
+                "error_log_path": "C:/laragon-clone/logs/nginx/my-node-api.error.log",
+
+                # ---- Dữ liệu quan trọng ----
+                "project_type": "proxy",  # Báo cho template đây là project Proxy
+                "app_port": 8001  # Cổng mà app Node đang chạy (do bạn gán)
+            }
+        ConfigGeneratorService.generate_config_file(
+            template_name='nginx_vhost.j2',
+            context=project_data,
+            output_path='C:/laragon-clone/nginx/conf/sites-enabled/my-laravel-app.conf'
+        )
