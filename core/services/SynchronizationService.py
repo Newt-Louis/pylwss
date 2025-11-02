@@ -1,4 +1,5 @@
 from core.repository import WebserverRepository
+from core.repository import ProjectRepository
 from core.config import config
 
 def sync_apache_versions():
@@ -6,6 +7,9 @@ def sync_apache_versions():
 
 def sync_nginx_versions():
     WebserverRepository.sync_versions_to_db('nginx', str(config.NGINX_ROOT))
+
+def sync_language_projects(language:str,root_directory_path:str):
+    ProjectRepository.sync_root_directory_to_db(language, root_directory_path)
 
 # def sync_redis_versions(): ...
 # def sync_php_extensions(): ...

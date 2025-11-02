@@ -1,6 +1,6 @@
 import os
 from PySide6.QtWidgets import QWidget, QRadioButton, QFileDialog, QMessageBox
-
+from core.services import SynchronizationService
 from core.manager.DashboardSession import DashboardSession
 from ui.windows.origin_interface import Ui_LanguagesPage
 from .LanguagesServiceController import LanguagesServiceController
