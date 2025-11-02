@@ -43,12 +43,14 @@ class LanguageCoreService:
             success = self.language_repository.update_language_settings(setting_model)
 
             if success:
-                print("Lưu ngôn ngữ thành công")
+                print("Lưu ngôn ngữ thành công --> emit sự kiện lưu ngôn ngữ cho dashboard")
                 EventBus.language_saved.emit(setting_model.__dict__)
+                print("emit thành công, chạy đồng bộ tên dự án vào database")
                 schedule_callback_function = lambda: SynchronizationService.sync_language_projects(
                     setting_model.language,
                     setting_model.root_folder
                 )
+                schedule_callback_function()
                 DirectoryWatcher.add_or_update_dynamic_watch('projects_root_directory',setting_model.root_folder,schedule_callback_function)
 
             if data_to_save["ssl_port"] is not None:
