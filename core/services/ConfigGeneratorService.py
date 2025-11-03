@@ -1,6 +1,7 @@
 import os, sqlite3
 from jinja2 import Environment, FileSystemLoader
 from core.config import config
+from core.database.model import WebserverSetting
 
 # Chỉ định đường dẫn đến thư mục chứa template
 # __file__ là file .py này, '..' đi lên 1 cấp, 'templates' đi vào
@@ -199,3 +200,65 @@ def _get_project_details(conn: sqlite3.Connection, project_id: int) -> dict:
         raise Exception(f"Không tìm thấy dự án (ID: {project_id}).")
 
     return dict(zip([col[0] for col in cursor.description], proj_row))
+
+def regenerate_main_nginx_config(settings: WebserverSetting):
+    try:
+        # 1. Xác định các đường dẫn dựa trên 'sites_enabled_path'
+        # (ví dụ: D:/.../sites-available)
+        conf_dir = os.path.dirname(settings.sites_enabled_path)
+
+        template_path = os.path.join(TEMPLATE_DIR, 'nginx.conf.j2')
+        output_path = os.path.join(conf_dir, 'nginx.conf')  # File sẽ bị ghi đè
+
+        template = JINJA_ENV.get_template('nginx.conf.j2')
+
+        if not os.path.exists(template_path):
+            print(f"LỖI: Không tìm thấy template nginx.conf.j2 tại: {template_path}")
+            return
+
+        sites_path = settings.sites_enabled_path.replace("\\", "/")
+
+        context = {
+            "sites_enabled_path": sites_path
+            # Bạn có thể thêm các biến khác ở đây nếu cần (log path, v.v.)
+        }
+
+        rendered_config = template.render(context)
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(rendered_config)
+
+        print(f"SERVICE: Tạo file nginx.conf thành công tại: {output_path}")
+
+    except Exception as e:
+        print(f"LỖI NGHIÊM TRỌNG khi tạo file nginx.conf: {e}")
+
+def regenerate_main_apache_config(settings: WebserverSetting):
+    try:
+        # 1. Xác định các đường dẫn dựa trên 'sites_enabled_path'
+        # (ví dụ: D:/.../sites-available)
+        conf_dir = os.path.dirname(settings.sites_enabled_path)
+
+        template_path = os.path.join(TEMPLATE_DIR, 'httpd.conf.j2')
+        output_path = os.path.join(conf_dir, 'httpd.conf')  # File sẽ bị ghi đè
+
+        template = JINJA_ENV.get_template('httpd.conf.j2')
+
+        if not os.path.exists(template_path):
+            print(f"LỖI: Không tìm thấy template httpd.conf.j2 tại: {template_path}")
+            return
+
+    #     sites_path = settings.sites_enabled_path.replace("\\", "/")
+    #
+    #     context = {
+    #         "sites_enabled_path": sites_path
+    #         # Bạn có thể thêm các biến khác ở đây nếu cần (log path, v.v.)
+    #     }
+    #
+    #     rendered_config = template.render(context)
+    #     with open(output_path, 'w', encoding='utf-8') as f:
+    #         f.write(rendered_config)
+    #
+    #     print(f"SERVICE: Tạo file nginx.conf thành công tại: {output_path}")
+    #
+    except Exception as e:
+        print(f"LỖI NGHIÊM TRỌNG khi tạo file nginx.conf: {e}")
