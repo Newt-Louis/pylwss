@@ -179,12 +179,14 @@ def update_tld_in_database(new_tld: str):
         print(f"Lỗi khi cập nhật TLD trong database: {e}")
         return False
 
-def get_current_tld_template() -> str | None:
+def get_current_webserver() -> WebserverSetting | None:
     try:
         with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
-            cursor.execute("SELECT tld_template FROM webserver_settings WHERE is_enabled = 1")
-            return cursor.fetchone()[0]
+            cursor.execute("SELECT * FROM webserver_settings WHERE is_enabled = 1")
+            row = cursor.fetchone()
+            return WebserverSetting(**dict(row)) if row else None
     except sqlite3.Error as e:
         print(e)
         raise e

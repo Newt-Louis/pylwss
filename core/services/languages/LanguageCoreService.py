@@ -26,14 +26,6 @@ class LanguageCoreService:
             raise
 
     def save_settings(self,data_to_save: dict) -> bool:
-            # data_to_save = {
-            #     "language": current_language_selected,
-            #     "selected_version": selected_version,
-            #     "root_folder": root_folder,
-            #     "is_ssl_enabled": is_ssl_enabled,
-            #     "is_chosen": is_chosen,
-            #     "ssl_port": ssl_port,
-            # }
         try:
             setting_model = LanguageSetting(**data_to_save)
 
