@@ -4,12 +4,17 @@ from core.database.model.webservers.WebserverSetting import WebserverSetting
 
 DB_PATH = config.DB_PATH
 # noinspection PyUnresolvedReferences
-def get_all_webserver_settings() -> list[WebserverSetting] | None:
+def get_all_webserver_settings(server_name:str = None) -> list[WebserverSetting] | None:
     try:
         with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM webserver_settings")
+            if server_name is None:
+                query = "SELECT * FROM webserver_settings"
+                cursor.execute(query)
+            else:
+                query = f"SELECT * FROM webserver_settings WHERE server_name = ?"
+                cursor.execute(query, (server_name,))
             rows = cursor.fetchall()
 
             if rows:
@@ -29,7 +34,6 @@ def update_webserver_settings(setting: WebserverSetting):
                            SET selected_version   = ?,
                                executable_path    = ?,
                                sites_enabled_path = ?,
-                               tld_template       = ?,
                                http_port          = ?,
                                ssl_port           = ?,
                                alp_path           = ?,
@@ -40,7 +44,6 @@ def update_webserver_settings(setting: WebserverSetting):
                                setting.selected_version,
                                setting.executable_path,
                                setting.sites_enabled_path,
-                               setting.tld_template,
                                setting.http_port,
                                setting.ssl_port,
                                setting.alp_path,
@@ -144,3 +147,44 @@ def update_ssl_port(ssl_port:int) -> bool:
             return True
     except sqlite3.Error as e:
         return False
+
+
+def update_tld_in_database(new_tld: str):
+    if not new_tld.startswith('.'):
+        new_tld = f".{new_tld}"
+
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+
+            # 1. Cập nhật bảng webserver_settings (Vấn đề 1)
+            cursor.execute("UPDATE webserver_settings SET tld_template = ?", (new_tld,))
+
+            # 2. Lấy tất cả dự án để cập nhật (Vấn đề 2)
+            cursor.execute("SELECT id, project_name FROM projects")
+            all_projects = cursor.fetchall()
+
+            update_list = []
+            for (project_id, project_name) in all_projects:
+                new_domain = f"{project_name}{new_tld}"
+                update_list.append((new_domain, project_id))
+
+            # 3. Cập nhật hàng loạt bảng projects
+            cursor.executemany("UPDATE projects SET domain = ? WHERE id = ?", update_list)
+
+            print(f"Đã cập nhật TLD='{new_tld}' cho {len(all_projects)} dự án.")
+            return True
+
+    except Exception as e:
+        print(f"Lỗi khi cập nhật TLD trong database: {e}")
+        return False
+
+def get_current_tld_template() -> str | None:
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT tld_template FROM webserver_settings WHERE is_enabled = 1")
+            return cursor.fetchone()[0]
+    except sqlite3.Error as e:
+        print(e)
+        raise e

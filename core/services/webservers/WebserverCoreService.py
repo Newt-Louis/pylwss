@@ -1,7 +1,7 @@
 from core.repository import WebserverRepository
 from core.database.model import WebserverSetting
 from core.manager.EventBus import EventBus
-from core.services import ConfigGeneratorService
+from core.services import ConfigGeneratorService, SynchronizationService
 
 class WebserverCoreService:
     webserver_repository = WebserverRepository
@@ -42,6 +42,11 @@ class WebserverCoreService:
             if success:
                 print(f"SERVICE: Đã lưu thành công cho {setting_model.server_name}.")
                 EventBus.webserver_saved.emit(setting_model.__dict__)
+
+            current_webserver_data = WebserverCoreService.webserver_repository.get_all_webserver_settings(model_data["server_name"])
+            if current_webserver_data[0].tld_template != model_data["tld"]:
+                WebserverCoreService.webserver_repository.update_tld_in_database(model_data["tld"])
+                SynchronizationService.sync_update_tld_workflow(model_data["tld"])
 
             return success
         except Exception as e:

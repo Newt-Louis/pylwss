@@ -1,6 +1,7 @@
 import sqlite3, os
 from core.config import config
 from core.manager.PortManager import PortManager
+from core.repository import WebserverRepository
 from core.services import ConfigGeneratorService
 
 DB_PATH = config.DB_PATH
@@ -44,9 +45,12 @@ def sync_root_directory_to_db(language:str, root_directory_path: str):
 
             if projects_to_add:
                 insert_list = []
+                # gọi hàm lấy top level domain hiện tại
+                tld = WebserverRepository.get_current_tld_template()
                 for name in projects_to_add:
                     full_path = os.path.join(root_directory_path, name)
                     normalized_path = os.path.normpath(full_path)
+                    domain = f"{name}{'.test' if tld is None else tld}"
                     app_port = None
                     if language == 'php':
                         app_port = PHP_FPM_PORT
@@ -61,10 +65,11 @@ def sync_root_directory_to_db(language:str, root_directory_path: str):
                         name,            # project_name
                         language,        # language
                         normalized_path, # project_path
-                        app_port         # Cổng của ứng dụng
+                        app_port,         # Cổng của ứng dụng
+                        domain
                     ))
 
-                cursor.executemany("INSERT INTO projects (project_name,language,project_path,app_port) VALUES (?, ?, ?, ?)", insert_list)
+                cursor.executemany("INSERT INTO projects (project_name,language,project_path,app_port,domain) VALUES (?, ?, ?, ?, ?)", insert_list)
                 if insert_list:
                     added_project_names = [item[0] for item in insert_list]
                     placeholders = ','.join('?' for _ in added_project_names)

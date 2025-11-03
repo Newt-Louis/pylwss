@@ -106,6 +106,52 @@ def remove_config_for_project(conn: sqlite3.Connection, project_id: int):
     except Exception as e:
         print(f"LỖI khi xóa file config cho project ID {project_id}: {e}")
 
+
+def regenerate_all_configs():
+    """
+    Xóa tất cả file config cũ và tạo lại toàn bộ từ DB.
+    Hàm này phải được gọi SAU KHI DB đã được cập nhật TLD mới.
+    """
+    print("Bắt đầu tái tạo toàn bộ file config...")
+
+    # 1. Lấy tất cả dự án
+    try:
+        with sqlite3.connect(config.DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # 1. Lấy thông tin webserver (để biết đường dẫn)
+            ws_settings = _get_webserver_settings(conn)  # Dùng hàm private bạn đã có
+            sites_enabled_path = ws_settings['sites_enabled_path']
+
+            # 2. Xóa SẠCH tất cả file .conf trong các thư mục con
+            # (Đây là cách đơn giản nhất để xử lý file cũ)
+            cursor.execute("SELECT DISTINCT language FROM projects")
+            languages = [row['language'] for row in cursor.fetchall()]
+
+            for lang in languages:
+                lang_dir = os.path.join(sites_enabled_path, lang.lower())
+                if os.path.isdir(lang_dir):
+                    for f in os.listdir(lang_dir):
+                        if f.endswith('.conf'):
+                            os.remove(os.path.join(lang_dir, f))
+            print("Đã xóa tất cả file config cũ.")
+
+            # 3. Lấy TẤT CẢ project ID
+            cursor.execute("SELECT id FROM projects")
+            project_ids = [row['id'] for row in cursor.fetchall()]
+
+            # 4. Tái tạo từng file
+            for project_id in project_ids:
+                # Gọi hàm gốc của bạn
+                regenerate_config_for_project(conn, project_id)
+
+        print("Hoàn tất tái tạo toàn bộ config.")
+
+    except Exception as e:
+        print(f"LỖI NGHIÊM TRỌNG khi tái tạo config: {e}")
+        raise
+
 def _map_project_type(language:str) -> str:
     lang = language.lower()
     if lang == 'php':

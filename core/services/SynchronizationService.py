@@ -1,6 +1,6 @@
 from core.repository import WebserverRepository
 from core.repository import ProjectRepository
-from core.services import ConfigGeneratorService
+from core.services import ConfigGeneratorService, HostFileService
 from core.config import config
 
 def sync_apache_versions():
@@ -11,6 +11,46 @@ def sync_nginx_versions():
 
 def sync_language_projects(language:str,root_directory_path:str):
     ProjectRepository.sync_root_directory_to_db(language, root_directory_path)
+
+
+def sync_update_tld_workflow(new_tld: str):
+    """
+    Hàm tổng điều phối toàn bộ quá trình thay đổi TLD.
+    Đây là hàm mà GUI của bạn sẽ gọi.
+    """
+
+    # 1. Kiểm tra quyền Admin (cho file hosts)
+    if not HostFileService.is_admin():
+        print("LỖI: Cần quyền Admin!")
+        # Báo lỗi về GUI
+        return False
+
+    try:
+        # 2. Cập nhật Database (Vấn đề 1 & 2)
+        # (Lưu ý: Phải chạy trước)
+        success_db = WebserverRepository.update_tld_in_database(new_tld)
+        if not success_db:
+            raise Exception("Lỗi cập nhật database")
+
+        # 3. Tái tạo Config Files (Vấn đề 4)
+        # (Phải chạy sau khi DB được cập nhật)
+        ConfigGeneratorService.regenerate_all_configs()
+
+        # 4. Cập nhật File Hosts (Vấn đề 3)
+        # (Phải chạy sau khi DB được cập nhật)
+        HostFileService.sync_hosts_file()
+
+        print(f"THÀNH CÔNG: Đã thay đổi TLD thành '{new_tld}' và đồng bộ mọi thứ.")
+        return True
+
+    except PermissionError:
+        print("Workflow thất bại: Thiếu quyền Admin.")
+        # Báo lỗi về GUI
+        return False
+    except Exception as e:
+        print(f"Workflow thất bại: {e}")
+        # Báo lỗi về GUI
+        return False
 
 # def sync_redis_versions(): ...
 # def sync_php_extensions(): ...
