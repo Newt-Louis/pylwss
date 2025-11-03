@@ -91,6 +91,7 @@ class WebserverCoreService:
         if self.nginx_process:
             self.nginx_process.wait(timeout=5)
         self.nginx_process = None
+        print("Nginx đã dừng")
 #         EventBus.log_received.emit("Nginx đã dừng.")
 #         EventBus.service_status_changed.emit("nginx", "stopped")
 

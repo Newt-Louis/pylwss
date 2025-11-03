@@ -28,3 +28,5 @@
 2025/11/04 00:05:16 [emerg] 2572#25636: FindFirstFile() "D:/nginx-1.28.0/conf/sites-available/*/*.conf" failed (123: The filename, directory name, or volume label syntax is incorrect) in D:\WorkSpace\Python\LocalWebServerStacks\core\services\webservers\bin\nginx\nginx-1.28.0/conf/nginx.conf:80
 2025/11/04 01:03:02 [emerg] 16496#23240: FindFirstFile() "D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/nginx/nginx-1.28.0/conf/sites-available/*/*.conf" failed (123: The filename, directory name, or volume label syntax is incorrect) in D:\WorkSpace\Python\LocalWebServerStacks\core\services\webservers\bin\nginx\nginx-1.28.0/conf/nginx.conf:80
 2025/11/04 01:09:09 [emerg] 19756#23488: could not build server_names_hash, you should increase server_names_hash_bucket_size: 32
+2025/11/04 01:21:19 [notice] 11716#632: signal process started
+2025/11/04 01:23:57 [notice] 22192#24956: signal process started
