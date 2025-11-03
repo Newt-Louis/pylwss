@@ -41,7 +41,7 @@ class LanguageCoreService:
                 raise Exception
 
             success = self.language_repository.update_language_settings(setting_model)
-
+            print(success)
             if success:
                 print("Lưu ngôn ngữ thành công --> emit sự kiện lưu ngôn ngữ cho dashboard")
                 EventBus.language_saved.emit(setting_model.__dict__)
@@ -58,4 +58,5 @@ class LanguageCoreService:
 
             return success
         except Exception as e:
+            print(e)
             raise e

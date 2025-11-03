@@ -5,7 +5,12 @@ class LanguagesServiceController:
         self.language_core_service = LanguageCoreService()
 
     def save_changes(self,data_to_save):
-        self.language_core_service.save_settings(data_to_save)
+        try:
+            success =  self.language_core_service.save_settings(data_to_save)
+            return True if success else False
+        except Exception as e:
+            print(e)
+            return False
 
     def cancel_changes(self):
         print("Languages Page Controller _on_cancel_changes")

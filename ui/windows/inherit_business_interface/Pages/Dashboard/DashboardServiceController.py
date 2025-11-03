@@ -5,8 +5,9 @@ class DashboardServiceController:
     def __init__(self):
         self.dashboard_core_service = DashboardCoreService()
 
-    def on_start_webserver(self):
+    def handle_on_webserver_service(self,status):
         print("dashboards Page Controller _on_save_changes")
+        self.dashboard_core_service.webserver_service_handler(status)
 
 
     def on_start_database(self):

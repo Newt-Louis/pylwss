@@ -5,5 +5,5 @@ class DashboardCoreService:
     def __init__(self):
         pass
 
-    def start_webserver_service(self):
+    def webserver_service_handler(self,status):
         print("gọi lệnh chạy subprocess bắt đầu dịch vụ web")

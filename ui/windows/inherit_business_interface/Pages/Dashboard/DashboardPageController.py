@@ -15,11 +15,17 @@ class DashboardPageController(QWidget):
         self.dashboard_service = DashboardServiceController()
         self.dashboard_session = DashboardSession()
 
+        # TODO: Lấy dữ liệu đã lưu từ database
+        # TODO: Thêm hàm gán dữ liệu vào các trường thông tin
+        # TODO: Thêm hàm chuẩn bị cho khởi động được các dịch vụ
+        # ...
+
         # Nghe sự kiện phát ra từ các trang dịch vụ khác
         EventBus.webserver_saved.connect(self.listener_webserver_saved)
+        EventBus.language_saved.connect(self.listener_language_saved)
 
         # Gán hàm xử lý sự kiện cho nút start all
-        self.ui.startall_button.clicked.connect(self.on_save_changes)
+        self.ui.startall_button.clicked.connect(self.start_all_services)
         self.ui.webserver_start_pushButton.clicked.connect(self.start_webserver)
         self.ui.database_start_pushButton.clicked.connect(self.start_database)
         self.ui.language_start_pushButton.clicked.connect(self.start_language)
@@ -27,7 +33,7 @@ class DashboardPageController(QWidget):
         self.ui.tool_3_start_pushButton.clicked.connect(self.start_tools)
         self.ui.network_start_pushButton.clicked.connect(self.start_network)
 
-    def on_save_changes(self):
+    def start_all_services(self):
         start_all_status = self.dashboard_session.get("start_all_services")
         if start_all_status == 0:
             self.dashboard_session.set("start_all_services", 1)
@@ -54,6 +60,7 @@ class DashboardPageController(QWidget):
                 case 0:
                     self.ui.webserver_start_pushButton.setText("Stop")
                     self.dashboard_session.add_to_current_key("services_status", "webserver", 1)
+                    self.dashboard_service.handle_on_webserver_service(0)
                 case 1:
                     self.ui.webserver_start_pushButton.setText("Start")
                     self.dashboard_session.add_to_current_key("services_status","webserver",0)
@@ -62,7 +69,20 @@ class DashboardPageController(QWidget):
         print("Tool redis hoặc memcached hoặc terminal độc lập của ứng dụng đang chạy")
 
     def start_language(self):
-        print("Ngôn ngữ được chọn hoặc thư mục gốc của ngôn ngữ được thay đổi")
+        language_status = self.dashboard_session.get("services_status")
+        if "language" in language_status:
+            print("Đã có trạng thái dịch vụ language --> chuyển đổi trạng thái")
+        else:
+            print("Chưa có trạng thái dv language, Thêm key mới")
+            self.dashboard_session.add_to_current_key("services_status","language",0)
+
+        match language_status["language"]:
+            case 0:
+                self.ui.language_start_pushButton.setText("Stop")
+                self.dashboard_session.add_to_current_key("services_status", "language", 1)
+            case 1:
+                self.ui.language_start_pushButton.setText("Start")
+                self.dashboard_session.add_to_current_key("services_status", "language", 0)
 
     def start_network(self):
         print("Chạy độc lập loại network nào đó ví dụ ngrok hoặc telnet")
@@ -79,6 +99,8 @@ class DashboardPageController(QWidget):
 
     def listener_language_saved(self,data):
         print("nhận emit từ language rồi lưu thông tin")
+        self.ui.language_type_label.setText(data["language"])
+        self.ui.language_version_label.setText(data["selected_version"])
 
     def listener_network_saved(self,data):
         print("nhận emit từ network rồi lưu thông tin")

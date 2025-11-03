@@ -71,13 +71,6 @@
    </item>
    <item>
     <layout class="QGridLayout" name="dashboard_content_layout" rowstretch="0,0,0,0,0,0,0,0" columnstretch="0,0,0,0">
-     <item row="1" column="2">
-      <widget class="QLabel" name="database_version_label">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="1">
       <widget class="QLabel" name="tool_type_2_label">
        <property name="text">
@@ -103,13 +96,6 @@
       <widget class="QPushButton" name="language_start_pushButton">
        <property name="text">
         <string>Start</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="language_version_label">
-       <property name="text">
-        <string>TextLabel</string>
        </property>
       </widget>
      </item>
@@ -183,13 +169,6 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="database_type_label">
-       <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
      <item row="7" column="1" colspan="2">
       <widget class="QPushButton" name="startall_button">
        <property name="text">
@@ -257,6 +236,27 @@
       <widget class="QPushButton" name="tool_1_start_pushButton">
        <property name="text">
         <string>Start</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="database_type_label">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="language_version_label">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="database_version_label">
+       <property name="text">
+        <string>TextLabel</string>
        </property>
       </widget>
      </item>
