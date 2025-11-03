@@ -2,6 +2,7 @@ import os, sqlite3
 from jinja2 import Environment, FileSystemLoader
 from core.config import config
 from core.database.model import WebserverSetting
+from core.repository import LanguageRepository
 
 # Chỉ định đường dẫn đến thư mục chứa template
 # __file__ là file .py này, '..' đi lên 1 cấp, 'templates' đi vào
@@ -216,10 +217,13 @@ def regenerate_main_nginx_config(settings: WebserverSetting):
             print(f"LỖI: Không tìm thấy template nginx.conf.j2 tại: {template_path}")
             return
 
+        languages_version = LanguageRepository.get_all_language_versions()
+        languages = {language for language in languages_version.keys()}
         sites_path = settings.sites_enabled_path.replace("\\", "/")
 
         context = {
-            "sites_enabled_path": sites_path
+            "sites_enabled_path": sites_path,
+            "language_folders": languages
             # Bạn có thể thêm các biến khác ở đây nếu cần (log path, v.v.)
         }
 

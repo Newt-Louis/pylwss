@@ -77,7 +77,9 @@ http {
         #    deny  all;
         #}
     #}
-    include {{ sites_enabled_path }}/*/*.conf;
+    {% for lang_folder in language_folders %}
+    include {{ sites_enabled_path }}/{{ lang_folder }}/*.conf;
+    {% endfor %}
 
 
     # another virtual host using mix of IP-, name-, and port-based configuration
