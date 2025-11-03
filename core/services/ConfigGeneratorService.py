@@ -12,10 +12,6 @@ MOCK_SSL_CERT_PATH =  os.path.join(config.SSL_PATH,"certificate.crt")
 MOCK_SSL_KEY_PATH = os.path.join(config.SSL_PATH,"private.key")
 
 def regenerate_config_for_project(conn: sqlite3.Connection, project_id: int):
-    """
-    Hàm chính: Tự động sinh file config cho một dự án cụ thể.
-    Được gọi khi tạo/cập nhật dự án.
-    """
     try:
         # 1. Lấy thông tin Webserver chung
         ws_settings = _get_webserver_settings(conn)

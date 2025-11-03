@@ -24,10 +24,6 @@ server {
     ssl_prefer_server_ciphers off;
     {% endif %}
 
-    # ==========================================================
-    # Logic xử lý chính dựa trên loại dự án
-    # ==========================================================
-
     {% if project_type == 'proxy' %}
 
     # ---- Dành cho dự án Proxy (Node, Python, v.v.) ----
