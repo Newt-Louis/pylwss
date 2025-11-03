@@ -1,6 +1,7 @@
 import sqlite3, os
 from core.config import config
 from core.manager.PortManager import PortManager
+from core.services import ConfigGeneratorService
 
 DB_PATH = config.DB_PATH
 PHP_FPM_PORT = 9000
@@ -23,7 +24,8 @@ def sync_root_directory_to_db(language:str, root_directory_path: str):
             # Kiểm tra đồng bộ dữ liệu
             cursor.execute("SELECT * FROM projects WHERE language = ?", (language,))
             projects_in_db = [row for row in cursor.fetchall()]
-            projects_in_db_names = {row['project_name'] for row in projects_in_db}
+            projects_in_db_map = {row['project_name']: row["id"] for row in projects_in_db}
+            projects_in_db_names = set(projects_in_db_map.keys())
             projects_to_add = projects - projects_in_db_names
             projects_to_delete = projects_in_db_names - projects
 
@@ -37,6 +39,7 @@ def sync_root_directory_to_db(language:str, root_directory_path: str):
                     delete_tuples.append((name, language))
                     if language != 'php':
                         port_manager.release_port(name)
+                    ConfigGeneratorService.remove_config_for_project(conn, projects_in_db_map[name])
                 cursor.executemany("DELETE FROM projects WHERE project_name = ? AND language = ?",delete_tuples)
 
             if projects_to_add:
@@ -62,6 +65,17 @@ def sync_root_directory_to_db(language:str, root_directory_path: str):
                     ))
 
                 cursor.executemany("INSERT INTO projects (project_name,language,project_path,app_port) VALUES (?, ?, ?, ?)", insert_list)
+                if insert_list:
+                    added_project_names = [item[0] for item in insert_list]
+                    placeholders = ','.join('?' for _ in added_project_names)
+                    sql_get_new_ids = f"SELECT id FROM projects WHERE language = ? AND project_name IN ({placeholders})"
+                    params = (language,) + tuple(added_project_names)
+                    cursor.execute(sql_get_new_ids, params)
+                    newly_added_rows = cursor.fetchall()
+                    for row in newly_added_rows:
+                        new_project_id = row['id']
+                        ConfigGeneratorService.regenerate_config_for_project(conn, new_project_id)
+
                 print(f"{language} Đồng bộ hoàn tất")
     except sqlite3.Error as e:
         print("Có lỗi khi đồng bộ vào db: ",e)

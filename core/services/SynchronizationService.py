@@ -1,5 +1,6 @@
 from core.repository import WebserverRepository
 from core.repository import ProjectRepository
+from core.services import ConfigGeneratorService
 from core.config import config
 
 def sync_apache_versions():
