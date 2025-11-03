@@ -60,10 +60,11 @@ class DashboardPageController(QWidget):
                 case 0:
                     self.ui.webserver_start_pushButton.setText("Stop")
                     self.dashboard_session.add_to_current_key("services_status", "webserver", 1)
-                    self.dashboard_service.handle_on_webserver_service(0)
+                    self.dashboard_service.handle_on_webserver_service(1)
                 case 1:
                     self.ui.webserver_start_pushButton.setText("Start")
                     self.dashboard_session.add_to_current_key("services_status","webserver",0)
+                    self.dashboard_service.handle_on_webserver_service(0)
 
     def start_tools(self):
         print("Tool redis hoặc memcached hoặc terminal độc lập của ứng dụng đang chạy")

@@ -46,11 +46,17 @@ def sync_root_directory_to_db(language:str, root_directory_path: str):
             if projects_to_add:
                 insert_list = []
                 # gọi hàm lấy top level domain hiện tại
-                tld = WebserverRepository.get_current_tld_template()
+                webserver = WebserverRepository.get_current_webserver()
+
+                # Nếu webserver chưa chọn (khi ứng dụng cài đặt mới)
+                if webserver is None:
+                    print("Lỗi cấu hình webserver khi đồng bộ thư mục dự án gốc! xem lại webserver_settings")
+                    return
+
                 for name in projects_to_add:
                     full_path = os.path.join(root_directory_path, name)
                     normalized_path = os.path.normpath(full_path)
-                    domain = f"{name}{'.test' if tld is None else tld}"
+                    domain = f"{name}{'.test' if webserver["tld_template"] is None else webserver["tld_template"]}"
                     app_port = None
                     if language == 'php':
                         app_port = PHP_FPM_PORT
