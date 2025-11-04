@@ -8,7 +8,6 @@ from core.repository import LanguageRepository
 # __file__ là file .py này, '..' đi lên 1 cấp, 'templates' đi vào
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), '..', 'config')
 JINJA_ENV = Environment(loader=FileSystemLoader(TEMPLATE_DIR), trim_blocks=True, lstrip_blocks=True)
-APP_CONFIG_OUTPUT_DIR = "D:/laragon-clone/etc/webserver/sites-enabled"
 MOCK_PHP_FPM_SOCKET = "127.0.0.1:9000"
 MOCK_SSL_CERT_PATH =  os.path.join(config.SSL_PATH,"certificate.crt")
 MOCK_SSL_KEY_PATH = os.path.join(config.SSL_PATH,"private.key")
@@ -223,8 +222,9 @@ def regenerate_main_nginx_config(settings: WebserverSetting):
 
         context = {
             "sites_enabled_path": sites_path,
-            "language_folders": languages
-            # Bạn có thể thêm các biến khác ở đây nếu cần (log path, v.v.)
+            "language_folders": languages,
+            "access_log_path": settings.alp_path.replace("\\", "/") if settings.alp_path else None,
+            "error_log_path": settings.elp_path.replace("\\", "/") if settings.elp_path else None
         }
 
         rendered_config = template.render(context)
@@ -251,18 +251,23 @@ def regenerate_main_apache_config(settings: WebserverSetting):
             print(f"LỖI: Không tìm thấy template httpd.conf.j2 tại: {template_path}")
             return
 
-    #     sites_path = settings.sites_enabled_path.replace("\\", "/")
-    #
-    #     context = {
-    #         "sites_enabled_path": sites_path
-    #         # Bạn có thể thêm các biến khác ở đây nếu cần (log path, v.v.)
-    #     }
-    #
-    #     rendered_config = template.render(context)
-    #     with open(output_path, 'w', encoding='utf-8') as f:
-    #         f.write(rendered_config)
-    #
-    #     print(f"SERVICE: Tạo file nginx.conf thành công tại: {output_path}")
-    #
+        languages_version = LanguageRepository.get_all_language_versions()
+        languages = {language for language in languages_version.keys()}
+        sites_path = settings.sites_enabled_path.replace("\\", "/")
+
+        context = {
+            "sites_enabled_path": sites_path,
+            "language_folders": languages,
+            "access_log_path": settings.alp_path.replace("\\", "/") if settings.alp_path else None,
+            "error_log_path": settings.elp_path.replace("\\", "/") if settings.elp_path else None,
+            "base_directory": config.APACHE_ROOT
+        }
+
+        rendered_config = template.render(context)
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write(rendered_config)
+
+        print(f"SERVICE: Tạo file nginx.conf thành công tại: {output_path}")
+
     except Exception as e:
         print(f"LỖI NGHIÊM TRỌNG khi tạo file nginx.conf: {e}")

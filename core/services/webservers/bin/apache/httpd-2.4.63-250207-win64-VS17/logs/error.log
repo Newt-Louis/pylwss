@@ -1,0 +1,12 @@
+AH00558: httpd.exe: Could not reliably determine the server's fully qualified domain name, using fe80::2fc6:aa14:4384:bcc6. Set the 'ServerName' directive globally to suppress this message
+[Tue Nov 04 16:03:15.698209 2025] [mpm_winnt:notice] [pid 2308:tid 456] AH00455: Apache/2.4.63 (Win64) configured -- resuming normal operations
+[Tue Nov 04 16:03:15.698209 2025] [mpm_winnt:notice] [pid 2308:tid 456] AH00456: Apache Lounge VS17 Server built: Feb  3 2025 10:10:51
+[Tue Nov 04 16:03:15.698209 2025] [core:notice] [pid 2308:tid 456] AH00094: Command line: 'D:\\WorkSpace\\Python\\LocalWebServerStacks\\core\\services\\webservers\\bin\\apache\\httpd-2.4.63-250207-win64-VS17\\bin\\httpd.exe -d D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17'
+[Tue Nov 04 16:03:15.701924 2025] [mpm_winnt:notice] [pid 2308:tid 456] AH00418: Parent: Created child process 15960
+AH00558: httpd.exe: Could not reliably determine the server's fully qualified domain name, using fe80::2fc6:aa14:4384:bcc6. Set the 'ServerName' directive globally to suppress this message
+Apache server interrupted...
+ reliably determine the server's fully qualified domain name, using fe80::2fc6:aa14:4384:bcc6. Set the 'ServerName' directive globally to suppress this message
+[Tue Nov 04 16:03:15.910821 2025] [mpm_winnt:notice] [pid 15960:tid 476] AH00354: Child: Starting 64 worker threads.
+[Tue Nov 04 16:08:11.300354 2025] [mpm_winnt:notice] [pid 2308:tid 456] AH00422: Parent: Received shutdown signal -- Shutting down the server.
+[Tue Nov 04 16:08:13.325085 2025] [mpm_winnt:notice] [pid 15960:tid 476] AH00364: Child: All worker threads have exited.
+[Tue Nov 04 16:08:13.345486 2025] [mpm_winnt:notice] [pid 2308:tid 456] AH00430: Parent: Child process 15960 exited successfully.

@@ -78,6 +78,13 @@ http {
         #}
     #}
 
+    {% if access_log_path %}
+    access_log {{ access_log_path }};
+    {% endif %}
+    {% if error_log_path %}
+    error_log {{ error_log_path }};
+    {% endif %}
+
     {% for lang_folder in language_folders %}
     include {{ sites_enabled_path }}/{{ lang_folder }}/*.conf;
     {% endfor %}

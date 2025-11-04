@@ -34,7 +34,7 @@
 # same ServerRoot for multiple httpd daemons, you will need to change at
 # least PidFile.
 #
-Define SRVROOT "c:/Apache24"
+Define SRVROOT "{{ base_directory }}"
 
 ServerRoot "${SRVROOT}"
 
@@ -535,3 +535,15 @@ SSLRandomSeed startup builtin
 SSLRandomSeed connect builtin
 </IfModule>
 
+{% if error_log_path %}
+ErrorLog "{{ error_log_path }}"
+{% endif %}
+
+{% if access_log_path %}
+# (Chúng ta dùng "common" làm định dạng log mặc định)
+CustomLog "{{ access_log_path }}" common
+{% endif %}
+
+{% for lang_folder in language_folders %}
+IncludeOptional "{{ sites_enabled_path }}/{{ lang_folder }}/*.conf"
+{% endfor %}
