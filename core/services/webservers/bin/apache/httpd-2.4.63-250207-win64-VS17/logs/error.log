@@ -10,3 +10,18 @@ Apache server interrupted...
 [Tue Nov 04 16:08:11.300354 2025] [mpm_winnt:notice] [pid 2308:tid 456] AH00422: Parent: Received shutdown signal -- Shutting down the server.
 [Tue Nov 04 16:08:13.325085 2025] [mpm_winnt:notice] [pid 15960:tid 476] AH00364: Child: All worker threads have exited.
 [Tue Nov 04 16:08:13.345486 2025] [mpm_winnt:notice] [pid 2308:tid 456] AH00430: Parent: Child process 15960 exited successfully.
+[Tue Nov 04 16:33:02.130603 2025] [mpm_winnt:notice] [pid 21908:tid 476] AH00455: Apache/2.4.63 (Win64) configured -- resuming normal operations
+[Tue Nov 04 16:33:02.130603 2025] [mpm_winnt:notice] [pid 21908:tid 476] AH00456: Apache Lounge VS17 Server built: Feb  3 2025 10:10:51
+[Tue Nov 04 16:33:02.130603 2025] [core:notice] [pid 21908:tid 476] AH00094: Command line: 'D:\\WorkSpace\\Python\\LocalWebServerStacks\\core\\services\\webservers\\bin\\apache\\httpd-2.4.63-250207-win64-VS17\\bin\\httpd.exe -d D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17'
+[Tue Nov 04 16:33:02.144016 2025] [mpm_winnt:notice] [pid 21908:tid 476] AH00418: Parent: Created child process 21308
+[Tue Nov 04 16:33:02.340008 2025] [mpm_winnt:notice] [pid 21308:tid 476] AH00354: Child: Starting 64 worker threads.
+[Tue Nov 04 16:46:40.405986 2025] [core:warn] [pid 31424:tid 476] AH00098: pid file D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Tue Nov 04 16:46:40.406988 2025] [mpm_winnt:notice] [pid 31424:tid 476] AH00455: Apache/2.4.63 (Win64) configured -- resuming normal operations
+[Tue Nov 04 16:46:40.406988 2025] [mpm_winnt:notice] [pid 31424:tid 476] AH00456: Apache Lounge VS17 Server built: Feb  3 2025 10:10:51
+[Tue Nov 04 16:46:40.406988 2025] [core:notice] [pid 31424:tid 476] AH00094: Command line: 'D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/bin/httpd.exe -d D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17'
+[Tue Nov 04 16:46:40.411097 2025] [mpm_winnt:notice] [pid 31424:tid 476] AH00418: Parent: Created child process 15700
+[Tue Nov 04 16:46:40.614454 2025] [mpm_winnt:notice] [pid 15700:tid 444] AH00354: Child: Starting 64 worker threads.
+[Tue Nov 04 16:46:46.755519 2025] [mpm_winnt:crit] [pid 15700:tid 444] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Tue Nov 04 16:46:46.755519 2025] [mpm_winnt:warn] [pid 15700:tid 1112] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Tue Nov 04 16:46:46.756518 2025] [mpm_winnt:warn] [pid 15700:tid 540] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Tue Nov 04 16:46:48.780882 2025] [mpm_winnt:notice] [pid 15700:tid 444] AH00364: Child: All worker threads have exited.

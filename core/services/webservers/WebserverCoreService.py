@@ -141,9 +141,9 @@ class WebserverCoreService:
             EventBus.log_received.emit("Khởi động Apache thất bại: File cấu hình có lỗi.")
             return
 
-        # Apache dùng Popen với lệnh -k start
+        # Apache dùng Popen với lệnh httpd.exe (dạng portable)
         apache_dir = self._get_base_path(exec_path, 'apache')
-        self.apache_process = subprocess.Popen([exec_path, "-k", "start"], cwd=apache_dir,
+        self.apache_process = subprocess.Popen([exec_path], cwd=apache_dir,
                                                creationflags=CREATE_NO_WINDOW)
         EventBus.log_received.emit(f"Apache đã khởi động (PID: {self.apache_process.pid})")
         EventBus.service_status_changed.emit({"apache": "running"})
@@ -153,11 +153,16 @@ class WebserverCoreService:
         exec_path = self._get_executable_path(settings, 'apache')
         apache_dir = self._get_base_path(exec_path, 'apache')
 
-        # Dùng -k shutdown (an toàn) hoặc -k stop
-        subprocess.run([exec_path, "-k", "shutdown"], cwd=apache_dir, creationflags=CREATE_NO_WINDOW)
-
-        if self.apache_process:
+        # Dùng terminate() do ở dạng portable không có dịch vụ cài đặt trên windows
+        try:
+            self.apache_process.terminate()
             self.apache_process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            self.apache_process.kill()  # Tương đương "End Task"
+            self.apache_process.wait()  # Đợi sau khi kill
+        except Exception as e:
+            print(f"Lỗi khi dừng Apache: {e}")
+
         self.apache_process = None
         EventBus.log_received.emit("Apache đã dừng.")
         EventBus.service_status_changed.emit({"apache": "stopped"})
@@ -170,9 +175,11 @@ class WebserverCoreService:
             EventBus.log_received.emit("Tải lại Apache thất bại: File cấu hình có lỗi.")
             return
 
-        # Apache dùng -k restart để tải lại
-        apache_dir = self._get_base_path(exec_path, 'apache')
-        subprocess.run([exec_path, "-k", "restart"], cwd=apache_dir, creationflags=CREATE_NO_WINDOW)
+        # Apache sử dụng dạng portable nên không thể gọi -k restart mà chỉ có thể ngắt rồi start lại
+        # trong stop đã có xử lý try except nên không cần làm gì thêm
+        self.stop_apache_service(settings)
+        self.start_apache_service(settings)
+
         EventBus.log_received.emit("Apache đã tải lại cấu hình.")
 
     def _test_apache_config(self, executable_path: str) -> bool:
