@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget
-
+from core.manager.Logger import logger
 from .DashboardServiceController import DashboardServiceController
 from ui.windows.origin_interface import Ui_DashboardPage
 from core.manager.EventBus import EventBus
@@ -23,6 +23,8 @@ class DashboardPageController(QWidget):
         # Nghe sự kiện phát ra từ các trang dịch vụ khác
         EventBus.webserver_saved.connect(self.listener_webserver_saved)
         EventBus.language_saved.connect(self.listener_language_saved)
+        EventBus.log_received.connect(lambda data: self.handle_on_log_received(data))
+        EventBus.service_status_changed.connect(lambda data: self.handle_on_status_changed(data))
 
         # Gán hàm xử lý sự kiện cho nút start all
         self.ui.startall_button.clicked.connect(self.start_all_services)
@@ -108,3 +110,9 @@ class DashboardPageController(QWidget):
 
     def listener_tool_saved(self,data):
         print("nhận emit từ tool rồi lưu thông tin")
+
+    def handle_on_log_received(self, data):
+        logger.info(data)
+
+    def handle_on_status_changed(self, data):
+        logger.info(data)

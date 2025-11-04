@@ -6,5 +6,7 @@ class EventBus(QObject):
     language_saved = Signal(dict)
     network_saved = Signal(dict)
     tools_saved = Signal(dict)
+    log_received = Signal(str)
+    service_status_changed = Signal(dict)
 
 EventBus = EventBus()
