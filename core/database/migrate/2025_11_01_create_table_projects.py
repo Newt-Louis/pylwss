@@ -18,5 +18,5 @@ def up(cursor: sqlite3.Cursor):
 
 # Hàm down để hoàn tác
 def down(cursor: sqlite3.Cursor):
-    print("Reverting migration: create_language_versions_table...")
-    cursor.execute("DROP TABLE IF EXISTS language_versions;")
+    print("Reverting migration: create_projects_table...")
+    cursor.execute("DROP TABLE IF EXISTS projects;")

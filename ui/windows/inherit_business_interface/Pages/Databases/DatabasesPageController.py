@@ -1,5 +1,4 @@
 from PySide6.QtWidgets import QWidget
-# 1. Import lớp giao diện đã được build từ file .py
 from ui.windows.origin_interface import Ui_DatabasesPage
 
 
@@ -7,16 +6,14 @@ class DatabasesPageController(QWidget):
     def __init__(self, model):
         super().__init__()
         self.model = model
-
-        # 2. Khởi tạo một đối tượng từ lớp giao diện
         self.ui = Ui_DatabasesPage()
-
-        # 3. Dùng phương thức setupUi() để vẽ giao diện lên chính widget controller này (self)
         self.ui.setupUi(self)
 
-        # 4. Từ đây, mọi thứ giống hệt như trước!
-        # Kết nối signals và slots như bình thường.
-        # IDE của bạn bây giờ sẽ gợi ý code khi bạn gõ self.ui. ...
+        # TODO: Kiểm tra thông tin trong bảng database_settings và thực hiện download giải nén
+        # cùng cấu hình các thông tin ban đầu cho mysql ngay sau khi ứng dụng được cài đặt xong
+        # sau khi đã có mysql trong ứng dụng rồi thì lưu các thông tin ban đầu vào database
+        # và cho phép hoạt động lại như bình thường
+
         self.ui.database_save_change_buttonbox.clicked.connect(self.on_save_changes)
         self.ui.mysql_radio.toggled.connect(self.on_mysql_selected)
 

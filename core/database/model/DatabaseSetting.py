@@ -1,12 +1,11 @@
-import os
 from typing import Optional
-
-from pydantic import BaseModel, field_validator, Field
+from pydantic import BaseModel, Field
 
 class DatabaseSetting(BaseModel):
     id: Optional[int] = None
     type: str
     selected_version: str
+    port: int = Field(default=3306)
     root_path: str
     executable_path: str
     base_data_path: str
