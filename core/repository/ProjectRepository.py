@@ -1,6 +1,7 @@
 import sqlite3, os
 from core.config import config
 from core.manager.PortManager import PortManager
+from core.manager.Logger import logger
 from core.repository import WebserverRepository
 from core.services import ConfigGeneratorService
 
@@ -9,10 +10,13 @@ PHP_FPM_PORT = 9000
 
 def sync_root_directory_to_db(language:str, root_directory_path: str):
     try:
-        projects = {
+        projects = set(
             name for name in os.listdir(root_directory_path)
             if os.path.isdir(os.path.join(root_directory_path, name))
-        }
+        )
+        if not projects:
+            logger.info("No projects found in the root directory")
+            return
     except FileNotFoundError:
         print(f"LỖI: Không tìm thấy thư mục: {root_directory_path}")
         return
@@ -33,7 +37,7 @@ def sync_root_directory_to_db(language:str, root_directory_path: str):
             if not projects_to_add and not projects_to_delete:
                 print(f"{language} Đã đồng bộ dự án, không thay đổi gì!")
                 return
-
+            print(projects_to_delete)
             if projects_to_delete:
                 delete_tuples = []
                 for name in projects_to_delete:
@@ -56,7 +60,7 @@ def sync_root_directory_to_db(language:str, root_directory_path: str):
                 for name in projects_to_add:
                     full_path = os.path.join(root_directory_path, name)
                     normalized_path = os.path.normpath(full_path)
-                    domain = f"{name}{'.test' if webserver["tld_template"] is None else webserver["tld_template"]}"
+                    domain = f"{name}{'.test' if webserver.tld_template is None else webserver.tld_template}"
                     app_port = None
                     if language == 'php':
                         app_port = PHP_FPM_PORT
@@ -90,3 +94,13 @@ def sync_root_directory_to_db(language:str, root_directory_path: str):
                 print(f"{language} Đồng bộ hoàn tất")
     except sqlite3.Error as e:
         print("Có lỗi khi đồng bộ vào db: ",e)
+
+def delete_specified_language_projects(language:str):
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(""" DELETE FROM projects WHERE language = ? """, (language,))
+            return True
+    except sqlite3.Error as e:
+        print("Có lỗi khi xóa các dự án của ngôn ngữ tương ứng !")
+        raise e

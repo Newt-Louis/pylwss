@@ -6,11 +6,13 @@ class DashboardServiceController:
         self.dashboard_core_service = DashboardCoreService()
 
     def handle_on_webserver_service(self,status):
-        print("dashboards Page Controller _on_save_changes")
-        self.dashboard_core_service.webserver_service_handler(status)
+        try:
+            self.dashboard_core_service.webserver_service_handler(status)
 
+        except Exception as e:
+            raise e
 
-    def on_start_database(self):
+    def handle_on_database_service(self):
         print("dashboards Page Controller _on_cancel_changes")
 
     def on_start_language(self):

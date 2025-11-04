@@ -1,5 +1,6 @@
 from core.repository import DashboardRepository,WebserverRepository
 from core.services.webservers import WebserverCoreService
+from core.manager.EventBus import EventBus
 
 class DashboardCoreService:
     dashboard_repository = DashboardRepository
@@ -13,12 +14,12 @@ class DashboardCoreService:
             print(settings)
         except Exception as e:
             print(f"DASHBOARD SERVICE: Lỗi khi lấy cài đặt: {e}")
-            # EventBus.log_received.emit(f"Lỗi DB: {e}")
+            EventBus.log_received.emit(f"Lỗi DB: {e}")
             return
 
         if not settings:
             print("DASHBOARD SERVICE: Không tìm thấy webserver nào đang được kích hoạt.")
-            # EventBus.log_received.emit("Lỗi: Chưa cấu hình webserver.")
+            EventBus.log_received.emit("Lỗi: Chưa cấu hình webserver.")
             return
 
             # Bước 2: Điều phối dựa trên server_name
@@ -26,7 +27,6 @@ class DashboardCoreService:
 
         try:
             if server_name == 'nginx':
-                # Chuyển lệnh đến Nginx Service
                 if status == 1:
                     self.webserver_core_service.start_nginx_service(settings)
                 elif status == 0:
@@ -35,7 +35,6 @@ class DashboardCoreService:
                     self.webserver_core_service.reload_nginx_service(settings)
 
             elif server_name == 'apache':
-                # Chuyển lệnh đến Apache Service
                 if status == 1:
                     self.webserver_core_service.start_apache_service(settings)
                 elif status == 0:
@@ -45,9 +44,9 @@ class DashboardCoreService:
 
             else:
                 print(f"DASHBOARD SERVICE: Webserver '{server_name}' không được hỗ trợ.")
-                # EventBus.log_received.emit(f"Lỗi: Webserver '{server_name}' không được hỗ trợ.")
+                EventBus.log_received.emit(f"Lỗi: Webserver '{server_name}' không được hỗ trợ.")
 
         except Exception as e:
             # Bắt các lỗi chung (ví dụ: FileNotFoundError từ CoreService)
             print(f"DASHBOARD SERVICE: Lỗi khi thực thi lệnh '{status}': {e}")
-            # EventBus.log_received.emit(f"Lỗi nghiêm trọng: {e}")
+            EventBus.log_received.emit(f"Lỗi nghiêm trọng: {e}")

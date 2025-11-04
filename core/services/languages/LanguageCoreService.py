@@ -2,13 +2,14 @@ from core.database.model import LanguageSetting
 from core.manager.EventBus import EventBus
 from core.manager import DirectoryWatcher
 from core.services import SynchronizationService
-from core.repository import LanguageRepository, WebserverRepository
+from core.repository import LanguageRepository, WebserverRepository, ProjectRepository
 
 
 class LanguageCoreService:
     def __init__(self):
         self.language_repository = LanguageRepository
         self.webserver_repository = WebserverRepository
+        self.project_repository = ProjectRepository
 
     def load_settings(self) -> list[LanguageSetting] | None:
         print(f"Language: Đang tải cấu hình...")
@@ -26,18 +27,24 @@ class LanguageCoreService:
             raise
 
     def save_settings(self,data_to_save: dict) -> bool:
+        success = False
         try:
             setting_model = LanguageSetting(**data_to_save)
 
-            if not self.language_repository.disable_all_languages():
-                raise Exception
+            # Kiểm tra nếu lưu lại ngôn ngữ đó thì xóa các dự án đang được lưu và cập nhật lại file .conf
+            current_language_in_db = self.language_repository.get_current_language_setting()
+            if current_language_in_db is None:
+                pass
+            elif current_language_in_db.language == setting_model.language:
+                success = self.language_repository.update_language_settings(setting_model)
+                self.project_repository.delete_specified_language_projects(setting_model.language)
+            else:
+                if not self.language_repository.disable_all_languages():
+                    raise Exception
+                success = self.language_repository.update_language_settings(setting_model)
 
-            success = self.language_repository.update_language_settings(setting_model)
-            print(success)
             if success:
-                print("Lưu ngôn ngữ thành công --> emit sự kiện lưu ngôn ngữ cho dashboard")
                 EventBus.language_saved.emit(setting_model.__dict__)
-                print("emit thành công, chạy đồng bộ tên dự án vào database")
                 schedule_callback_function = lambda: SynchronizationService.sync_language_projects(
                     setting_model.language,
                     setting_model.root_folder
@@ -50,5 +57,5 @@ class LanguageCoreService:
 
             return success
         except Exception as e:
-            print(e)
+            print("Có lỗi khi lưu cấu hình language",e)
             raise e

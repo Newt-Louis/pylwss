@@ -25,3 +25,15 @@ Apache server interrupted...
 [Tue Nov 04 16:46:46.755519 2025] [mpm_winnt:warn] [pid 15700:tid 1112] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
 [Tue Nov 04 16:46:46.756518 2025] [mpm_winnt:warn] [pid 15700:tid 540] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
 [Tue Nov 04 16:46:48.780882 2025] [mpm_winnt:notice] [pid 15700:tid 444] AH00364: Child: All worker threads have exited.
+[Tue Nov 04 18:19:58.037279 2025] [core:warn] [pid 25116:tid 444] AH00098: pid file D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Tue Nov 04 18:19:58.038279 2025] [ssl:warn] [pid 25116:tid 444] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Tue Nov 04 18:19:58.039280 2025] [mpm_winnt:notice] [pid 25116:tid 444] AH00455: Apache/2.4.63 (Win64) OpenSSL/3.3.2 configured -- resuming normal operations
+[Tue Nov 04 18:19:58.039280 2025] [mpm_winnt:notice] [pid 25116:tid 444] AH00456: Apache Lounge VS17 Server built: Feb  3 2025 10:10:51
+[Tue Nov 04 18:19:58.039280 2025] [core:notice] [pid 25116:tid 444] AH00094: Command line: 'D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/bin/httpd.exe -d D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17'
+[Tue Nov 04 18:19:58.042944 2025] [mpm_winnt:notice] [pid 25116:tid 444] AH00418: Parent: Created child process 23492
+[Tue Nov 04 18:19:58.267070 2025] [ssl:warn] [pid 23492:tid 452] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Tue Nov 04 18:19:58.269069 2025] [mpm_winnt:notice] [pid 23492:tid 452] AH00354: Child: Starting 64 worker threads.
+[Tue Nov 04 18:20:14.398218 2025] [mpm_winnt:crit] [pid 23492:tid 452] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Tue Nov 04 18:20:14.398218 2025] [mpm_winnt:warn] [pid 23492:tid 616] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Tue Nov 04 18:20:14.398218 2025] [mpm_winnt:warn] [pid 23492:tid 544] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Tue Nov 04 18:20:16.412878 2025] [mpm_winnt:notice] [pid 23492:tid 452] AH00364: Child: All worker threads have exited.

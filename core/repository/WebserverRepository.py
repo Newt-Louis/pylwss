@@ -1,6 +1,6 @@
 import sqlite3, os
 from core.config import config
-from core.database.model.webservers.WebserverSetting import WebserverSetting
+from core.database.model import WebserverSetting
 
 DB_PATH = config.DB_PATH
 # noinspection PyUnresolvedReferences

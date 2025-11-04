@@ -260,14 +260,14 @@ def regenerate_main_apache_config(settings: WebserverSetting):
             "language_folders": languages,
             "access_log_path": settings.alp_path.replace("\\", "/") if settings.alp_path else None,
             "error_log_path": settings.elp_path.replace("\\", "/") if settings.elp_path else None,
-            "base_directory": config.APACHE_ROOT
+            "base_directory": os.path.dirname(conf_dir)
         }
 
         rendered_config = template.render(context)
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(rendered_config)
 
-        print(f"SERVICE: Tạo file nginx.conf thành công tại: {output_path}")
+        print(f"SERVICE: Tạo file httpd.conf thành công tại: {output_path}")
 
     except Exception as e:
-        print(f"LỖI NGHIÊM TRỌNG khi tạo file nginx.conf: {e}")
+        print(f"LỖI NGHIÊM TRỌNG khi tạo file httpd.conf: {e}")

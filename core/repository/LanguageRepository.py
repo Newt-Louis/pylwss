@@ -36,6 +36,20 @@ def get_all_languages_settings():
         print("Lỗi khi lấy dữ liệu cấu hình language!")
         raise e
 
+def get_current_language_setting():
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute(""" SELECT * FROM language_settings WHERE is_chosen = 1 """)
+            row = cursor.fetchone()
+            if row:
+                return LanguageSetting(**dict(row))
+            return None
+    except sqlite3.Error as e:
+        print("Lỗi khi lấy dữ liệu cấu hình language hiện tại!")
+        raise e
+
 def update_language_settings(settings: LanguageSetting):
     try:
         with sqlite3.connect(DB_PATH) as conn:

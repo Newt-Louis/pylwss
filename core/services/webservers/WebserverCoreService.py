@@ -1,7 +1,8 @@
 import os, subprocess
-from core.repository import WebserverRepository
+from core.repository import WebserverRepository, LanguageRepository
 from core.database.model import WebserverSetting
 from core.manager.EventBus import EventBus
+from core.manager.Logger import logger
 from core.services import ConfigGeneratorService, SynchronizationService
 from core.config import config
 
@@ -46,7 +47,6 @@ class WebserverCoreService:
             success = self.__class__.webserver_repository.update_webserver_settings(setting_model)
 
             if success:
-                print(f"SERVICE: Đã lưu thành công cho {setting_model.server_name}.")
                 EventBus.webserver_saved.emit(setting_model.__dict__)
                 if setting_model.server_name == 'nginx':
                     ConfigGeneratorService.regenerate_main_nginx_config(setting_model)
@@ -54,9 +54,9 @@ class WebserverCoreService:
                     ConfigGeneratorService.regenerate_main_apache_config(setting_model)
 
             current_webserver_data = WebserverCoreService.webserver_repository.get_all_webserver_settings(model_data["server_name"])
-            if current_webserver_data[0].tld_template != model_data["tld"]:
-                WebserverCoreService.webserver_repository.update_tld_in_database(model_data["tld"])
-                SynchronizationService.sync_update_tld_workflow(model_data["tld"])
+            if current_webserver_data[0].tld_template != model_data["tld_template"]:
+                WebserverCoreService.webserver_repository.update_tld_in_database(model_data["tld_template"])
+                SynchronizationService.sync_update_tld_workflow(model_data["tld_template"])
 
             return success
         except Exception as e:
