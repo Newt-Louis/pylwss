@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import QWidget, QRadioButton, QFileDialog, QMessageBox
-
+from dependency_injector.wiring import Provide, inject
 from .WebserverServiceController import WebserverServiceController
 from ui.windows.origin_interface import Ui_WebserverPage
+from core.manager.ServiceContainer import ServiceContainer
 
 
 class WebserverPageController(QWidget):
@@ -24,10 +25,11 @@ class WebserverPageController(QWidget):
         'alp_path': ('alp_lineEdit', 'QLineEdit'),
         'elp_path': ('elp_lineEdit', 'QLineEdit'),
     }
-    def __init__(self, model):
+    @inject
+    def __init__(self, model=None, service_controller: WebserverServiceController = Provide[ServiceContainer.WebserverServiceController]):
         super().__init__()
         self.model = model
-        self.service_controller = WebserverServiceController()
+        self.service_controller = service_controller
         self.ui = Ui_WebserverPage()
         self.ui.setupUi(self)
 

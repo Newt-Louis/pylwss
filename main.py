@@ -10,11 +10,19 @@ def run_main_ui_application():
         from core.manager.DashboardSession import DashboardSession
         from core.manager.PortManager import PortManager
         from core.manager.EventBus import EventBus
+        from core.manager.ServiceContainer import ServiceContainer
         from core.config import config
     except ImportError as e:
         print(f"LỖI: Không thể import các module cần thiết: {e}")
         sys.exit(1)
 
+    container = ServiceContainer()
+    container.wire(modules=[
+        "ui.windows.inherit_business_interface.Pages.Dashboard.DashboardPageController",
+        "ui.windows.inherit_business_interface.Pages.Databases.DatabasesPageController",
+        "ui.windows.inherit_business_interface.Pages.Languages.LanguagesPageController",
+        "ui.windows.inherit_business_interface.Pages.Webserver.WebserverPageController",
+    ])
     app = QtWidgets.QApplication(sys.argv)
     window = MainAppWindow()
 

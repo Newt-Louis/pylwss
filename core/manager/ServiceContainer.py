@@ -1,21 +1,15 @@
-class ServiceContainer:
-    _instance = None
+from dependency_injector import containers, providers
+from core.services import WebserverCoreService, LanguageCoreService, DashboardCoreService
+from core.services.databases.DatabaseCoreService import DatabaseCoreService
+from ui.windows.inherit_business_interface import WebserverServiceController, LanguagesServiceController, \
+    DatabasesServiceController, ToolsServiceController, NetworkServiceController, WebserverPageController, \
+    LanguagesPageController, DatabasesPageController, DashboardServiceController
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(ServiceContainer, cls).__new__(cls)
-            cls._instance.services = {}
-        return cls._instance
 
-    def register(self, name: str, service_instance):
-        print(f"Đăng ký dịch vụ: {name}")
-        self.services[name] = service_instance
-
-    def get(self, name: str):
-        try:
-            return self.services[name]
-        except KeyError:
-            raise Exception(f"Dịch vụ '{name}' chưa được đăng ký.")
-
-    # Tạo Singleton ngay lập tức
-Container = ServiceContainer()
+class ServiceContainer(containers.DeclarativeContainer):
+    DashboardServiceController = providers.Singleton(DashboardServiceController, dashboard_core_service=DashboardCoreService)
+    WebserverServiceController = providers.Singleton(WebserverServiceController,webserver_core_service=WebserverCoreService)
+    LanguagesServiceController = providers.Singleton(LanguagesServiceController, language_core_service=LanguageCoreService)
+    DatabasesServiceController = providers.Singleton(DatabasesServiceController, database_core_service=DatabaseCoreService)
+    # ToolsServiceController = providers.Singleton(ToolsServiceController, ToolCoreService)
+    # NetworkServiceController = providers.Singleton(NetworkServiceController, NetworkCoreService)

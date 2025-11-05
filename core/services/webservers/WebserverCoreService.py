@@ -10,7 +10,6 @@ from core.manager.DashboardSession import DashboardSession
 CREATE_NO_WINDOW = 0x08000000
 
 class WebserverCoreService:
-    webserver_repository = WebserverRepository
     dashboard_session = DashboardSession()
     def __init__(self):
         self.nginx_process: subprocess.Popen | None = None
@@ -21,7 +20,7 @@ class WebserverCoreService:
     # noinspection PyUnresolvedReferences
     def load_settings(self) -> list[WebserverSetting] | None:
         try:
-            settings_data = self.__class__.webserver_repository.get_all_webserver_settings()
+            settings_data = WebserverRepository.get_all_webserver_settings()
             return None if settings_data is None else settings_data
         except:
             raise
@@ -42,10 +41,10 @@ class WebserverCoreService:
             }
             setting_model = WebserverSetting(**model_data)
 
-            if not self.webserver_repository.disable_all_webservers():
+            if not WebserverRepository.disable_all_webservers():
                 raise Exception
 
-            success = self.__class__.webserver_repository.update_webserver_settings(setting_model)
+            success = WebserverRepository.update_webserver_settings(setting_model)
 
             if success:
                 EventBus.webserver_saved.emit(setting_model.__dict__)
@@ -54,9 +53,9 @@ class WebserverCoreService:
                 elif setting_model.server_name == 'apache':
                     ConfigGeneratorService.regenerate_main_apache_config(setting_model)
 
-            current_webserver_data = WebserverCoreService.webserver_repository.get_all_webserver_settings(model_data["server_name"])
+            current_webserver_data = WebserverRepository.get_all_webserver_settings(model_data["server_name"])
             if current_webserver_data[0].tld_template != model_data["tld_template"]:
-                WebserverCoreService.webserver_repository.update_tld_in_database(model_data["tld_template"])
+                WebserverRepository.update_tld_in_database(model_data["tld_template"])
                 SynchronizationService.sync_update_tld_workflow(model_data["tld_template"])
 
             return success
@@ -65,7 +64,7 @@ class WebserverCoreService:
             return False
 
     def load_webservers_versions(self):
-        return self.__class__.webserver_repository.get_all_webserver_versions()
+        return WebserverRepository.get_all_webserver_versions()
 
     def start_nginx_service(self,settings: WebserverSetting):
         print("NGINX SERVICE: Đang khởi động dịch vụ...")
@@ -205,7 +204,7 @@ class WebserverCoreService:
         services_session = self.dashboard_session.get("services_status")
         if "webserver" in services_session:
             if services_session["webserver"] == 1:
-                current_webserver = self.webserver_repository.get_current_webserver()
+                current_webserver = WebserverRepository.get_current_webserver()
                 if current_webserver.server_name == "nginx":
                     self.stop_nginx_service(current_webserver)
                 if current_webserver.server_name == "apache":
