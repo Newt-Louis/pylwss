@@ -1,13 +1,13 @@
 from core.database.model import DashboardSetting
 from core.repository import DashboardRepository,WebserverRepository
-from core.services.webservers import WebserverCoreService
+from core.services.webservers.WebserverCoreService import WebserverCoreService
 from core.manager.EventBus import EventBus
 
 class DashboardCoreService:
     dashboard_repository = DashboardRepository
     webserver_repository = WebserverRepository
     def __init__(self):
-        self.webserver_core_service = WebserverCoreService()
+        self.webserver_core_service = WebserverCoreService
         EventBus.app_exit.connect(self.reset_dashboard_statuses)
 
     def get_init_dashboard_info(self)->list[DashboardSetting] | None:

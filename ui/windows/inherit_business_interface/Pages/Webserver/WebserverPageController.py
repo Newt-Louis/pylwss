@@ -1,7 +1,6 @@
 from PySide6.QtWidgets import QWidget, QRadioButton, QFileDialog, QMessageBox
 from .WebserverServiceController import WebserverServiceController
 from ui.windows.origin_interface import Ui_WebserverPage
-from core.manager.ServiceContainer import ServiceContainer
 
 
 class WebserverPageController(QWidget):
