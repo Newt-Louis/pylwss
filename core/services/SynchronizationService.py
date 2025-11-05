@@ -2,6 +2,7 @@ from core.repository import WebserverRepository
 from core.repository import ProjectRepository
 from core.services import ConfigGeneratorService, HostFileService
 from core.config import config
+from core.utils import Helper
 
 def sync_apache_versions():
     WebserverRepository.sync_versions_to_db('apache', str(config.APACHE_ROOT))
@@ -11,6 +12,7 @@ def sync_nginx_versions():
 
 def sync_language_projects(language:str,root_directory_path:str):
     ProjectRepository.sync_root_directory_to_db(language, root_directory_path)
+    Helper.trigger_hosts_file_sync()
 
 
 def sync_update_tld_workflow(new_tld: str):
@@ -25,7 +27,7 @@ def sync_update_tld_workflow(new_tld: str):
             raise Exception("Lỗi cập nhật database")
 
         ConfigGeneratorService.regenerate_all_configs()
-        HostFileService.sync_hosts_file()
+        Helper.trigger_hosts_file_sync()
 
         print(f"THÀNH CÔNG: Đã thay đổi TLD thành '{new_tld}' và đồng bộ mọi thứ.")
         return True

@@ -13,28 +13,20 @@ def is_admin():
         return False # Không phải Windows
 
 def sync_hosts_file():
-    """
-    Đồng bộ tất cả domain trong DB vào file hosts.
-    Hàm này đọc file, xóa các dòng cũ (có marker), và thêm các dòng mới.
-    """
     if not os.access(HOSTS_PATH, os.W_OK):
         print(f"LỖI: Không có quyền ghi vào file hosts. Cần chạy bằng quyền Admin.")
-        # Bạn nên raise Exception ở đây để báo về GUI
         raise PermissionError("Không có quyền ghi vào file hosts.")
 
-    # 1. Lấy tất cả domain MỚI NHẤT từ DB
     try:
         with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.cursor()
-            # Giả sử bạn chỉ muốn đồng bộ các dự án đang "enabled"
-            cursor.execute("SELECT domain FROM projects WHERE is_enabled = 1 AND domain IS NOT NULL")
+            cursor.execute("SELECT domain FROM projects AS p JOIN language_settings AS ls on p.language = ls.language WHERE p.domain IS NOT NULL AND ls.is_chosen = 1")
             all_domains = [row['domain'] for row in cursor.fetchall()]
     except Exception as e:
         print(f"Lỗi khi đọc domain từ DB: {e}")
         return
 
-    # 2. Đọc file hosts và lọc bỏ các dòng cũ CỦA TA
     clean_lines = []
     try:
         with open(HOSTS_PATH, 'r', encoding='utf-8') as f:
@@ -45,12 +37,10 @@ def sync_hosts_file():
         print("Không tìm thấy file hosts")
         return
 
-    # 3. Thêm các dòng mới vào
     for domain in all_domains:
         new_line = f"127.0.0.1\t{domain}\t{MARKER}"
         clean_lines.append(new_line)
 
-    # 4. Ghi đè lại file hosts
     try:
         with open(HOSTS_PATH, 'w', encoding='utf-8') as f:
             f.write("\n".join(clean_lines) + "\n")

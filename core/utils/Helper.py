@@ -1,4 +1,4 @@
-import re
+import re, ctypes, sys
 
 def to_snake_case(name: str) -> str:
     s1 = re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', name)
@@ -61,3 +61,16 @@ def singularize(word: str) -> str:
     elif lower.endswith("s") and len(lower) > 1:
         return lower[:-1]
     return lower
+
+def trigger_hosts_file_sync():
+    try:
+        ctypes.windll.shell32.ShellExecuteW(
+            None,
+            "runas",
+            sys.executable, # main.exe
+            f'"{sys.argv[0]}" --sync-hosts', # Tham số
+            None,
+            1
+        )
+    except Exception as e:
+        print(f"Lỗi khi gọi UAC: {e}")
