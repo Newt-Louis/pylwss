@@ -15,3 +15,5 @@ APP_DATA_PORTS = PROJECT_ROOT / "core" / "config"
 SSL_PATH = PROJECT_ROOT / "core" / "services" / "webservers" / "open-ssl"
 
 LOG_PATH = PROJECT_ROOT / "tests" / "logs"
+
+DB_SERVICES = PROJECT_ROOT / "core" / "services" / "databases" / "database_management_systems"

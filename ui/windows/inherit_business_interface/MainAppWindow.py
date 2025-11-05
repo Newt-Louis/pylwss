@@ -4,9 +4,9 @@ from ui.windows.origin_interface import Ui_MainWindow
 from ui.windows.inherit_business_interface import DatabasesPageController
 from ui.windows.inherit_business_interface import DashboardPageController
 from ui.windows.inherit_business_interface import LanguagesPageController
+from ui.windows.inherit_business_interface import WebserverPageController
 from ui.windows.inherit_business_interface import NetworkPageController
 from ui.windows.inherit_business_interface import ToolsPageController
-from ui.windows.inherit_business_interface import WebserverPageController
 
 class MainAppWindow(QMainWindow):
     def __init__(self):
