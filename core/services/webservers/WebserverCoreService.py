@@ -134,7 +134,7 @@ class WebserverCoreService:
         exec_path = self._get_executable_path(settings, 'apache')
 
         if self.apache_process and self.apache_process.poll() is None:
-#             EventBus.log_received.emit("Apache đã chạy từ trước.")
+            EventBus.log_received.emit("Apache đã chạy từ trước.")
             return
 
         if not self._test_apache_config(exec_path):

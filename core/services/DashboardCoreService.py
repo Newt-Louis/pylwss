@@ -8,7 +8,7 @@ class DashboardCoreService:
     webserver_repository = WebserverRepository
     def __init__(self):
         self.webserver_core_service = WebserverCoreService()
-        EventBus.app_exit(self.reset_dashboard_statuses)
+        EventBus.app_exit.connect(self.reset_dashboard_statuses)
 
     def get_init_dashboard_info(self)->list[DashboardSetting] | None:
         try:

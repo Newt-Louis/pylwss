@@ -24,10 +24,10 @@ class DashboardPageController(QWidget):
                 match dashboard_info.service:
                     case "language":
                         self.ui.language_type_label.setText(dashboard_info.type)
-                        self.ui.language_service_label.setText(dashboard_info.version)
+                        self.ui.language_version_label.setText(dashboard_info.version)
                     case "database":
                         self.ui.database_type_label.setText(dashboard_info.type)
-                        self.ui.database_service_label.setText(dashboard_info.type)
+                        self.ui.database_version_label.setText(dashboard_info.version)
                     case "webserver":
                         self.ui.webserver_type_label.setText(dashboard_info.type)
                         self.ui.webserver_version_label.setText(dashboard_info.version)
@@ -84,8 +84,8 @@ class DashboardPageController(QWidget):
 
             data_to_save = {
                 "service": "webserver",
-                "type": self.ui.webserver_type_label.text(),
-                "version": self.ui.webserver_version_label.text(),
+                "server_name": self.ui.webserver_type_label.text(),
+                "selected_version": self.ui.webserver_version_label.text(),
                 "is_running": webserver_status["webserver"],
             }
             self.dashboard_service.update_webserver_info(data_to_save)
@@ -132,9 +132,10 @@ class DashboardPageController(QWidget):
 
     def listener_language_saved(self,data):
         language_status = self.dashboard_session.get("services_status")
+        status = language_status["language"] if "language" in language_status else 0
         self.ui.language_type_label.setText(data["language"])
         self.ui.language_version_label.setText(data["selected_version"])
-        data["is_running"] = language_status["language"]
+        data["is_running"] = status
         self.dashboard_service.update_language_info(data)
 
     def listener_network_saved(self,data):

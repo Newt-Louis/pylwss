@@ -37,3 +37,23 @@ Apache server interrupted...
 [Tue Nov 04 18:20:14.398218 2025] [mpm_winnt:warn] [pid 23492:tid 616] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
 [Tue Nov 04 18:20:14.398218 2025] [mpm_winnt:warn] [pid 23492:tid 544] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
 [Tue Nov 04 18:20:16.412878 2025] [mpm_winnt:notice] [pid 23492:tid 452] AH00364: Child: All worker threads have exited.
+[Wed Nov 05 19:03:55.348851 2025] [core:warn] [pid 4892:tid 464] AH00098: pid file D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Wed Nov 05 19:03:55.350856 2025] [ssl:warn] [pid 4892:tid 464] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 19:03:55.350856 2025] [mpm_winnt:notice] [pid 4892:tid 464] AH00455: Apache/2.4.63 (Win64) OpenSSL/3.3.2 configured -- resuming normal operations
+[Wed Nov 05 19:03:55.350856 2025] [mpm_winnt:notice] [pid 4892:tid 464] AH00456: Apache Lounge VS17 Server built: Feb  3 2025 10:10:51
+[Wed Nov 05 19:03:55.350856 2025] [core:notice] [pid 4892:tid 464] AH00094: Command line: 'D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/bin/httpd.exe -d D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17'
+[Wed Nov 05 19:03:55.355855 2025] [mpm_winnt:notice] [pid 4892:tid 464] AH00418: Parent: Created child process 33184
+[Wed Nov 05 19:03:55.570409 2025] [ssl:warn] [pid 33184:tid 460] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 19:03:55.571409 2025] [mpm_winnt:notice] [pid 33184:tid 460] AH00354: Child: Starting 64 worker threads.
+[Wed Nov 05 19:09:02.053216 2025] [core:warn] [pid 25112:tid 456] AH00098: pid file D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Wed Nov 05 19:09:02.054220 2025] [ssl:warn] [pid 25112:tid 456] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 19:09:02.054220 2025] [mpm_winnt:notice] [pid 25112:tid 456] AH00455: Apache/2.4.63 (Win64) OpenSSL/3.3.2 configured -- resuming normal operations
+[Wed Nov 05 19:09:02.054220 2025] [mpm_winnt:notice] [pid 25112:tid 456] AH00456: Apache Lounge VS17 Server built: Feb  3 2025 10:10:51
+[Wed Nov 05 19:09:02.054220 2025] [core:notice] [pid 25112:tid 456] AH00094: Command line: 'D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/bin/httpd.exe -d D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17'
+[Wed Nov 05 19:09:02.058220 2025] [mpm_winnt:notice] [pid 25112:tid 456] AH00418: Parent: Created child process 27644
+[Wed Nov 05 19:09:02.272199 2025] [ssl:warn] [pid 27644:tid 448] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 19:09:02.274199 2025] [mpm_winnt:notice] [pid 27644:tid 448] AH00354: Child: Starting 64 worker threads.
+[Wed Nov 05 19:09:10.972416 2025] [mpm_winnt:crit] [pid 27644:tid 448] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Wed Nov 05 19:09:10.972416 2025] [mpm_winnt:warn] [pid 27644:tid 1160] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Wed Nov 05 19:09:10.972416 2025] [mpm_winnt:warn] [pid 27644:tid 1156] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Wed Nov 05 19:09:12.992340 2025] [mpm_winnt:notice] [pid 27644:tid 448] AH00364: Child: All worker threads have exited.

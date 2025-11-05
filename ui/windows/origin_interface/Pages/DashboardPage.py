@@ -50,15 +50,15 @@ class Ui_DashboardPage(object):
 
         self.dashboard_head_column_layout.addWidget(self.dashboard_service_label)
 
-        self.dashboard_version_label = QLabel(DashboardPage)
-        self.dashboard_version_label.setObjectName(u"dashboard_version_label")
-
-        self.dashboard_head_column_layout.addWidget(self.dashboard_version_label)
-
         self.dashboard_type_label = QLabel(DashboardPage)
         self.dashboard_type_label.setObjectName(u"dashboard_type_label")
 
         self.dashboard_head_column_layout.addWidget(self.dashboard_type_label)
+
+        self.dashboard_version_label = QLabel(DashboardPage)
+        self.dashboard_version_label.setObjectName(u"dashboard_version_label")
+
+        self.dashboard_head_column_layout.addWidget(self.dashboard_version_label)
 
         self.dashboard_status_label = QLabel(DashboardPage)
         self.dashboard_status_label.setObjectName(u"dashboard_status_label")
@@ -190,20 +190,20 @@ class Ui_DashboardPage(object):
 
         self.dashboard_content_layout.addWidget(self.tool_1_start_pushButton, 3, 3, 1, 1)
 
-        self.database_type_label = QLabel(DashboardPage)
-        self.database_type_label.setObjectName(u"database_type_label")
-
-        self.dashboard_content_layout.addWidget(self.database_type_label, 1, 2, 1, 1)
-
         self.language_version_label = QLabel(DashboardPage)
         self.language_version_label.setObjectName(u"language_version_label")
 
         self.dashboard_content_layout.addWidget(self.language_version_label, 0, 2, 1, 1)
 
+        self.database_type_label = QLabel(DashboardPage)
+        self.database_type_label.setObjectName(u"database_type_label")
+
+        self.dashboard_content_layout.addWidget(self.database_type_label, 1, 1, 1, 1)
+
         self.database_version_label = QLabel(DashboardPage)
         self.database_version_label.setObjectName(u"database_version_label")
 
-        self.dashboard_content_layout.addWidget(self.database_version_label, 1, 1, 1, 1)
+        self.dashboard_content_layout.addWidget(self.database_version_label, 1, 2, 1, 1)
 
 
         self.verticalLayout.addLayout(self.dashboard_content_layout)
@@ -222,8 +222,8 @@ class Ui_DashboardPage(object):
         DashboardPage.setWindowTitle(QCoreApplication.translate("DashboardPage", u"Form", None))
         self.dashboard_title_label_2.setText(QCoreApplication.translate("DashboardPage", u"<html><head/><body><p><span style=\" font-size:14pt; font-weight:700;\">Dashboard</span></p></body></html>", None))
         self.dashboard_service_label.setText(QCoreApplication.translate("DashboardPage", u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Service</span></p></body></html>", None))
-        self.dashboard_version_label.setText(QCoreApplication.translate("DashboardPage", u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Version</span></p></body></html>", None))
         self.dashboard_type_label.setText(QCoreApplication.translate("DashboardPage", u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Type</span></p></body></html>", None))
+        self.dashboard_version_label.setText(QCoreApplication.translate("DashboardPage", u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Version</span></p></body></html>", None))
         self.dashboard_status_label.setText(QCoreApplication.translate("DashboardPage", u"<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Status</span></p></body></html>", None))
         self.tool_type_2_label.setText(QCoreApplication.translate("DashboardPage", u"TextLabel", None))
         self.tools_service_label.setText(QCoreApplication.translate("DashboardPage", u"Tools", None))
@@ -249,8 +249,8 @@ class Ui_DashboardPage(object):
         self.tool_3_start_pushButton.setText(QCoreApplication.translate("DashboardPage", u"Start", None))
         self.tool_2_start_pushButton.setText(QCoreApplication.translate("DashboardPage", u"Start", None))
         self.tool_1_start_pushButton.setText(QCoreApplication.translate("DashboardPage", u"Start", None))
-        self.database_type_label.setText(QCoreApplication.translate("DashboardPage", u"TextLabel", None))
         self.language_version_label.setText(QCoreApplication.translate("DashboardPage", u"TextLabel", None))
+        self.database_type_label.setText(QCoreApplication.translate("DashboardPage", u"TextLabel", None))
         self.database_version_label.setText(QCoreApplication.translate("DashboardPage", u"TextLabel", None))
     # retranslateUi
 

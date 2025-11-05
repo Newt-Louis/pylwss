@@ -35,7 +35,7 @@ class DashboardServiceController:
 
     def update_webserver_info(self, data: dict):
         webserver_info = {
-            "service": "webserver",
+            "service": data["service"],
             "type": data["server_name"],
             "version": data["selected_version"],
             "is_running": data["is_running"],
