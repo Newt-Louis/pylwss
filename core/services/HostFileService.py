@@ -1,9 +1,15 @@
-import os, ctypes
-import sqlite3
-from core.config import config  # Giả định
+import os, ctypes, sqlite3
+from core.utils import Helper
+from core.config import config
 
 DB_PATH = config.DB_PATH
-HOSTS_PATH = r"C:\Windows\System32\drivers\etc\hosts"
+OS_TYPE = Helper.get_os_type()
+if OS_TYPE == "windows":
+    HOSTS_PATH = r"C:\Windows\System32\drivers\etc\hosts"
+elif OS_TYPE == "darwin" or OS_TYPE == "linux":
+    HOSTS_PATH = "/etc/hosts"
+else:
+    HOSTS_PATH = None
 MARKER = "# MANAGED_BY_PYLWSSM"
 def is_admin():
     """Kiểm tra xem script có đang chạy với quyền Admin trên Windows không."""
@@ -13,7 +19,7 @@ def is_admin():
         return False # Không phải Windows
 
 def sync_hosts_file():
-    if not os.access(HOSTS_PATH, os.W_OK):
+    if HOSTS_PATH is None or not os.access(HOSTS_PATH, os.W_OK):
         print(f"LỖI: Không có quyền ghi vào file hosts. Cần chạy bằng quyền Admin.")
         raise PermissionError("Không có quyền ghi vào file hosts.")
 

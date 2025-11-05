@@ -16,11 +16,6 @@ def sync_language_projects(language:str,root_directory_path:str):
 
 
 def sync_update_tld_workflow(new_tld: str):
-    # 1. Kiểm tra quyền Admin (cho file hosts)
-    if not HostFileService.is_admin():
-        print("LỖI: Cần quyền Admin!")
-        return False
-
     try:
         success_db = WebserverRepository.update_tld_in_database(new_tld)
         if not success_db:

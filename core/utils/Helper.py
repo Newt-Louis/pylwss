@@ -1,4 +1,4 @@
-import re, ctypes, sys
+import re, ctypes, sys, os, platform, subprocess
 
 def to_snake_case(name: str) -> str:
     s1 = re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', name)
@@ -63,14 +63,61 @@ def singularize(word: str) -> str:
     return lower
 
 def trigger_hosts_file_sync():
-    try:
-        ctypes.windll.shell32.ShellExecuteW(
-            None,
-            "runas",
-            sys.executable, # main.exe
-            f'"{sys.argv[0]}" --sync-hosts', # Tham số
-            None,
-            1
-        )
-    except Exception as e:
-        print(f"Lỗi khi gọi UAC: {e}")
+    os_type = get_os_type()
+    main_script_path = os.path.abspath(sys.argv[0])
+    executable = sys.executable
+    command_to_run_as_admin = f'"{executable}" "{main_script_path}" --sync-hosts'
+    print(f"Hệ điều hành: {os_type}. Yêu cầu quyền admin...")
+    if os_type == "windows":
+        try:
+            ctypes.windll.shell32.ShellExecuteW(
+                None,
+                "runas",
+                executable, # main.exe
+                f'"{main_script_path}" --sync-hosts', # Tham số
+                None,
+                1
+            )
+        except Exception as e:
+            print(f"Lỗi khi gọi UAC: {e}")
+    elif os_type == "darwin":
+        escaped_command = command_to_run_as_admin.replace('"', '\\"')
+        osascript_command = f"""
+            osascript -e 'do shell script "{escaped_command}" with administrator privileges'
+            """
+        print("Đang thực thi lệnh osascript (macOS)...")
+        try:
+            subprocess.run(
+                osascript_command,
+                shell=True,
+                check=True  # Sẽ báo lỗi nếu người dùng hủy
+            )
+        except subprocess.CalledProcessError:
+            print("Lỗi: Người dùng có thể đã Hủy hoặc nhập sai mật khẩu.")
+        except Exception as e:
+            print(f"Lỗi khi gọi osascript (macOS): {e}")
+
+    elif os_type == "linux":
+        print("Đang thử với pkexec (Linux)...")
+        try:
+            subprocess.run(
+                ['pkexec'] + command_to_run_as_admin.split(),
+                check=True
+            )
+        except FileNotFoundError:
+            print("Lỗi: `pkexec` không tìm thấy. Linux GUI admin chưa được hỗ trợ.")
+        except Exception as e:
+            print(f"Lỗi khi gọi pkexec (Linux): {e}")
+
+    else:
+        print(f"Hệ điều hành không xác định ({platform.system()}). Tác vụ Admin bị hủy.")
+
+def get_os_type():
+    system = platform.system()
+    if system == "Windows":
+        return "windows"
+    if system == "Darwin": # Tên hệ thống của macOS là Darwin
+        return "darwin"
+    if system == "Linux":
+        return "linux"
+    return "unknown"
