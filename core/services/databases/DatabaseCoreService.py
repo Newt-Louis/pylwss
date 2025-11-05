@@ -1,9 +1,12 @@
 import os
+from pathlib import Path
 from core.database.model import DatabaseSetting
+from core.config import config
+from core.repository import DatabaseRepository
 
 class DatabaseCoreService:
     def __init__(self):
-        pass
+        self._DB_SERVICES_PATH = config.DB_SERVICES
     def save_settings(self,settings: DatabaseSetting):
         print("Chuẩn bị lưu cấu hình database")
 
@@ -16,7 +19,7 @@ class DatabaseCoreService:
     def mysql_template(self, settings):
         settings = {
             "port":3306,
-            "data_directory":"D:\WorkSpace\Python\LocalWebServerStacks\core\services\databases\database_management_systems\mysql-8.4.6-winx64\data",
+            "data_directory": self._DB_SERVICES_PATH / "mysql-8.4.6-winx64" / "data",
             "sql_mode":"NO_ENGINE_SUBTITUTION",
             "auth_plugin":"mysql_native_password",
         }
@@ -29,7 +32,7 @@ class DatabaseCoreService:
                             default_authentication_plugin = {settings['auth_plugin']}
                             sql_mode = "{settings['sql_mode']}"
                         """
-        config_path = "D:\WorkSpace\Python\LocalWebServerStacks\core\services\databases\database_management_systems\mysql-8.4.6-winx64\mysql.ini"
+        config_path = self._DB_SERVICES_PATH / "mysql-8.4.6-winx64" /  "mysql.ini"
         try:
             with open(config_path, "w", encoding="utf-8") as f:
                 f.write(ini_content)
