@@ -51,7 +51,7 @@ def update_webserver_settings(setting: WebserverSetting):
                                setting.is_enabled,
                                setting.server_name
                            ))
-            conn.commit()
+
             print(f"Đã cập nhật thành công cho {setting.server_name}")
             return True
     except sqlite3.Error as e:
@@ -133,7 +133,6 @@ def disable_all_webservers() -> bool:
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("UPDATE webserver_settings SET is_enabled = 0")
-            conn.commit()
             return True
     except sqlite3.Error as e:
         return False
@@ -143,7 +142,6 @@ def update_ssl_port(ssl_port:int) -> bool:
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("UPDATE webserver_settings SET ssl_port = ? WHERE is_enabled = 1",(ssl_port,))
-            conn.commit()
             return True
     except sqlite3.Error as e:
         return False

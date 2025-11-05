@@ -31,22 +31,23 @@ def run_main_ui_application():
 
     sys.exit(app.exec())
 
+def on_app_exit(watcher,event_bus):
+    watcher.stop_watching()
+    event_bus.app_exit.emit()
+
 if __name__ == "__main__":
     if '--sync-hosts' in sys.argv:
         try:
             from core.services.HostFileService import sync_hosts_file
 
             sync_hosts_file()
-            print("Đồng bộ hosts thành công.")
 
         except ImportError:
             print("LỖI: Không tìm thấy HostFileService.")
         except PermissionError as e:
-            print(f"LỖI: Dù đã gọi UAC nhưng vẫn không có quyền. {e}")
             with open("admin_task.log", "w") as f:
                 f.write(str(e))
         except Exception as e:
-            print(f"LỖI: Tác vụ Admin thất bại: {e}")
             with open("admin_task.log", "w") as f:
                 f.write(str(e))
         finally:
