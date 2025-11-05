@@ -13,7 +13,8 @@ def up(cursor: sqlite3.Cursor):
                        root_path TEXT,
                        base_data_path TEXT,
                        ssl_cert_path TEXT,
-                       require_secure_transport INTEGER DEFAULT 0
+                       require_secure_transport INTEGER DEFAULT 0,
+                       is_chosen INTEGER DEFAULT 0
                    );
                    """)
 # Hàm down để hoàn tác
