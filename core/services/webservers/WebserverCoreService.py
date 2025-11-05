@@ -241,3 +241,5 @@ class WebserverCoreService:
             return os.path.dirname(os.path.dirname(executable_path))
         else:
             raise ValueError(f"Unsupported server type: {server_type}")
+
+WebserverCoreService = WebserverCoreService()
