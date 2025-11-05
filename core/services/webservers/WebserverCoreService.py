@@ -5,20 +5,21 @@ from core.manager.EventBus import EventBus
 from core.manager.Logger import logger
 from core.services import ConfigGeneratorService, SynchronizationService
 from core.config import config
+from core.manager.DashboardSession import DashboardSession
 
 CREATE_NO_WINDOW = 0x08000000
 
 class WebserverCoreService:
     webserver_repository = WebserverRepository
-
+    dashboard_session = DashboardSession()
     def __init__(self):
         self.nginx_process: subprocess.Popen | None = None
         self.apache_process: subprocess.Popen | None = None
-        pass
+
+        EventBus.app_exit.connect(self.listener_app_exit)
 
     # noinspection PyUnresolvedReferences
     def load_settings(self) -> list[WebserverSetting] | None:
-        print(f"SERVICE: Đang tải cấu hình...")
         try:
             settings_data = self.__class__.webserver_repository.get_all_webserver_settings()
             return None if settings_data is None else settings_data
@@ -149,6 +150,8 @@ class WebserverCoreService:
         EventBus.service_status_changed.emit({"apache": "running"})
 
     def stop_apache_service(self, settings: WebserverSetting):
+        if self.apache_process is None:
+            return
         print("APACHE SERVICE: Đang dừng...")
         exec_path = self._get_executable_path(settings, 'apache')
         apache_dir = self._get_base_path(exec_path, 'apache')
@@ -197,6 +200,16 @@ class WebserverCoreService:
             print(f"Lỗi khi kiểm tra config apache: {e}")
             EventBus.log_received.emit(f"Lỗi khi chạy 'httpd.exe -t': {e}")
             return False
+
+    def listener_app_exit(self):
+        services_session = self.dashboard_session.get("services_status")
+        if "webserver" in services_session:
+            if services_session["webserver"] == 1:
+                current_webserver = self.webserver_repository.get_current_webserver()
+                if current_webserver.server_name == "nginx":
+                    self.stop_nginx_service(current_webserver)
+                if current_webserver.server_name == "apache":
+                    self.stop_apache_service(current_webserver)
 
     # noinspection PyMethodMayBeStatic
     def _get_executable_path(self, settings: WebserverSetting, server_type: str) -> str:

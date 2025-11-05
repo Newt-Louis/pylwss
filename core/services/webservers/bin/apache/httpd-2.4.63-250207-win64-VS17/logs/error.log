@@ -57,3 +57,43 @@ Apache server interrupted...
 [Wed Nov 05 19:09:10.972416 2025] [mpm_winnt:warn] [pid 27644:tid 1160] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
 [Wed Nov 05 19:09:10.972416 2025] [mpm_winnt:warn] [pid 27644:tid 1156] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
 [Wed Nov 05 19:09:12.992340 2025] [mpm_winnt:notice] [pid 27644:tid 448] AH00364: Child: All worker threads have exited.
+[Wed Nov 05 22:24:32.799285 2025] [core:warn] [pid 27716:tid 452] AH00098: pid file D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Wed Nov 05 22:24:32.800285 2025] [ssl:warn] [pid 27716:tid 452] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 22:24:32.800285 2025] [mpm_winnt:notice] [pid 27716:tid 452] AH00455: Apache/2.4.63 (Win64) OpenSSL/3.3.2 configured -- resuming normal operations
+[Wed Nov 05 22:24:32.800285 2025] [mpm_winnt:notice] [pid 27716:tid 452] AH00456: Apache Lounge VS17 Server built: Feb  3 2025 10:10:51
+[Wed Nov 05 22:24:32.800285 2025] [core:notice] [pid 27716:tid 452] AH00094: Command line: 'D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/bin/httpd.exe -d D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17'
+[Wed Nov 05 22:24:32.805792 2025] [mpm_winnt:notice] [pid 27716:tid 452] AH00418: Parent: Created child process 35208
+[Wed Nov 05 22:24:33.018862 2025] [ssl:warn] [pid 35208:tid 464] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 22:24:33.020861 2025] [mpm_winnt:notice] [pid 35208:tid 464] AH00354: Child: Starting 64 worker threads.
+[Wed Nov 05 22:25:31.077730 2025] [core:warn] [pid 34020:tid 456] AH00098: pid file D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Wed Nov 05 22:25:31.078729 2025] [ssl:warn] [pid 34020:tid 456] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 22:25:31.079948 2025] [mpm_winnt:notice] [pid 34020:tid 456] AH00455: Apache/2.4.63 (Win64) OpenSSL/3.3.2 configured -- resuming normal operations
+[Wed Nov 05 22:25:31.079948 2025] [mpm_winnt:notice] [pid 34020:tid 456] AH00456: Apache Lounge VS17 Server built: Feb  3 2025 10:10:51
+[Wed Nov 05 22:25:31.079948 2025] [core:notice] [pid 34020:tid 456] AH00094: Command line: 'D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/bin/httpd.exe -d D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17'
+[Wed Nov 05 22:25:31.082942 2025] [mpm_winnt:notice] [pid 34020:tid 456] AH00418: Parent: Created child process 18588
+[Wed Nov 05 22:25:31.295773 2025] [ssl:warn] [pid 18588:tid 464] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 22:25:31.296775 2025] [mpm_winnt:notice] [pid 18588:tid 464] AH00354: Child: Starting 64 worker threads.
+[Wed Nov 05 22:28:10.817504 2025] [core:warn] [pid 28136:tid 472] AH00098: pid file D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Wed Nov 05 22:28:10.818502 2025] [ssl:warn] [pid 28136:tid 472] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 22:28:10.819503 2025] [mpm_winnt:notice] [pid 28136:tid 472] AH00455: Apache/2.4.63 (Win64) OpenSSL/3.3.2 configured -- resuming normal operations
+[Wed Nov 05 22:28:10.819503 2025] [mpm_winnt:notice] [pid 28136:tid 472] AH00456: Apache Lounge VS17 Server built: Feb  3 2025 10:10:51
+[Wed Nov 05 22:28:10.819503 2025] [core:notice] [pid 28136:tid 472] AH00094: Command line: 'D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/bin/httpd.exe -d D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17'
+[Wed Nov 05 22:28:10.823503 2025] [mpm_winnt:notice] [pid 28136:tid 472] AH00418: Parent: Created child process 17132
+[Wed Nov 05 22:28:11.036769 2025] [ssl:warn] [pid 17132:tid 468] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 22:28:11.038773 2025] [mpm_winnt:notice] [pid 17132:tid 468] AH00354: Child: Starting 64 worker threads.
+[Wed Nov 05 22:28:13.814059 2025] [mpm_winnt:crit] [pid 17132:tid 468] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Wed Nov 05 22:28:13.814059 2025] [mpm_winnt:warn] [pid 17132:tid 1156] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Wed Nov 05 22:28:13.814059 2025] [mpm_winnt:warn] [pid 17132:tid 604] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Wed Nov 05 22:28:15.836989 2025] [mpm_winnt:notice] [pid 17132:tid 468] AH00364: Child: All worker threads have exited.
+[Wed Nov 05 22:35:37.611151 2025] [core:warn] [pid 29628:tid 448] AH00098: pid file D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Wed Nov 05 22:35:37.613151 2025] [ssl:warn] [pid 29628:tid 448] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 22:35:37.613151 2025] [mpm_winnt:notice] [pid 29628:tid 448] AH00455: Apache/2.4.63 (Win64) OpenSSL/3.3.2 configured -- resuming normal operations
+[Wed Nov 05 22:35:37.613151 2025] [mpm_winnt:notice] [pid 29628:tid 448] AH00456: Apache Lounge VS17 Server built: Feb  3 2025 10:10:51
+[Wed Nov 05 22:35:37.613151 2025] [core:notice] [pid 29628:tid 448] AH00094: Command line: 'D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/bin/httpd.exe -d D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17'
+[Wed Nov 05 22:35:37.617151 2025] [mpm_winnt:notice] [pid 29628:tid 448] AH00418: Parent: Created child process 2652
+[Wed Nov 05 22:35:37.826231 2025] [ssl:warn] [pid 2652:tid 440] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Wed Nov 05 22:35:37.828232 2025] [mpm_winnt:notice] [pid 2652:tid 440] AH00354: Child: Starting 64 worker threads.
+[Wed Nov 05 22:35:50.206528 2025] [mpm_winnt:crit] [pid 2652:tid 440] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Wed Nov 05 22:35:50.206528 2025] [mpm_winnt:warn] [pid 2652:tid 1156] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Wed Nov 05 22:35:50.206528 2025] [mpm_winnt:warn] [pid 2652:tid 1160] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Wed Nov 05 22:35:52.219731 2025] [mpm_winnt:notice] [pid 2652:tid 440] AH00364: Child: All worker threads have exited.
