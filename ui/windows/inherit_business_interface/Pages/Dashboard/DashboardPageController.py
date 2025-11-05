@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QMessageBox
 from core.manager.Logger import logger
 from .DashboardServiceController import DashboardServiceController
 from ui.windows.origin_interface import Ui_DashboardPage
@@ -18,7 +18,21 @@ class DashboardPageController(QWidget):
         # TODO: Lấy dữ liệu đã lưu từ database
         # TODO: Thêm hàm gán dữ liệu vào các trường thông tin
         # TODO: Thêm hàm chuẩn bị cho khởi động được các dịch vụ
-        # ...
+        dashboard_infos = self.dashboard_service.handle_on_load_init_dashboard_info()
+        if dashboard_infos is not None:
+            for dashboard_info in dashboard_infos:
+                match dashboard_info.service:
+                    case "language":
+                        self.ui.language_type_label.setText(dashboard_info.type)
+                        self.ui.language_service_label.setText(dashboard_info.version)
+                    case "database":
+                        self.ui.database_type_label.setText(dashboard_info.type)
+                        self.ui.database_service_label.setText(dashboard_info.type)
+                    case "webserver":
+                        self.ui.webserver_type_label.setText(dashboard_info.type)
+                        self.ui.webserver_version_label.setText(dashboard_info.version)
+                    case "tool":
+                        print("Tools tạm thời chưa phát triển thêm")
 
         # Nghe sự kiện phát ra từ các trang dịch vụ khác
         EventBus.webserver_saved.connect(self.listener_webserver_saved)
@@ -68,6 +82,14 @@ class DashboardPageController(QWidget):
                     self.dashboard_session.add_to_current_key("services_status","webserver",0)
                     self.dashboard_service.handle_on_webserver_service(0)
 
+            data_to_save = {
+                "service": "webserver",
+                "type": self.ui.webserver_type_label.text(),
+                "version": self.ui.webserver_version_label.text(),
+                "is_running": webserver_status["webserver"],
+            }
+            self.dashboard_service.update_webserver_info(data_to_save)
+
     def start_tools(self):
         print("Tool redis hoặc memcached hoặc terminal độc lập của ứng dụng đang chạy")
 
@@ -87,23 +109,33 @@ class DashboardPageController(QWidget):
                 self.ui.language_start_pushButton.setText("Start")
                 self.dashboard_session.add_to_current_key("services_status", "language", 0)
 
+        data_to_save = {
+            "service": "webserver",
+            "type": self.ui.language_type_label.text(),
+            "version": self.ui.language_version_label.text(),
+            "is_running": language_status["language"],
+        }
+        self.dashboard_service.update_language_info(data_to_save)
+
     def start_network(self):
         print("Chạy độc lập loại network nào đó ví dụ ngrok hoặc telnet")
 
     def listener_webserver_saved(self,data):
-        print("đã nhận được dữ liệu sau khi lưu từ webserver",data)
+        webserver_status = self.dashboard_session.get("services_status")
         self.ui.webserver_type_label.setText(data["server_name"])
         self.ui.webserver_version_label.setText(data["selected_version"])
-
-        print("cập nhật thông tin webserver thành công") if self.dashboard_service.update_webserver_info(data) else print("có lỗi khi cập nhật với sqlite")
+        data["is_running"] = webserver_status["webserver"]
+        self.dashboard_service.update_webserver_info(data)
 
     def listener_database_saved(self,data):
         print("nhận emit từ database rồi lưu thông tin")
 
     def listener_language_saved(self,data):
-        print("nhận emit từ language rồi lưu thông tin")
+        language_status = self.dashboard_session.get("services_status")
         self.ui.language_type_label.setText(data["language"])
         self.ui.language_version_label.setText(data["selected_version"])
+        data["is_running"] = language_status["language"]
+        self.dashboard_service.update_language_info(data)
 
     def listener_network_saved(self,data):
         print("nhận emit từ network rồi lưu thông tin")

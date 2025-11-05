@@ -1,77 +1,88 @@
 import sqlite3
 from core.config import config
-from core.database.model.DashboardSetting import DashboardSetting
+from core.database.model import DashboardSetting
 
 DB_PATH = config.DB_PATH
 
-def get_all_dashboard_settings():
+def get_all_dashboard_settings()->list[DashboardSetting] | None:
     try:
-        connection = sqlite3.connect(DB_PATH)
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM dashboard_settings")
-        rows = cursor.fetchall()
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM dashboard_settings")
+            rows = cursor.fetchall()
 
-        if len(rows) != 0:
-            return [DashboardSetting(**dict(row)) for row in rows]
-        return None
+            if len(rows) != 0:
+                return [DashboardSetting(**dict(row)) for row in rows]
+
+            return None
     except sqlite3.Error as e:
         print(e)
         raise
 
-def save_webserver(webserver_info):
+def save_webserver(dashboard_setting: DashboardSetting):
     try:
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("""
                            UPDATE dashboard_settings
                            SET type    = ?,
-                               version = ?
-                           WHERE service = 'webserver'
+                               version = ?,
+                               is_running= ?
+                           WHERE service = ?
                             """,(
-                               webserver_info.type,
-                               webserver_info.version,
+                                dashboard_setting.type,
+                                dashboard_setting.version,
+                                dashboard_setting.is_running,
+                                dashboard_setting.service
                            ))
-            conn.commit()
+
             print("Đã lưu thông tin webserver vào database")
             return True
     except Exception as e:
         print(e)
         return False
 
-def save_database(database_info):
+def save_database(dashboard_setting: DashboardSetting):
     try:
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("""
                            UPDATE dashboard_settings
                            SET type    = ?,
-                               version = ?
-                           WHERE service = 'database'
+                               version = ?,
+                               is_running= ?
+                           WHERE service = ?
                             """,(
-                               database_info.type,
-                               database_info.version,
+                                dashboard_setting.type,
+                                dashboard_setting.version,
+                                dashboard_setting.is_running,
+                                dashboard_setting.service
                            ))
-            conn.commit()
+
             print("Đã lưu thông tin database vào database")
             return True
     except Exception as e:
         print(e)
         return False
 
-def save_language(language_info):
+def save_language(dashboard_setting: DashboardSetting):
     try:
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("""
                            UPDATE dashboard_settings
                            SET type    = ?,
-                               version = ?
-                           WHERE service = 'language'
+                               version = ?,
+                               is_running= ?
+                           WHERE service = ?
                             """,(
-                               language_info.type,
-                               language_info.version,
+                                dashboard_setting.type,
+                                dashboard_setting.version,
+                                dashboard_setting.is_running,
+                                dashboard_setting.service
                            ))
-            conn.commit()
+
             print("Đã lưu thông tin language vào database")
             return True
     except Exception as e:
@@ -91,7 +102,7 @@ def save_tool(tool_info):
                                tool_info.type,
                                tool_info.version,
                            ))
-            conn.commit()
+
             print("Đã lưu thông tin tool vào database")
             return True
     except Exception as e:
@@ -111,7 +122,7 @@ def save_network(network_info):
                                network_info.type,
                                network_info.version,
                            ))
-            conn.commit()
+
             print("Đã lưu thông tin network vào database")
             return True
     except Exception as e:
@@ -128,9 +139,17 @@ def save_serivce_statuses(services_info: dict):
                            WHERE service = ?
                            """,
                            [(is_running, service_name) for service_name, is_running in services_info])
-            conn.commit()
+
             print("Đã lưu trạng thái mới cho các dịch vụ")
             return True
     except Exception as e:
         print(e)
         return False
+
+def reset_dashboard_statuses():
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(""" UPDATE dashboard_settings SET is_running = 0 """)
+    except Exception as e:
+        print(e)

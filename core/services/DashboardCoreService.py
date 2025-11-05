@@ -1,3 +1,4 @@
+from core.database.model import DashboardSetting
 from core.repository import DashboardRepository,WebserverRepository
 from core.services.webservers import WebserverCoreService
 from core.manager.EventBus import EventBus
@@ -7,6 +8,14 @@ class DashboardCoreService:
     webserver_repository = WebserverRepository
     def __init__(self):
         self.webserver_core_service = WebserverCoreService()
+        EventBus.app_exit(self.reset_dashboard_statuses)
+
+    def get_init_dashboard_info(self)->list[DashboardSetting] | None:
+        try:
+            dashboard_info = self.dashboard_repository.get_all_dashboard_settings()
+            return dashboard_info if dashboard_info else None
+        except Exception as e:
+            raise e
 
     def webserver_service_handler(self,status):
         try:
@@ -50,3 +59,24 @@ class DashboardCoreService:
             # Bắt các lỗi chung (ví dụ: FileNotFoundError từ CoreService)
             print(f"DASHBOARD SERVICE: Lỗi khi thực thi lệnh '{status}': {e}")
             EventBus.log_received.emit(f"Lỗi nghiêm trọng: {e}")
+
+    def update_webserver_dashboard(self, data: dict):
+        dashboard_setting = DashboardSetting(**dict(data))
+        self.dashboard_repository.save_webserver(dashboard_setting)
+
+    def update_language_dashboard(self, data: dict):
+        dashboard_setting = DashboardSetting(**dict(data))
+        self.dashboard_repository.save_language(dashboard_setting)
+
+    def update_database_dashboard(self, data: dict):
+        dashboard_setting = DashboardSetting(**dict(data))
+        self.dashboard_repository.save_database(dashboard_setting)
+
+    def update_tools_dashboard(self, data: dict):
+        self.dashboard_repository.save_tool(data)
+
+    def update_network_dashboard(self, data: dict):
+        self.dashboard_repository.save_network(data)
+
+    def reset_dashboard_statuses(self):
+        self.dashboard_repository.reset_dashboard_statuses()
