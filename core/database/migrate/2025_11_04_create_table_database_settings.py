@@ -7,13 +7,11 @@ def up(cursor: sqlite3.Cursor):
                    CREATE TABLE IF NOT EXISTS database_settings
                    (
                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                       type TEXT,
+                       type TEXT UNIQUE,
                        selected_version TEXT,
-                       port INTEGER,
+                       port INTEGER UNIQUE,
                        root_path TEXT,
                        base_data_path TEXT,
-                       ssl_cert_path TEXT,
-                       require_secure_transport INTEGER DEFAULT 0,
                        is_chosen INTEGER DEFAULT 0
                    );
                    """)

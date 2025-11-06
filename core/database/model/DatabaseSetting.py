@@ -11,6 +11,7 @@ class DatabaseSetting(BaseModel):
     base_data_path: str
     ssl_cert_path: Optional[str] = None
     require_secure_transport: bool = Field(default=False)
+    is_chosen: bool = Field(default=False)
 
     class Config:
         extra = "ignore"
