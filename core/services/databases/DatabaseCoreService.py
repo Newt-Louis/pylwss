@@ -4,14 +4,19 @@ from core.database.model import DatabaseSetting
 from core.config import config
 from core.repository import DatabaseRepository
 from .MySQLStrategy import MySQLStrategy
-from .DatabaseServiceStrategy import DatabaseServiceStrategy
+from .PostgreSQLStrategy import PostgreSQLStrategy
+from .IDatabaseServiceStrategy import IDatabaseServiceStrategy
 
 class DatabaseCoreService:
     def __init__(self):
         self._DB_SERVICES_PATH = config.DB_SERVICES
-        self._active_services: dict[str, DatabaseServiceStrategy] = {}
+        self._active_services: dict[str, IDatabaseServiceStrategy] = {}
 
     def save_settings(self,settings: DatabaseSetting):
+        # Mục đích ban đầu mong muốn lưu cấu hình vào sqlite riêng rồi thực thi initialize
+        # cho database đang được chọn riêng, nhưng giờ theo nghiệp vụ nên làm là cho chạy luôn
+        # initialize sau 1 vài bước kiểm tra. Vẫn giữ hàm này sẵn nếu sau này cần mục đích
+        # cho việc chỉ cần lưu trữ.
         print("Chuẩn bị lưu cấu hình database")
 
     def save_settings_and_initialize(self, settings: DatabaseSetting):
@@ -74,7 +79,6 @@ class DatabaseCoreService:
             print(f"Lỗi: Không thể khởi động {service_name}.")
 
     def stop_current_service(self):
-        """Dừng CSDL hiện tại đang chạy."""
         settings = DatabaseRepository.get_current_database_setting()
         if not settings:
             print("Không có CSDL nào được chọn.")
@@ -87,16 +91,12 @@ class DatabaseCoreService:
             print(f"{service_name} không có trong danh sách đang chạy.")
             return
 
-        print(f"Đang dừng {service_name}...")
-        if strategy.stop():  # Hàm stop() đến từ lớp base
+        if strategy.stop():
             del self._active_services[service_name]
-            print(f"{service_name} đã dừng.")
         else:
             print(f"Lỗi: Không thể dừng {service_name}.")
 
     def stop_all_services(self):
-        """Dừng tất cả các dịch vụ khi tắt ứng dụng."""
-        print("Đang dừng tất cả các dịch vụ...")
         # Cần copy list() vì dict sẽ thay đổi kích thước khi lặp
         for service_name in list(self._active_services.keys()):
             strategy = self._active_services.get(service_name)
@@ -104,10 +104,9 @@ class DatabaseCoreService:
                 strategy.stop()
 
         self._active_services.clear()
-        print("Tất cả dịch vụ đã dừng.")
 
     # noinspection PyMethodMayBeStatic
-    def _get_strategy_factory(self, settings: DatabaseSetting) -> DatabaseServiceStrategy | None:
+    def _get_strategy_factory(self, settings: DatabaseSetting) -> IDatabaseServiceStrategy | None:
         """
         Sử dụng loại strategy database tương ứng
         """
@@ -116,8 +115,8 @@ class DatabaseCoreService:
         if db_type == "mysql":
             return MySQLStrategy(settings)
 
-        # if db_type == "postgresql":
-        #    return PostgreSQLStrategy(settings)
+        if db_type == "postgresql":
+           return PostgreSQLStrategy(settings)
 
         print(f"Lỗi: Loại CSDL '{db_type}' chưa được hỗ trợ.")
         return None
