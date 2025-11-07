@@ -244,4 +244,4 @@ class WebserverCoreService:
         else:
             raise ValueError(f"Unsupported server type: {server_type}")
 
-WebserverCoreService = WebserverCoreService()
+webserver_core_service = WebserverCoreService()
