@@ -4,7 +4,6 @@ from pydantic import BaseModel, Field
 class DatabaseSetting(BaseModel):
     id: Optional[int] = None
     type: str
-    selected_version: str
     port: int = Field(default=3306)
     root_path: str
     executable_path: str

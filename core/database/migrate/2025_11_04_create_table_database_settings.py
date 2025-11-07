@@ -8,7 +8,6 @@ def up(cursor: sqlite3.Cursor):
                    (
                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                        type TEXT UNIQUE,
-                       selected_version TEXT,
                        port INTEGER UNIQUE,
                        root_path TEXT,
                        base_data_path TEXT,

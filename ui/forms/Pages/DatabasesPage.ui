@@ -43,192 +43,8 @@
     </layout>
    </item>
    <item>
-    <layout class="QGridLayout" name="database_content_layout" columnstretch="0,1,0,2,2,0">
-     <item row="0" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
-      <widget class="QLabel" name="label">
-       <property name="styleSheet">
-        <string notr="true">font: 14pt &quot;Segoe UI&quot;;
-align-text: center</string>
-       </property>
-       <property name="text">
-        <string>Type</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2" alignment="Qt::AlignmentFlag::AlignHCenter">
-      <widget class="QLabel" name="label_3">
-       <property name="styleSheet">
-        <string notr="true">font: 14pt &quot;Segoe UI&quot;;</string>
-       </property>
-       <property name="text">
-        <string>Port</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="3">
-      <layout class="QHBoxLayout" name="horizontalLayout_5">
-       <item>
-        <widget class="QLineEdit" name="postgresql_service_dir_lineEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="postgresql_service_dir_browseButton">
-         <property name="text">
-          <string>Browse</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="1" column="1">
-      <widget class="QComboBox" name="mysql_version_comboBox"/>
-     </item>
-     <item row="4" column="0">
-      <widget class="QRadioButton" name="mongodb_radio">
-       <property name="text">
-        <string>MongoDB</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="4">
-      <layout class="QHBoxLayout" name="horizontalLayout_8">
-       <item>
-        <widget class="QLineEdit" name="mongodb_data_dir_lineEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="mongodb_data_dir_browseButton">
-         <property name="text">
-          <string>Browse</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="0" column="3" alignment="Qt::AlignmentFlag::AlignHCenter">
-      <widget class="QLabel" name="label_4">
-       <property name="styleSheet">
-        <string notr="true">font: 14pt &quot;Segoe UI&quot;;</string>
-       </property>
-       <property name="text">
-        <string>Service Directory</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QRadioButton" name="mysql_radio">
-       <property name="text">
-        <string>MySQL</string>
-       </property>
-      </widget>
-     </item>
+    <layout class="QGridLayout" name="database_content_layout" columnstretch="0,0,1,1,0">
      <item row="1" column="2">
-      <widget class="QLineEdit" name="mysql_port_lineEdit"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QRadioButton" name="postgresql_radio">
-       <property name="text">
-        <string>PostgreSQL</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="mongodb_comboBox"/>
-     </item>
-     <item row="0" column="4" alignment="Qt::AlignmentFlag::AlignHCenter">
-      <widget class="QLabel" name="label_5">
-       <property name="styleSheet">
-        <string notr="true">font: 14pt &quot;Segoe UI&quot;;</string>
-       </property>
-       <property name="text">
-        <string>Data Directory</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="2">
-      <widget class="QLineEdit" name="mongodb_port_lineEdit"/>
-     </item>
-     <item row="0" column="1" alignment="Qt::AlignmentFlag::AlignHCenter">
-      <widget class="QLabel" name="label_2">
-       <property name="styleSheet">
-        <string notr="true">font: 14pt &quot;Segoe UI&quot;;</string>
-       </property>
-       <property name="text">
-        <string>Version</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QLineEdit" name="mariadb_port_lineEdit"/>
-     </item>
-     <item row="2" column="1">
-      <widget class="QComboBox" name="mariadb_version_comboBox"/>
-     </item>
-     <item row="2" column="3">
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QLineEdit" name="mariadb_service_dir_lineEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="mariadb_service_dir_browseButton">
-         <property name="text">
-          <string>Browse</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="1" column="4">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLineEdit" name="mysql_data_dir_lineEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="mysql_data_dir_browseButton">
-         <property name="text">
-          <string>Browse</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="4" column="3">
-      <layout class="QHBoxLayout" name="horizontalLayout_7">
-       <item>
-        <widget class="QLineEdit" name="mongodb_service_dir_lineEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="mongodb_service_dir_browseButton">
-         <property name="text">
-          <string>Browse</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="2" column="4">
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QLineEdit" name="mariadb_data_dir_lineEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="mariadb_data_dir_browseButton">
-         <property name="text">
-          <string>Browse</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="postgresql_version_comboBox"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QRadioButton" name="mariadb_radio">
-       <property name="text">
-        <string>MariaDB</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="3">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QLineEdit" name="mysql_service_dir_lineEdit"/>
@@ -242,7 +58,186 @@ align-text: center</string>
        </item>
       </layout>
      </item>
+     <item row="4" column="0">
+      <widget class="QRadioButton" name="mongodb_radio">
+       <property name="text">
+        <string>MongoDB</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="4">
+      <widget class="QPushButton" name="mariadb_config_pushButton">
+       <property name="text">
+        <string>Configuration</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLineEdit" name="mysql_data_dir_lineEdit"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mysql_data_dir_browseButton">
+         <property name="text">
+          <string>Browse</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QLineEdit" name="mongodb_service_dir_lineEdit"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mongodb_service_dir_browseButton">
+         <property name="text">
+          <string>Browse</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLineEdit" name="postgresql_service_dir_lineEdit"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="postgresql_service_dir_browseButton">
+         <property name="text">
+          <string>Browse</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="mariadb_port_lineEdit"/>
+     </item>
+     <item row="1" column="4">
+      <widget class="QPushButton" name="mysql_config_pushButton">
+       <property name="text">
+        <string>Configuration</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" alignment="Qt::AlignmentFlag::AlignHCenter">
+      <widget class="QLabel" name="label_3">
+       <property name="styleSheet">
+        <string notr="true">font: 14pt &quot;Segoe UI&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Port</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
+      <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">font: 14pt &quot;Segoe UI&quot;;
+align-text: center</string>
+       </property>
+       <property name="text">
+        <string>Type</string>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="4">
+      <widget class="QPushButton" name="postgresql_config_pushButton">
+       <property name="text">
+        <string>Configuration</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="mysql_port_lineEdit"/>
+     </item>
+     <item row="4" column="4">
+      <widget class="QPushButton" name="mongodb_config_pushButton">
+       <property name="text">
+        <string>Configuration</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QRadioButton" name="postgresql_radio">
+       <property name="text">
+        <string>PostgreSQL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="mongodb_port_lineEdit"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QRadioButton" name="mysql_radio">
+       <property name="text">
+        <string>MySQL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2" alignment="Qt::AlignmentFlag::AlignHCenter">
+      <widget class="QLabel" name="label_4">
+       <property name="styleSheet">
+        <string notr="true">font: 14pt &quot;Segoe UI&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Service Directory</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QRadioButton" name="mariadb_radio">
+       <property name="text">
+        <string>MariaDB</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLineEdit" name="mariadb_service_dir_lineEdit"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mariadb_service_dir_browseButton">
+         <property name="text">
+          <string>Browse</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="3">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLineEdit" name="mariadb_data_dir_lineEdit"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mariadb_data_dir_browseButton">
+         <property name="text">
+          <string>Browse</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="3" alignment="Qt::AlignmentFlag::AlignHCenter">
+      <widget class="QLabel" name="label_5">
+       <property name="styleSheet">
+        <string notr="true">font: 14pt &quot;Segoe UI&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Data Directory</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="postgresql_port_lineEdit"/>
+     </item>
+     <item row="3" column="3">
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
         <widget class="QLineEdit" name="postgresql_data_dir_lineEdit"/>
@@ -256,36 +251,19 @@ align-text: center</string>
        </item>
       </layout>
      </item>
-     <item row="3" column="2">
-      <widget class="QLineEdit" name="postgresql_port_lineEdit"/>
-     </item>
-     <item row="1" column="5">
-      <widget class="QPushButton" name="mysql_config_pushButton">
-       <property name="text">
-        <string>Configuration</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="5">
-      <widget class="QPushButton" name="mariadb_config_pushButton">
-       <property name="text">
-        <string>Configuration</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="5">
-      <widget class="QPushButton" name="postgresql_config_pushButton">
-       <property name="text">
-        <string>Configuration</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="5">
-      <widget class="QPushButton" name="mongodb_config_pushButton">
-       <property name="text">
-        <string>Configuration</string>
-       </property>
-      </widget>
+     <item row="4" column="3">
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <item>
+        <widget class="QLineEdit" name="mongodb_data_dir_lineEdit"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mongodb_data_dir_browseButton">
+         <property name="text">
+          <string>Browse</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

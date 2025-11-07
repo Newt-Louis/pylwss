@@ -40,16 +40,15 @@ def save_database_setting(setting: DatabaseSetting):
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute(""" 
-                INSERT INTO database_settings (type, selected_version, port, root_path, base_data_path, is_chosen)
+                INSERT INTO database_settings (type, port, root_path, base_data_path, is_chosen)
                 VALUES (?, ?, ?, ?, ?, ?)
                 ON CONFLICT(type) DO UPDATE SET
-                    selected_version = excluded.selected_version,
                     port = excluded.port,
                     root_path = excluded.root_path,
                     base_data_path = excluded.base_data_path,
                     is_chosen = excluded.is_chosen;
-             """,(setting.type,setting.selected_version,setting.port,
-                  setting.root_path,setting.base_data_path,setting.is_chosen))
+             """,(setting.type,setting.port,setting.root_path,
+                  setting.base_data_path,setting.is_chosen))
         return True
     except sqlite3.IntegrityError as e:
         print(f"Lỗi trùng port: {e}")
