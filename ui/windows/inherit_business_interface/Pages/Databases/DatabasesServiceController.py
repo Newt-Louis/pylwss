@@ -6,8 +6,11 @@ class DatabasesServiceController:
     def __init__(self):
         self.database_core_service = database_core_service
 
-    def save_changes(self):
-        print("Dashboard Page Controller _on_save_changes")
+    def save_changes(self,setting:dict):
+        try:
+            return self.database_core_service.save_settings_and_initialize(setting)
+        except:
+            raise
 
     def cancel_changes(self):
         print("Dashboard Page Controller _on_cancel_changes")
