@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QWidget, QMessageBox
 from core.manager.Logger import logger
 from .DashboardServiceController import DashboardServiceController
 from ui.windows.origin_interface import Ui_DashboardPage
-from core.manager.EventBus import EventBus
+from core.manager.EventBus import event_bus
 from core.manager.DashboardSession import DashboardSession
 
 
@@ -35,10 +35,10 @@ class DashboardPageController(QWidget):
                         print("Tools tạm thời chưa phát triển thêm")
 
         # Nghe sự kiện phát ra từ các trang dịch vụ khác
-        EventBus.webserver_saved.connect(self.listener_webserver_saved)
-        EventBus.language_saved.connect(self.listener_language_saved)
-        EventBus.log_received.connect(lambda data: self.handle_on_log_received(data))
-        EventBus.service_status_changed.connect(lambda data: self.handle_on_status_changed(data))
+        event_bus.webserver_saved.connect(self.listener_webserver_saved)
+        event_bus.language_saved.connect(self.listener_language_saved)
+        event_bus.log_received.connect(lambda data: self.handle_on_log_received(data))
+        event_bus.service_status_changed.connect(lambda data: self.handle_on_status_changed(data))
 
         # Gán hàm xử lý sự kiện cho nút start all
         self.ui.startall_button.clicked.connect(self.start_all_services)

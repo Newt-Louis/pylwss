@@ -1,5 +1,5 @@
 from core.database.model import LanguageSetting
-from core.manager.EventBus import EventBus
+from core.manager.EventBus import event_bus
 from core.manager import DirectoryWatcher
 from core.services import SynchronizationService
 from core.repository import LanguageRepository, WebserverRepository, ProjectRepository
@@ -44,7 +44,7 @@ class LanguageCoreService:
                 success = self.language_repository.update_language_settings(setting_model)
 
             if success:
-                EventBus.language_saved.emit(setting_model.__dict__)
+                event_bus.language_saved.emit(setting_model.__dict__)
                 schedule_callback_function = lambda: SynchronizationService.sync_language_projects(
                     setting_model.language,
                     setting_model.root_folder

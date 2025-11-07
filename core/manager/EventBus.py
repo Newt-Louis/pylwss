@@ -10,4 +10,4 @@ class EventBus(QObject):
     service_status_changed = Signal(dict)
     app_exit = Signal()
 
-EventBus = EventBus()
+event_bus = EventBus()

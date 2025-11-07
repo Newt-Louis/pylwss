@@ -9,7 +9,7 @@ def run_main_ui_application():
         from core.manager import DirectoryWatcher
         from core.manager.DashboardSession import DashboardSession
         from core.manager.PortManager import PortManager
-        from core.manager.EventBus import EventBus
+        from core.manager.EventBus import event_bus
         from core.config import config
     except ImportError as e:
         print(f"LỖI: Không thể import các module cần thiết: {e}")
@@ -28,7 +28,7 @@ def run_main_ui_application():
 
     window.show()
 
-    app.aboutToQuit.connect(lambda: on_app_exit(DirectoryWatcher,EventBus))
+    app.aboutToQuit.connect(lambda: on_app_exit(DirectoryWatcher,event_bus))
 
     sys.exit(app.exec())
 

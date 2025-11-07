@@ -1,7 +1,7 @@
 import os, subprocess
 from core.repository import WebserverRepository, LanguageRepository
 from core.database.model import WebserverSetting
-from core.manager.EventBus import EventBus
+from core.manager.EventBus import event_bus
 from core.manager.Logger import logger
 from core.services import ConfigGeneratorService, SynchronizationService
 from core.config import config
@@ -15,7 +15,7 @@ class WebserverCoreService:
         self.nginx_process: subprocess.Popen | None = None
         self.apache_process: subprocess.Popen | None = None
 
-        EventBus.app_exit.connect(self.listener_app_exit)
+        event_bus.app_exit.connect(self.listener_app_exit)
 
     # noinspection PyMethodMayBeStatic
     def load_settings(self) -> list[WebserverSetting] | None:
@@ -48,7 +48,7 @@ class WebserverCoreService:
             success = WebserverRepository.update_webserver_settings(setting_model)
 
             if success:
-                EventBus.webserver_saved.emit(setting_model.__dict__)
+                event_bus.webserver_saved.emit(setting_model.__dict__)
                 if setting_model.server_name == 'nginx':
                     ConfigGeneratorService.regenerate_main_nginx_config(setting_model)
                 elif setting_model.server_name == 'apache':
@@ -73,15 +73,15 @@ class WebserverCoreService:
         exec_path = self._get_executable_path(settings, 'nginx')
 
         if self.nginx_process and self.nginx_process.poll() is None:
-            EventBus.log_received.emit("Nginx đã chạy từ trước.")
+            event_bus.log_received.emit("Nginx đã chạy từ trước.")
             return
         if not self._test_nginx_config(exec_path):
-            EventBus.log_received.emit("Khởi động Nginx thất bại: File cấu hình có lỗi.")
+            event_bus.log_received.emit("Khởi động Nginx thất bại: File cấu hình có lỗi.")
             return
         nginx_dir = self._get_base_path(exec_path, 'nginx')
         self.nginx_process = subprocess.Popen([exec_path], cwd=nginx_dir, creationflags=CREATE_NO_WINDOW)
-        EventBus.log_received.emit(f"Nginx đã khởi động (PID: {self.nginx_process.pid})")
-        EventBus.service_status_changed.emit({"nginx": "running"})
+        event_bus.log_received.emit(f"Nginx đã khởi động (PID: {self.nginx_process.pid})")
+        event_bus.service_status_changed.emit({"nginx": "running"})
 
     def stop_nginx_service(self, settings: WebserverSetting):
         print("NGINX SERVICE: Đang dừng...")
@@ -94,20 +94,20 @@ class WebserverCoreService:
             self.nginx_process.wait(timeout=5)
         self.nginx_process = None
         print("Nginx đã dừng")
-        EventBus.log_received.emit("Nginx đã dừng.")
-        EventBus.service_status_changed.emit({"nginx": "stopped"})
+        event_bus.log_received.emit("Nginx đã dừng.")
+        event_bus.service_status_changed.emit({"nginx": "stopped"})
 
     def reload_nginx_service(self, settings: WebserverSetting):
         print("NGINX SERVICE: Đang tải lại...")
         exec_path = self._get_executable_path(settings, 'nginx')
 
         if not self._test_nginx_config(exec_path):
-            EventBus.log_received.emit("Tải lại Nginx thất bại: File cấu hình có lỗi.")
+            event_bus.log_received.emit("Tải lại Nginx thất bại: File cấu hình có lỗi.")
             return
 
         nginx_dir = self._get_base_path(exec_path, 'nginx')
         subprocess.run([exec_path, "-s", "reload"], cwd=nginx_dir, creationflags=CREATE_NO_WINDOW)
-        EventBus.log_received.emit("Nginx đã tải lại cấu hình.")
+        event_bus.log_received.emit("Nginx đã tải lại cấu hình.")
 
     # noinspection PyMethodMayBeStatic
     def _test_nginx_config(self, executable_path: str) -> bool:
@@ -124,11 +124,11 @@ class WebserverCoreService:
                 return True
             else:
                 print(f"NGINX SERVICE LỖI: Cấu hình sai.\n{result.stderr}")
-                EventBus.log_received.emit(f"Nginx Config Error:\n{result.stderr}")
+                event_bus.log_received.emit(f"Nginx Config Error:\n{result.stderr}")
                 return False
         except Exception as e:
             print(f"Lỗi khi kiểm tra config nginx: {e}")
-            EventBus.log_received.emit(f"Lỗi khi chạy 'nginx -t': {e}")
+            event_bus.log_received.emit(f"Lỗi khi chạy 'nginx -t': {e}")
             return False
 
     def start_apache_service(self, settings: WebserverSetting):
@@ -136,19 +136,19 @@ class WebserverCoreService:
         exec_path = self._get_executable_path(settings, 'apache')
 
         if self.apache_process and self.apache_process.poll() is None:
-            EventBus.log_received.emit("Apache đã chạy từ trước.")
+            event_bus.log_received.emit("Apache đã chạy từ trước.")
             return
 
         if not self._test_apache_config(exec_path):
-            EventBus.log_received.emit("Khởi động Apache thất bại: File cấu hình có lỗi.")
+            event_bus.log_received.emit("Khởi động Apache thất bại: File cấu hình có lỗi.")
             return
 
         # Apache dùng Popen với lệnh httpd.exe (dạng portable)
         apache_dir = self._get_base_path(exec_path, 'apache')
         self.apache_process = subprocess.Popen([exec_path], cwd=apache_dir,
                                                creationflags=CREATE_NO_WINDOW)
-        EventBus.log_received.emit(f"Apache đã khởi động (PID: {self.apache_process.pid})")
-        EventBus.service_status_changed.emit({"apache": "running"})
+        event_bus.log_received.emit(f"Apache đã khởi động (PID: {self.apache_process.pid})")
+        event_bus.service_status_changed.emit({"apache": "running"})
 
     def stop_apache_service(self, settings: WebserverSetting):
         if self.apache_process is None:
@@ -168,15 +168,15 @@ class WebserverCoreService:
             print(f"Lỗi khi dừng Apache: {e}")
 
         self.apache_process = None
-        EventBus.log_received.emit("Apache đã dừng.")
-        EventBus.service_status_changed.emit({"apache": "stopped"})
+        event_bus.log_received.emit("Apache đã dừng.")
+        event_bus.service_status_changed.emit({"apache": "stopped"})
 
     def reload_apache_service(self, settings: WebserverSetting):
         print("APACHE SERVICE: Đang tải lại...")
         exec_path = self._get_executable_path(settings, 'apache')
 
         if not self._test_apache_config(exec_path):
-            EventBus.log_received.emit("Tải lại Apache thất bại: File cấu hình có lỗi.")
+            event_bus.log_received.emit("Tải lại Apache thất bại: File cấu hình có lỗi.")
             return
 
         # Apache sử dụng dạng portable nên không thể gọi -k restart mà chỉ có thể ngắt rồi start lại
@@ -184,7 +184,7 @@ class WebserverCoreService:
         self.stop_apache_service(settings)
         self.start_apache_service(settings)
 
-        EventBus.log_received.emit("Apache đã tải lại cấu hình.")
+        event_bus.log_received.emit("Apache đã tải lại cấu hình.")
 
     def _test_apache_config(self, executable_path: str) -> bool:
         apache_dir = self._get_base_path(executable_path, 'apache')
@@ -195,11 +195,11 @@ class WebserverCoreService:
                 print("APACHE SERVICE: Cấu hình OK.")
                 return True
             else:
-                EventBus.log_received.emit(f"Apache Config Error:\n{result.stderr}")
+                event_bus.log_received.emit(f"Apache Config Error:\n{result.stderr}")
                 return False
         except Exception as e:
             print(f"Lỗi khi kiểm tra config apache: {e}")
-            EventBus.log_received.emit(f"Lỗi khi chạy 'httpd.exe -t': {e}")
+            event_bus.log_received.emit(f"Lỗi khi chạy 'httpd.exe -t': {e}")
             return False
 
     def listener_app_exit(self):
