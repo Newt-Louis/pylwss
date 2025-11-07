@@ -1,7 +1,6 @@
 import subprocess
 from abc import ABC, abstractmethod
 from core.database.model import DatabaseSetting
-from pathlib import Path
 
 class DatabaseServiceStrategy(ABC):
     """
@@ -11,9 +10,8 @@ class DatabaseServiceStrategy(ABC):
         Bắt buộc các lớp con phải định nghĩa logic riêng cho việc
         khởi tạo và lấy lệnh khởi động.
         """
-    def __init__(self,settings:DatabaseSetting, base_path: Path):
+    def __init__(self,settings:DatabaseSetting):
         self.settings = settings
-        self.base_path = base_path
         self.process: subprocess.Popen | None = None
 
     @abstractmethod
@@ -63,10 +61,10 @@ class DatabaseServiceStrategy(ABC):
             return True
 
         try:
-            self.process.terminate()  # Gửi tín hiệu yêu cầu dừng
-            self.process.wait(timeout=10)  # Chờ 10s
+            self.process.terminate()
+            self.process.wait(timeout=10)
         except subprocess.TimeoutExpired:
-            self.process.kill()  # Ép dừng
+            self.process.kill()
         except Exception as e:
             return False
         finally:

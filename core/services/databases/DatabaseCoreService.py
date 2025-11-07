@@ -3,163 +3,121 @@ from pathlib import Path
 from core.database.model import DatabaseSetting
 from core.config import config
 from core.repository import DatabaseRepository
+from .MySQLStrategy import MySQLStrategy
+from .DatabaseServiceStrategy import DatabaseServiceStrategy
 
 class DatabaseCoreService:
     def __init__(self):
         self._DB_SERVICES_PATH = config.DB_SERVICES
-        self._mysql_process = None
+        self._active_services: dict[str, DatabaseServiceStrategy] = {}
 
     def save_settings(self,settings: DatabaseSetting):
         print("Chuẩn bị lưu cấu hình database")
 
-    def generate_ini_file(self,type):
-        if type == "mysql":
-            mysql_template = self.mysql_template()
-        else:
-            print("Chưa có DBMS này trong ứng dụng, cần cài đặt thêm!")
-
-    def mysql_template(self, settings):
-        settings = {
-            "port":3306,
-            "data_directory": self._DB_SERVICES_PATH / "mysql-8.4.6-winx64" / "data",
-            "sql_mode":"NO_ENGINE_SUBTITUTION",
-            "auth_plugin":"mysql_native_password",
-        }
-        datadir = settings['data_directory'].replace('\\', '/')
-        ini_content = f""" 
-                            [mysqld]
-                            port = {settings['port']}
-                            datadir = "{datadir}"
-                            bind-address = 127.0.0.1
-                            default_authentication_plugin = {settings['auth_plugin']}
-                            sql_mode = "{settings['sql_mode']}"
-                        """
-        config_path = self._DB_SERVICES_PATH / "mysql-8.4.6-winx64" /  "mysql.ini"
-        try:
-            with open(config_path, "w", encoding="utf-8") as f:
-                f.write(ini_content)
-            print(f"Tạo file {config_path} thành công!")
-        except IOError as e:
-            print(f"Lỗi khi ghi file: {e}")
-
-    def setup_new_mysql_instance(self, settings: DatabaseSetting, service_name: str, root_password: str):
+    def save_settings_and_initialize(self, settings: DatabaseSetting):
         """
-        Hàm trọn gói để thiết lập một phiên bản MySQL mới.
+        Đây là hàm quan trọng cho trang Cài đặt.
+        Nó LƯU cấu hình và CHẠY KHỞI TẠO, nhưng KHÔNG start server.
         """
-
-        data_dir = Path(settings.data_directory)
-        ini_path = self._DB_SERVICES_PATH / "mysql-8.4.6-winx64" / "mysql.ini"  # Hoặc lấy từ generate_ini_file
-
         try:
-            # Bước 1: Tạo file .ini (Giả sử hàm này đã được gọi trước đó)
-            # self.generate_ini_file(settings)
-            # print(f"Đã tạo file {ini_path}")
+            DatabaseRepository.reset_database_statuses()
 
-            # Bước 2: Khởi tạo (Chỉ khi thư mục data không tồn tại)
-            if not data_dir.exists():
-                print("Thư mục 'data' không tồn tại. Đang khởi tạo MySQL...")
-                # Sử dụng --initialize-insecure để tạo root@localhost không cần mật khẩu
-                init_command = [
-                    str(self._MYSQLD_PATH),
-                    f"--defaults-file={ini_path}",
-                    "--initialize-insecure"
-                ]
-                subprocess.run(init_command, check=True, capture_output=True, text=True)
-                print("Khởi tạo MySQL thành công.")
-            else:
-                print("Thư mục 'data' đã tồn tại. Bỏ qua bước khởi tạo.")
+            settings.is_chosen = True
 
-            # Bước 3: Cài đặt Dịch vụ Windows
-            print(f"Đang cài đặt dịch vụ Windows với tên: {service_name}")
-            # Xóa dịch vụ cũ nếu có, phòng trường hợp cài đặt lỗi trước đó
-            subprocess.run(["sc", "delete", service_name], capture_output=True)
+            DatabaseRepository.save_database_setting(settings)
 
-            install_command = [
-                str(self._MYSQLD_PATH),
-                f"--defaults-file={ini_path}",
-                "--install",
-                service_name
-            ]
-            subprocess.run(install_command, check=True, capture_output=True, text=True)
-            print(f"Cài đặt dịch vụ {service_name} thành công.")
+            strategy = self._get_strategy_factory(settings)
+            if not strategy:
+                raise Exception(f"Không tìm thấy chiến lược cho {settings.type}")
 
-            # Bước 4: Khởi động Dịch vụ
-            print(f"Đang khởi động dịch vụ {service_name}...")
-            start_command = ["net", "start", service_name]
-            subprocess.run(start_command, check=True, capture_output=True, text=True)
-            print(f"Dịch vụ {service_name} đã khởi động.")
+            strategy.initialize_if_needed()
 
-            # Bước 5: Đặt mật khẩu Root
-            print("Đang đặt mật khẩu root...")
-            # Câu lệnh SQL để đổi mật khẩu
-            sql_command = f"ALTER USER 'root'@'localhost' IDENTIFIED BY '{root_password}';"
-
-            set_pass_command = [
-                str(self._MYSQL_PATH),
-                "-u", "root",
-                "--skip-password",  # Vì root chưa có mật khẩu
-                "-P", str(settings.port),
-                "-e", sql_command
-            ]
-            subprocess.run(set_pass_command, check=True, capture_output=True, text=True)
-            print("Đặt mật khẩu root thành công!")
-
-            print("Hoàn tất thiết lập MySQL!")
+            print(f"Hoàn tất thiết lập cho {settings.type}. Sẵn sàng để khởi động từ Dashboard.")
             return True
 
+        except FileNotFoundError as e:
+            print(f"Lỗi đường dẫn: {e}. Vui lòng kiểm tra lại 'Đường dẫn gốc'.")
+            return False
         except subprocess.CalledProcessError as e:
-            print(f"Đã xảy ra lỗi trong quá trình thiết lập MySQL:")
-            print(f"Lệnh: {' '.join(e.cmd)}")
-            print(f"Lỗi (stdout): {e.stdout}")
-            print(f"Lỗi (stderr): {e.stderr}")
-            # Cân nhắc thêm logic dọn dẹp ở đây (ví dụ: net stop, sc delete)
+            print(f"Lỗi khi chạy tiến trình CSDL: {e.stderr}")
             return False
         except Exception as e:
-            print(f"Đã xảy ra lỗi không mong muốn: {e}")
+            print(f"Lỗi không xác định khi lưu và khởi tạo: {e}")
             return False
 
-    def start_service(self, service_name: str):
-        if self._mysql_process:
-            print("MySQL đã chạy rồi.")
+    def start_current_service(self):
+        """
+        Bật CSDL hiện tại (được đánh dấu is_chosen = 1).
+        Hàm này được gọi từ Dashboard.
+        """
+        print("Đang tìm CSDL được chọn để khởi động...")
+        settings = DatabaseRepository.get_current_database_setting()
+
+        if not settings:
+            print("Không có CSDL nào được chọn. Vui lòng vào Cài đặt.")
             return
-        # Đường dẫn đến file thực thi
-        mysqld_path = self._MYSQL_BIN_PATH / "mysqld.exe"
 
-        command = [
-            str(mysqld_path),
-            f"--defaults-file={ini_path}"
-        ]
-        try:
-            self._mysql_process = subprocess.Popen(command,
-                                                   stdout=subprocess.DEVNULL,
-                                                   stderr=subprocess.PIPE)
-        except subprocess.CalledProcessError as e:
-            print(f"Lỗi khi khởi động dịch vụ: {e.stderr}")
+        service_name = f"{settings.type}_{settings.port}"
+        if service_name in self._active_services:
+            print(f"{service_name} đã chạy rồi.")
+            return
 
-    def stop_service(self, service_name: str):
-        """Dừng một dịch vụ đang chạy."""
-        try:
-            self._mysql_process.terminate()  # Gửi tín hiệu dừng
-            self._mysql_process.wait(timeout=10)  # Chờ tối đa 10s
-        except subprocess.TimeoutExpired as e:
-            print(f"Lỗi khi dừng dịch vụ: {e.stderr}")
-            self._mysql_process.kill()
-        except Exception as e:
-            print(f"Lỗi khi dừng dịch vụ: {e}")
-        finally:
-            self._mysql_process = None
+        print(f"Đang khởi động {service_name}...")
+        strategy = self._get_strategy_factory(settings)
+        if not strategy:
+            return
 
-    def remove_service(self, service_name: str):
-        """Gỡ bỏ một dịch vụ khỏi Windows."""
-        try:
-            # Đảm bảo dịch vụ đã dừng trước khi gỡ bỏ
-            self.stop_service(service_name)
-        except Exception:
-            pass  # Bỏ qua nếu dịch vụ đã dừng rồi
+        if strategy.start():  # Hàm start() đến từ lớp base
+            self._active_services[service_name] = strategy
+            print(f"{service_name} đã khởi động thành công.")
+        else:
+            print(f"Lỗi: Không thể khởi động {service_name}.")
 
-        try:
-            print(f"Đang gỡ bỏ dịch vụ {service_name}...")
-            subprocess.run(["sc", "delete", service_name], check=True, capture_output=True, text=True)
-            print(f"Dịch vụ {service_name} đã được gỡ bỏ.")
-        except subprocess.CalledProcessError as e:
-            print(f"Lỗi khi gỡ bỏ dịch vụ: {e.stderr}")
+    def stop_current_service(self):
+        """Dừng CSDL hiện tại đang chạy."""
+        settings = DatabaseRepository.get_current_database_setting()
+        if not settings:
+            print("Không có CSDL nào được chọn.")
+            return
+
+        service_name = f"{settings.type}_{settings.port}"
+        strategy = self._active_services.get(service_name)
+
+        if not strategy:
+            print(f"{service_name} không có trong danh sách đang chạy.")
+            return
+
+        print(f"Đang dừng {service_name}...")
+        if strategy.stop():  # Hàm stop() đến từ lớp base
+            del self._active_services[service_name]
+            print(f"{service_name} đã dừng.")
+        else:
+            print(f"Lỗi: Không thể dừng {service_name}.")
+
+    def stop_all_services(self):
+        """Dừng tất cả các dịch vụ khi tắt ứng dụng."""
+        print("Đang dừng tất cả các dịch vụ...")
+        # Cần copy list() vì dict sẽ thay đổi kích thước khi lặp
+        for service_name in list(self._active_services.keys()):
+            strategy = self._active_services.get(service_name)
+            if strategy:
+                strategy.stop()
+
+        self._active_services.clear()
+        print("Tất cả dịch vụ đã dừng.")
+
+    # noinspection PyMethodMayBeStatic
+    def _get_strategy_factory(self, settings: DatabaseSetting) -> DatabaseServiceStrategy | None:
+        """
+        Sử dụng loại strategy database tương ứng
+        """
+        db_type = settings.type.lower()
+
+        if db_type == "mysql":
+            return MySQLStrategy(settings)
+
+        # if db_type == "postgresql":
+        #    return PostgreSQLStrategy(settings)
+
+        print(f"Lỗi: Loại CSDL '{db_type}' chưa được hỗ trợ.")
+        return None
