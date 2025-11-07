@@ -1,15 +1,16 @@
-import subprocess,os
-from .DatabaseServiceStrategy import DatabaseServiceStrategy
+import subprocess, os, time
+from .IDatabaseServiceStrategy import IDatabaseServiceStrategy
 from core.database.model import DatabaseSetting
 from pathlib import Path
 
 
-class MySQLStrategy(DatabaseServiceStrategy):
+class MySQLStrategy(IDatabaseServiceStrategy):
 
     def __init__(self, settings: DatabaseSetting):
         super().__init__(settings)
         self.ini_path = Path(self.settings.root_path) / "mysql.ini"
         self.user_ini_path = Path(self.settings.root_path) / "user.ini"
+        self.process: subprocess.Popen | None = None
 
     def initialize_if_needed(self):
         self._generate_ini_file()
@@ -40,12 +41,60 @@ class MySQLStrategy(DatabaseServiceStrategy):
         else:
             raise FileNotFoundError("Thư mục data không tồn tại")
 
-    def get_start_command(self) -> list:
+    def start(self) -> bool:
+        if self.process:
+            return True
+
+        try:
+            self.initialize_if_needed()
+        except Exception as e:
+            print(f"LỖI khi khởi tạo {self.settings.type}: {e}")
+            return False
+
+        command = self._get_start_command()
+
+        try:
+            self.process = subprocess.Popen(command, ...)  # (Thêm stdout/stderr)
+
+            time.sleep(2.0)  # Chờ 2s
+
+            exit_code = self.process.poll()
+            if exit_code is not None:
+                # Đã sập
+                error_message = self.process.stderr.read()
+                print(f"LỖI: {self.settings.type} không thể khởi động: {error_message}")
+                self.process = None
+                return False
+
+            return True
+        except Exception as e:
+            print(f"Lỗi khi khởi động {self.settings.type}: {e}")
+            self.process = None
+            return False
+
+    def stop(self) -> bool:
+        if not self.process:
+            print(f"{self.settings.type} chưa chạy.")
+            return True
+
+        try:
+            self.process.terminate()
+            self.process.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            self.process.kill()
+        except Exception as e:
+            print(f"Lỗi khi dừng {self.settings.type}: {e}")
+            return False
+        finally:
+            self.process = None
+
+        return True
+
+    def _get_start_command(self) -> list:
         mysqld_path = self._get_executable_path("mysqld.exe")
         return [
             mysqld_path,
             f"--defaults-file={self.ini_path}",
-            "--console"
         ]
 
     def _get_executable_path(self, exe_name: str = "mysqld.exe") -> str:
@@ -72,12 +121,12 @@ class MySQLStrategy(DatabaseServiceStrategy):
             bind-address = 127.0.0.1
             default_authentication_plugin = mysql_native_password
             sql_mode = "NO_ENGINE_SUBSTITUTION"
-                
+
             [client]
             port = {self.settings.port}
             default-character-set = utf8mb4
             plugin-dir = "{Path(self.settings.root_path).as_posix()}/lib/plugin"
-                
+
             !include user.ini
         """
         try:
