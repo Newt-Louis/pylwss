@@ -1,6 +1,8 @@
+from core.services.databases.DatabaseCoreService import DatabaseCoreService
+
 class DatabasesServiceController:
-    def __init__(self, database_model):
-        self.database_model = database_model
+    def __init__(self):
+        self.database_core_service = DatabaseCoreService()
 
     def _on_save_changes(self):
         print("Dashboard Page Controller _on_save_changes")

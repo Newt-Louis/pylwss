@@ -120,3 +120,5 @@ class DatabaseCoreService:
 
         print(f"Lỗi: Loại CSDL '{db_type}' chưa được hỗ trợ.")
         return None
+
+DataBaseCoreService = DatabaseCoreService()
