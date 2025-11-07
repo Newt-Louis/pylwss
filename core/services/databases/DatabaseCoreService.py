@@ -6,6 +6,7 @@ from core.repository import DatabaseRepository
 from .MySQLStrategy import MySQLStrategy
 from .PostgreSQLStrategy import PostgreSQLStrategy
 from .IDatabaseServiceStrategy import IDatabaseServiceStrategy
+from core.manager.EventBus import event_bus
 
 class DatabaseCoreService:
     def __init__(self):
@@ -19,25 +20,25 @@ class DatabaseCoreService:
         except:
             raise
 
-    def save_settings_and_initialize(self, settings: DatabaseSetting):
+    def save_settings_and_initialize(self, settings: dict):
         """
         Đây là hàm quan trọng cho trang Cài đặt.
         Nó LƯU cấu hình và CHẠY KHỞI TẠO, nhưng KHÔNG start server.
         """
         try:
+            setting_model = DatabaseSetting(**settings)
             DatabaseRepository.reset_database_statuses()
 
-            settings.is_chosen = True
+            DatabaseRepository.save_database_setting(setting_model)
 
-            DatabaseRepository.save_database_setting(settings)
-
-            strategy = self._get_strategy_factory(settings)
+            strategy = self._get_strategy_factory(setting_model)
             if not strategy:
-                raise Exception(f"Không tìm thấy chiến lược cho {settings.type}")
+                raise Exception(f"Không tìm thấy chiến lược cho {setting_model.type}")
 
             strategy.initialize_if_needed()
 
-            print(f"Hoàn tất thiết lập cho {settings.type}. Sẵn sàng để khởi động từ Dashboard.")
+            print(f"Hoàn tất thiết lập cho {setting_model.type}. Sẵn sàng để khởi động từ Dashboard.")
+            event_bus.database_saved.emit(setting_model)
             return True
 
         except FileNotFoundError as e:
