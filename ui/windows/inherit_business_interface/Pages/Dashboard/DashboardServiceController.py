@@ -6,8 +6,6 @@ class DashboardServiceController:
     def __init__(self):
         self.dashboard_core_service = DashboardCoreService()
 
-
-
     def handle_on_load_init_dashboard_info(self)->list[DashboardSetting] | None:
         try:
             dashboard_info = self.dashboard_core_service.get_init_dashboard_info()

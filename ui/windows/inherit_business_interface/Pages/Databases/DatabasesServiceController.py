@@ -1,20 +1,26 @@
-from core.services.databases.DatabaseCoreService import DatabaseCoreService
+from __future__ import annotations
+from core.database.model import DatabaseSetting
+from core.services.databases.DatabaseCoreService import database_core_service
 
 class DatabasesServiceController:
     def __init__(self):
-        self.database_core_service = DatabaseCoreService()
+        self.database_core_service = database_core_service
 
-    def _on_save_changes(self):
+    def save_changes(self):
         print("Dashboard Page Controller _on_save_changes")
 
-    def _on_cancel_changes(self):
+    def cancel_changes(self):
         print("Dashboard Page Controller _on_cancel_changes")
 
-    def _on_add_new_data(self):
+    def add_new_data(self):
         print("Dashboard Page Controller _on_add_new_data")
 
-    def _on_update_data(self):
+    def update_data(self):
         print("Dashboard Page Controller _on_update_data")
 
-    def _on_load_data(self):
-        print("Dashboard Page Controller _on_load_data")
+    def load_data(self)->list[dict]:
+        try:
+            database_settings = self.database_core_service.get_all_database_settings()
+            return [database_setting.model_dump() for database_setting in database_settings] if database_settings else None
+        except:
+            raise

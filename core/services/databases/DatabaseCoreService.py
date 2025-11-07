@@ -12,12 +12,12 @@ class DatabaseCoreService:
         self._DB_SERVICES_PATH = config.DB_SERVICES
         self._active_services: dict[str, IDatabaseServiceStrategy] = {}
 
-    def save_settings(self,settings: DatabaseSetting):
-        # Mục đích ban đầu mong muốn lưu cấu hình vào sqlite riêng rồi thực thi initialize
-        # cho database đang được chọn riêng, nhưng giờ theo nghiệp vụ nên làm là cho chạy luôn
-        # initialize sau 1 vài bước kiểm tra. Vẫn giữ hàm này sẵn nếu sau này cần mục đích
-        # cho việc chỉ cần lưu trữ.
-        print("Chuẩn bị lưu cấu hình database")
+    #noinspection PyMethodMayBeStatic
+    def get_all_database_settings(self) -> list[DatabaseSetting]:
+        try:
+            return DatabaseRepository.get_all_database_settings()
+        except:
+            raise
 
     def save_settings_and_initialize(self, settings: DatabaseSetting):
         """
@@ -121,4 +121,4 @@ class DatabaseCoreService:
         print(f"Lỗi: Loại CSDL '{db_type}' chưa được hỗ trợ.")
         return None
 
-DataBaseCoreService = DatabaseCoreService()
+database_core_service = DatabaseCoreService()

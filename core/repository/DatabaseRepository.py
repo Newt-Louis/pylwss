@@ -5,7 +5,7 @@ from core.database.model.DatabaseSetting import DatabaseSetting
 DB_PATH = config.DB_PATH
 DB_SERVICES_PATH = config.DB_SERVICES
 
-def get_all_database_settings()->list[DatabaseSetting] | None:
+def get_all_database_settings()->list[DatabaseSetting]:
     try:
         with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
@@ -13,13 +13,11 @@ def get_all_database_settings()->list[DatabaseSetting] | None:
             cursor.execute(""" SELECT * FROM database_settings """)
             rows = cursor.fetchall()
 
-            if rows:
-                return [DatabaseSetting(**dict(row)) for row in rows]
-            return None
+            return [DatabaseSetting(**dict(row)) for row in rows]
 
-    except Exception as e:
+    except sqlite3.Error as e:
         print(e)
-        raise e
+        raise
 
 def get_current_database_setting()->DatabaseSetting | None:
     try:
@@ -35,7 +33,7 @@ def get_current_database_setting()->DatabaseSetting | None:
 
     except Exception as e:
         print(e)
-        raise e
+        raise
 
 def save_database_setting(setting: DatabaseSetting):
     try:
