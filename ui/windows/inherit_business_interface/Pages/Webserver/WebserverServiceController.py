@@ -2,7 +2,7 @@ from core.services.webservers.WebserverCoreService import WebserverCoreService
 
 class WebserverServiceController:
     def __init__(self):
-        self.webserver_core_service = WebserverCoreService
+        self.webserver_core_service = WebserverCoreService()
 
     def save_changes(self,data: dict) -> bool:
         return True if self.webserver_core_service.save_settings(data) else False

@@ -17,7 +17,7 @@ class WebserverCoreService:
 
         EventBus.app_exit.connect(self.listener_app_exit)
 
-    # noinspection PyUnresolvedReferences
+    # noinspection PyMethodMayBeStatic
     def load_settings(self) -> list[WebserverSetting] | None:
         try:
             settings_data = WebserverRepository.get_all_webserver_settings()
@@ -25,6 +25,7 @@ class WebserverCoreService:
         except:
             raise
 
+    # noinspection PyMethodMayBeStatic
     def save_settings(self, settings_data: dict) -> bool:
         try:
             model_data = {
@@ -63,6 +64,7 @@ class WebserverCoreService:
             print(f"SERVICE ERROR: {e}")
             return False
 
+    # noinspection PyMethodMayBeStatic
     def load_webservers_versions(self):
         return WebserverRepository.get_all_webserver_versions()
 
