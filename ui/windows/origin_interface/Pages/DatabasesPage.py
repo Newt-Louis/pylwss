@@ -44,11 +44,11 @@ class Ui_DatabasesPage(object):
 
         self.database_save_change_layout = QHBoxLayout()
         self.database_save_change_layout.setObjectName(u"database_save_change_layout")
-        self.database_save_change_buttonbox = QDialogButtonBox(DatabasesPage)
-        self.database_save_change_buttonbox.setObjectName(u"database_save_change_buttonbox")
-        self.database_save_change_buttonbox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
+        self.database_save_change_buttonBox = QDialogButtonBox(DatabasesPage)
+        self.database_save_change_buttonBox.setObjectName(u"database_save_change_buttonBox")
+        self.database_save_change_buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
 
-        self.database_save_change_layout.addWidget(self.database_save_change_buttonbox)
+        self.database_save_change_layout.addWidget(self.database_save_change_buttonBox)
 
 
         self.verticalLayout.addLayout(self.database_save_change_layout)

@@ -34,7 +34,7 @@
    <item>
     <layout class="QHBoxLayout" name="database_save_change_layout">
      <item>
-      <widget class="QDialogButtonBox" name="database_save_change_buttonbox">
+      <widget class="QDialogButtonBox" name="database_save_change_buttonBox">
        <property name="standardButtons">
         <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
        </property>
