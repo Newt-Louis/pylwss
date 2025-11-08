@@ -38,7 +38,7 @@ class DatabaseCoreService:
             strategy.initialize_if_needed()
 
             print(f"Hoàn tất thiết lập cho {setting_model.type}. Sẵn sàng để khởi động từ Dashboard.")
-            event_bus.database_saved.emit(setting_model)
+            event_bus.database_saved.emit(setting_model.model_dump())
             return True
 
         except FileNotFoundError as e:
@@ -84,23 +84,28 @@ class DatabaseCoreService:
         except:
             raise
 
-    def stop_current_service(self):
+    def stop_current_service(self)->bool:
         settings = DatabaseRepository.get_current_database_setting()
         if not settings:
             print("Không có CSDL nào được chọn.")
-            return
+            return False
 
         service_name = f"{settings.type}_{settings.port}"
         strategy = self._active_services.get(service_name)
 
         if not strategy:
             print(f"{service_name} không có trong danh sách đang chạy.")
-            return
+            return False
 
-        if strategy.stop():
-            del self._active_services[service_name]
-        else:
-            print(f"Lỗi: Không thể dừng {service_name}.")
+        try:
+            if strategy.stop():
+                del self._active_services[service_name]
+                return True
+            else:
+                print(f"Lỗi: Không thể dừng {service_name}.")
+                return False
+        except:
+            raise
 
     def stop_all_services(self):
         # Cần copy list() vì dict sẽ thay đổi kích thước khi lặp

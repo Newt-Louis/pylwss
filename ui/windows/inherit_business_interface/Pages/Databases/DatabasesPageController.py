@@ -150,6 +150,7 @@ class DatabasesPageController(QWidget):
             if setting["root_path"] and setting["is_chosen"]:
                 config_button.setEnabled(setting["is_chosen"])
                 config_button.clicked.connect(lambda: self.open_config_file(db_type,setting["root_path"]))
+                self.dashboard_session.set("database_page_selected", db_type)
             else:
                 config_button.setEnbabled(setting["is_chosen"])
 

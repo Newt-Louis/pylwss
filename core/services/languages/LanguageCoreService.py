@@ -44,7 +44,7 @@ class LanguageCoreService:
                 success = self.language_repository.update_language_settings(setting_model)
 
             if success:
-                event_bus.language_saved.emit(setting_model.__dict__)
+                event_bus.language_saved.emit(setting_model.model_dump())
                 schedule_callback_function = lambda: SynchronizationService.sync_language_projects(
                     setting_model.language,
                     setting_model.root_folder
