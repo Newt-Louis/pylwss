@@ -37,6 +37,7 @@ class DashboardPageController(QWidget):
         # Nghe sự kiện phát ra từ các trang dịch vụ khác
         event_bus.webserver_saved.connect(self.listener_webserver_saved)
         event_bus.language_saved.connect(self.listener_language_saved)
+        event_bus.database_saved.connect(self.listener_database_saved)
         event_bus.log_received.connect(lambda data: self.handle_on_log_received(data))
         event_bus.service_status_changed.connect(lambda data: self.handle_on_status_changed(data))
 
@@ -73,6 +74,7 @@ class DashboardPageController(QWidget):
             data_to_save = {
                 "service": "database",
                 "type": self.ui.database_type_label.text(),
+                "root_path":self.ui.database_version_label.text(),
                 "is_running": database_status["database"]
             }
             self.dashboard_service.update_database_info(data_to_save)
@@ -118,7 +120,7 @@ class DashboardPageController(QWidget):
                 self.dashboard_session.add_to_current_key("services_status", "language", 0)
 
         data_to_save = {
-            "service": "webserver",
+            "service": "language",
             "type": self.ui.language_type_label.text(),
             "version": self.ui.language_version_label.text(),
             "is_running": language_status["language"],
@@ -136,7 +138,13 @@ class DashboardPageController(QWidget):
         self.dashboard_service.update_webserver_info(data)
 
     def listener_database_saved(self,data):
-        print("nhận emit từ database rồi lưu thông tin")
+        database_status = self.dashboard_session.get("services_status")
+        status = database_status["database"] if "database" in database_status else 0
+        self.ui.database_type_label.setText(data["type"])
+        self.ui.database_version_label.setText(data["root_path"])
+        data["is_running"] = status
+        data["service"] = "database"
+        self.dashboard_service.update_database_info(data)
 
     def listener_language_saved(self,data):
         language_status = self.dashboard_session.get("services_status")

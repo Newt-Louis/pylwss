@@ -61,10 +61,16 @@ class DashboardCoreService:
             event_bus.log_received.emit(f"Lỗi nghiêm trọng: {e}")
 
     def databases_service_handler(self,status):
-        try:
-            self.database_core_service.start_current_service()
-        except:
-            raise
+        if status == 1:
+            try:
+                self.database_core_service.start_current_service()
+            except:
+                raise
+        elif status == 0:
+            try:
+                self.database_core_service.stop_current_service()
+            except:
+                raise
 
     def update_webserver_dashboard(self, data: dict):
         dashboard_setting = DashboardSetting(**dict(data))

@@ -21,7 +21,7 @@ class DashboardServiceController:
 
     def handle_on_database_service(self,status):
         try:
-            self.dashboard_core_service.databases_service_handler(status)
+            return self.dashboard_core_service.databases_service_handler(status)
         except:
             raise
 
@@ -44,11 +44,17 @@ class DashboardServiceController:
         self.dashboard_core_service.update_webserver_dashboard(webserver_info)
 
     def update_database_info(self, data: dict):
-        print("dashboards Page Controller _update_webserver_info")
+        database_info = {
+            "service": data["service"],
+            "type": data["type"],
+            "version": data["root_path"],
+            "is_running": data["is_running"],
+        }
+        self.dashboard_core_service.update_database_dashboard(database_info)
 
     def update_language_info(self, data: dict):
         language_info = {
-            "service": "language",
+            "service": data["service"],
             "type": data["language"],
             "version": data["selected_version"],
             "is_running": data["is_running"],
