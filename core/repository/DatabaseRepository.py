@@ -41,7 +41,7 @@ def save_database_setting(setting: DatabaseSetting):
             cursor = conn.cursor()
             cursor.execute(""" 
                 INSERT INTO database_settings (type, port, root_path, base_data_path, is_chosen)
-                VALUES (?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?)
                 ON CONFLICT(type) DO UPDATE SET
                     port = excluded.port,
                     root_path = excluded.root_path,

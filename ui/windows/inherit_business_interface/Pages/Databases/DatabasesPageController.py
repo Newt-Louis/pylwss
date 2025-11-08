@@ -21,7 +21,6 @@ class DatabasesPageController(QWidget):
     }
     DATABASES_GROUP={
         "mysql":[
-            "mysql_radio",
             "mysql_port_lineEdit",
             "mysql_service_dir_lineEdit",
             "mysql_service_dir_browseButton",
@@ -30,7 +29,6 @@ class DatabasesPageController(QWidget):
             "mysql_config_pushButton"
         ],
         "mariadb":[
-            "mariadb_radio",
             "mariadb_port_lineEdit",
             "mariadb_service_dir_lineEdit",
             "mariadb_service_dir_browseButton",
@@ -39,7 +37,6 @@ class DatabasesPageController(QWidget):
             "mariadb_config_pushButton"
         ],
         "postgresql":[
-            "postgresql_radio",
             "postgresql_port_lineEdit",
             "postgresql_service_dir_lineEdit",
             "postgresql_service_dir_browseButton",
@@ -48,7 +45,6 @@ class DatabasesPageController(QWidget):
             "postgresql_config_pushButton"
         ],
         "mongodb":[
-            "mongodb_radio",
             "mongodb_port_lineEdit",
             "mongodb_service_dir_lineEdit",
             "mongodb_service_dir_browseButton",
@@ -73,7 +69,14 @@ class DatabasesPageController(QWidget):
         if ini_database_settings:
             self.on_load_init_data(ini_database_settings)
         else:
-            print("Hiển thị sẵn 1 vài ví dụ cấu hình gì đó lên trang Databases")
+            QMessageBox.information(self,"Database Infomation Empty","Ứng dụng khởi động lần đầu, cần chọn loại database và thêm thông tin cấu hình")
+
+        for button_name in DatabasesPageController.BROWSE_MAP.keys():
+            try:
+                button_widget = getattr(self.ui, button_name)
+                button_widget.clicked.connect(self.on_browse_button_clicked)
+            except AttributeError:
+                print(f"Lỗi: Không tìm thấy nút browse trong UI: {button_name}")
 
         self.ui.database_save_change_buttonBox.clicked.connect(self.on_save_changes)
         self.ui.mysql_radio.toggled.connect(lambda: self.on_database_selected("mysql"))

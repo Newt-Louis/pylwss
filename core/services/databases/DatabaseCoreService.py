@@ -51,7 +51,7 @@ class DatabaseCoreService:
             print(f"Lỗi không xác định khi lưu và khởi tạo: {e}")
             return False
 
-    def start_current_service(self):
+    def start_current_service(self)->bool:
         """
         Bật CSDL hiện tại (được đánh dấu is_chosen = 1).
         Hàm này được gọi từ Dashboard.
@@ -61,23 +61,28 @@ class DatabaseCoreService:
 
         if not settings:
             print("Không có CSDL nào được chọn. Vui lòng vào Cài đặt.")
-            return
+            return False
 
         service_name = f"{settings.type}_{settings.port}"
         if service_name in self._active_services:
             print(f"{service_name} đã chạy rồi.")
-            return
+            return False
 
         print(f"Đang khởi động {service_name}...")
         strategy = self._get_strategy_factory(settings)
         if not strategy:
-            return
+            return False
 
-        if strategy.start():  # Hàm start() đến từ lớp base
-            self._active_services[service_name] = strategy
-            print(f"{service_name} đã khởi động thành công.")
-        else:
-            print(f"Lỗi: Không thể khởi động {service_name}.")
+        try:
+            if strategy.start():  # Hàm start() đến từ lớp base
+                self._active_services[service_name] = strategy
+                print(f"{service_name} đã khởi động thành công.")
+                return True
+            else:
+                print(f"Lỗi: Không thể khởi động {service_name}.")
+                return False
+        except:
+            raise
 
     def stop_current_service(self):
         settings = DatabaseRepository.get_current_database_setting()

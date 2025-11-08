@@ -26,7 +26,7 @@ class MySQLStrategy(IDatabaseServiceStrategy):
                     "--initialize-insecure"
                 ]
                 try:
-                    subprocess.run(init_command, check=True, capture_output=True, text=True)
+                    subprocess.run(init_command, check=True, capture_output=True, text=True, cwd=Path(self.settings.root_path))
                     print("Khởi tạo MySQL (initialize-insecure) hoàn tất.")
                 except subprocess.CalledProcessError as e:
                     print("Lỗi nghiêm trọng khi khởi tạo MySQL:")
@@ -45,22 +45,19 @@ class MySQLStrategy(IDatabaseServiceStrategy):
         if self.process:
             return True
 
-        try:
-            self.initialize_if_needed()
-        except Exception as e:
-            print(f"LỖI khi khởi tạo {self.settings.type}: {e}")
-            return False
-
         command = self._get_start_command()
+        working_directory = Path(self.settings.root_path)
+        if not working_directory.exists():
+            raise FileNotFoundError("Thư mục gốc mysql không tồn tại")
 
         try:
-            self.process = subprocess.Popen(command, ...)  # (Thêm stdout/stderr)
+            self.process = subprocess.Popen(command,cwd=working_directory,
+                                            stdout=subprocess.DEVNULL,stderr=subprocess.PIPE,
+                                            text=True,encoding='utf-8',errors='ignore')
 
             time.sleep(2.0)  # Chờ 2s
-
             exit_code = self.process.poll()
             if exit_code is not None:
-                # Đã sập
                 error_message = self.process.stderr.read()
                 print(f"LỖI: {self.settings.type} không thể khởi động: {error_message}")
                 self.process = None
@@ -107,28 +104,26 @@ class MySQLStrategy(IDatabaseServiceStrategy):
         datadir_str = Path(self.settings.base_data_path).as_posix()
         basedir_str = Path(self.settings.root_path).as_posix()
         os.makedirs(self.settings.root_path, exist_ok=True)
-        ini_content = f"""
-            # =========================================================
-            # THIS FILE IS AUTOMATICALLY MANAGED BY YOUR APPLICATION
-            # ANY DIRECT CHANGES WILL BE OVERWRITE.
-            #
-            # TO ADD CUSTOM CONFIGURATIONS, EDIT THE 'user.ini' FILE
-            # =========================================================
-            [mysqld]
-            basedir = "{basedir_str}"
-            datadir = "{datadir_str}"
-            port = {self.settings.port}
-            bind-address = 127.0.0.1
-            default_authentication_plugin = mysql_native_password
-            sql_mode = "NO_ENGINE_SUBSTITUTION"
+        ini_content = f"""# =========================================================
+# THIS FILE IS AUTOMATICALLY MANAGED BY YOUR APPLICATION
+# ANY DIRECT CHANGES WILL BE OVERWRITE.
+#
+# TO ADD CUSTOM CONFIGURATIONS, EDIT THE 'user.ini' FILE
+# =========================================================
+[mysqld]
+basedir = "{basedir_str}"
+datadir = "{datadir_str}"
+port = {self.settings.port}
+bind-address = 127.0.0.1
+default_authentication_plugin = mysql_native_password
+sql_mode = "NO_ENGINE_SUBSTITUTION"
 
-            [client]
-            port = {self.settings.port}
-            default-character-set = utf8mb4
-            plugin-dir = "{Path(self.settings.root_path).as_posix()}/lib/plugin"
+[client]
+port = {self.settings.port}
+default-character-set = utf8mb4
+plugin-dir = "{Path(self.settings.root_path).as_posix()}/lib/plugin"
 
-            !include user.ini
-        """
+!include user.ini"""
         try:
             with open(self.ini_path, "w", encoding="utf-8") as f:
                 f.write(ini_content)
@@ -140,22 +135,20 @@ class MySQLStrategy(IDatabaseServiceStrategy):
         if self.user_ini_path.exists():
             return  # Không làm gì nếu file đã tồn tại
 
-        user_ini_content = """
-            # =================================================================
-            # USER CONFIGURATION FILE
-            # =================================================================
-            #
-            # Add your own MySQL settings here.
-            # Ví dụ:
-            #
-            # [mysqld]
-            # ssl-ca = "C:/path/to/ca.pem"
-            # ssl-cert = "C:/path/to/server-cert.pem"
-            # ssl-key = "C:/path/to/server-key.pem"
-            #
-            # max_connections = 200
-            #
-        """
+        user_ini_content = """# =================================================================
+# USER CONFIGURATION FILE
+# =================================================================
+#
+# Add your own MySQL settings here.
+# Ví dụ:
+#
+# [mysqld]
+# ssl-ca = "C:/path/to/ca.pem"
+# ssl-cert = "C:/path/to/server-cert.pem"
+# ssl-key = "C:/path/to/server-key.pem"
+#
+# max_connections = 200
+#"""
         try:
             with open(self.user_ini_path, "w", encoding="utf-8") as f:
                 f.write(user_ini_content)
