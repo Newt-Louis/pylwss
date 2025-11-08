@@ -60,7 +60,6 @@ def save_database(dashboard_setting: DashboardSetting):
                                 dashboard_setting.service
                            ))
 
-            print("Đã lưu thông tin database vào database")
             return True
     except Exception as e:
         print(e)

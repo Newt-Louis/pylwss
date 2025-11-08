@@ -75,10 +75,37 @@ class MySQLStrategy(IDatabaseServiceStrategy):
             return True
 
         try:
+            admin_path = self._get_executable_path("mysqladmin.exe")
+            shutdown_command = [
+                str(admin_path),
+                "-u", "root",
+                "--protocol=TCP",
+                f"--port={self.settings.port}",
+                "shutdown"
+            ]
+            subprocess.run(shutdown_command,check=True,capture_output=True,
+                            timeout=10,cwd=Path(self.settings.root_path))
+            if self.process:
+                self.process.wait(timeout=10)
+
             self.process.terminate()
-            self.process.wait(timeout=10)
-        except subprocess.TimeoutExpired:
-            self.process.kill()
+            self.process.wait(timeout=5)
+        except (subprocess.TimeoutExpired, subprocess.CalledProcessError) as e:
+            try:
+                # Dùng taskkill để giết cả TIẾN TRÌNH CHA VÀ CON (/T)
+                pid_to_kill = self.process.pid
+                kill_command = [
+                    "taskkill",
+                    "/PID", str(pid_to_kill),
+                    "/T",  # <-- /T (Tree) sẽ giết cả tiến trình con
+                    "/F"  # /F (Force)
+                ]
+                subprocess.run(kill_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                self.process.wait(timeout=2)
+            except Exception as kill_e:
+                print(f"Lỗi khi ép dừng: {kill_e}")
+                # Thử kill lần cuối
+                if self.process: self.process.kill()
         except Exception as e:
             print(f"Lỗi khi dừng {self.settings.type}: {e}")
             return False
