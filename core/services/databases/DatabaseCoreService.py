@@ -45,7 +45,7 @@ class DatabaseCoreService:
             print(f"Lỗi đường dẫn: {e}. Vui lòng kiểm tra lại 'Đường dẫn gốc'.")
             return False
         except subprocess.CalledProcessError as e:
-            print(f"Lỗi khi chạy tiến trình CSDL: {e.stderr}")
+            print(f"Lỗi khi chạy tiến trình CSDL: {e}")
             return False
         except Exception as e:
             print(f"Lỗi không xác định khi lưu và khởi tạo: {e}")

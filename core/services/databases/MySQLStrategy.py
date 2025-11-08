@@ -115,7 +115,6 @@ basedir = "{basedir_str}"
 datadir = "{datadir_str}"
 port = {self.settings.port}
 bind-address = 127.0.0.1
-default_authentication_plugin = mysql_native_password
 sql_mode = "NO_ENGINE_SUBSTITUTION"
 
 [client]
@@ -123,7 +122,8 @@ port = {self.settings.port}
 default-character-set = utf8mb4
 plugin-dir = "{Path(self.settings.root_path).as_posix()}/lib/plugin"
 
-!include user.ini"""
+!include user.ini
+"""
         try:
             with open(self.ini_path, "w", encoding="utf-8") as f:
                 f.write(ini_content)
