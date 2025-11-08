@@ -16,11 +16,14 @@ class DashboardServiceController:
     def handle_on_webserver_service(self,status):
         try:
             self.dashboard_core_service.webserver_service_handler(status)
-        except Exception as e:
-            raise e
+        except:
+            raise
 
-    def handle_on_database_service(self):
-        print("dashboards Page Controller _on_cancel_changes")
+    def handle_on_database_service(self,status):
+        try:
+            self.dashboard_core_service.databases_service_handler(status)
+        except:
+            raise
 
     def handle_on_language_service(self):
         print("dashboards Page Controller _on_add_new_data")

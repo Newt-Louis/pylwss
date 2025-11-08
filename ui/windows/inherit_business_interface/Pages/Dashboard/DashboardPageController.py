@@ -65,9 +65,17 @@ class DashboardPageController(QWidget):
                 case 0:
                     self.ui.database_start_pushButton.setText("Stop")
                     self.dashboard_session.add_to_current_key("services_status", "database", 1)
+                    self.dashboard_service.handle_on_database_service(1)
                 case 1:
                     self.ui.database_start_pushButton.setText("Start")
                     self.dashboard_session.add_to_current_key("services_status", "database", 0)
+                    self.dashboard_service.handle_on_database_service(0)
+            data_to_save = {
+                "service": "database",
+                "type": self.ui.database_type_label.text(),
+                "is_running": database_status["database"]
+            }
+            self.dashboard_service.update_database_info(data_to_save)
 
     def start_webserver(self):
         webserver_status = self.dashboard_session.get("services_status")

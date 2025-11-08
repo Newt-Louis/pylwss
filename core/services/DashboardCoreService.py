@@ -1,25 +1,25 @@
 from core.database.model import DashboardSetting
-from core.repository import DashboardRepository,WebserverRepository
-from core.services.webservers.WebserverCoreService import WebserverCoreService
+from core.repository import DashboardRepository,WebserverRepository,DatabaseRepository
+from core.services.webservers.WebserverCoreService import webserver_core_service
+from core.services.databases.DatabaseCoreService import database_core_service
 from core.manager.EventBus import event_bus
 
 class DashboardCoreService:
-    dashboard_repository = DashboardRepository
-    webserver_repository = WebserverRepository
     def __init__(self):
-        self.webserver_core_service = WebserverCoreService
+        self.webserver_core_service = webserver_core_service
+        self.database_core_service = database_core_service
         event_bus.app_exit.connect(self.reset_dashboard_statuses)
 
     def get_init_dashboard_info(self)->list[DashboardSetting] | None:
         try:
-            dashboard_info = self.dashboard_repository.get_all_dashboard_settings()
+            dashboard_info = DashboardRepository.get_all_dashboard_settings()
             return dashboard_info if dashboard_info else None
         except Exception as e:
             raise e
 
     def webserver_service_handler(self,status):
         try:
-            settings = self.webserver_repository.get_current_webserver()
+            settings = WebserverRepository.get_current_webserver()
             print(settings)
         except Exception as e:
             print(f"DASHBOARD SERVICE: Lỗi khi lấy cài đặt: {e}")
@@ -60,23 +60,29 @@ class DashboardCoreService:
             print(f"DASHBOARD SERVICE: Lỗi khi thực thi lệnh '{status}': {e}")
             event_bus.log_received.emit(f"Lỗi nghiêm trọng: {e}")
 
+    def databases_service_handler(self,status):
+        try:
+            self.database_core_service.start_current_service()
+        except:
+            raise
+
     def update_webserver_dashboard(self, data: dict):
         dashboard_setting = DashboardSetting(**dict(data))
-        self.dashboard_repository.save_webserver(dashboard_setting)
+        DashboardRepository.save_webserver(dashboard_setting)
 
     def update_language_dashboard(self, data: dict):
         dashboard_setting = DashboardSetting(**dict(data))
-        self.dashboard_repository.save_language(dashboard_setting)
+        DashboardRepository.save_language(dashboard_setting)
 
     def update_database_dashboard(self, data: dict):
         dashboard_setting = DashboardSetting(**dict(data))
-        self.dashboard_repository.save_database(dashboard_setting)
+        DashboardRepository.save_database(dashboard_setting)
 
     def update_tools_dashboard(self, data: dict):
-        self.dashboard_repository.save_tool(data)
+        DashboardRepository.save_tool(data)
 
     def update_network_dashboard(self, data: dict):
-        self.dashboard_repository.save_network(data)
+        DashboardRepository.save_network(data)
 
     def reset_dashboard_statuses(self):
-        self.dashboard_repository.reset_dashboard_statuses()
+        DashboardRepository.reset_dashboard_statuses()
