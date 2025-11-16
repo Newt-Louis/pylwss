@@ -4,3 +4,5 @@
 __pycache__/
 *.pyc
 database_management_systems/
+*.log
+*.pid

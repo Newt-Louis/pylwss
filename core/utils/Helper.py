@@ -121,3 +121,10 @@ def get_os_type():
     if system == "Linux":
         return "linux"
     return "unknown"
+
+def get_last_segment(path:str)->str:
+    if not path:
+        return ""
+    norm = path.replace("\\", "/")
+    norm = norm.rstrip("/")
+    return norm.split("/")[-1]

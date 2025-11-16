@@ -1,6 +1,6 @@
 from core.services import DashboardCoreService
 from core.database.model import DashboardSetting
-
+from core.utils import Helper
 
 class DashboardServiceController:
     def __init__(self):
@@ -47,7 +47,7 @@ class DashboardServiceController:
         database_info = {
             "service": data["service"],
             "type": data["type"],
-            "version": data["root_path"],
+            "version": Helper.get_last_segment(data["root_path"]),
             "is_running": data["is_running"],
         }
         self.dashboard_core_service.update_database_dashboard(database_info)

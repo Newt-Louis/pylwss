@@ -109,3 +109,11 @@ Apache server interrupted...
 [Thu Nov 06 03:39:02.586401 2025] [mpm_winnt:warn] [pid 17736:tid 1156] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
 [Thu Nov 06 03:39:02.586401 2025] [mpm_winnt:warn] [pid 17736:tid 600] (OS 995)The I/O operation has been aborted because of either a thread exit or an application request.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
 [Thu Nov 06 03:39:04.614656 2025] [mpm_winnt:notice] [pid 17736:tid 468] AH00364: Child: All worker threads have exited.
+[Mon Nov 17 00:14:56.195961 2025] [core:warn] [pid 8368:tid 488] AH00098: pid file D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/logs/httpd.pid overwritten -- Unclean shutdown of previous Apache run?
+[Mon Nov 17 00:14:56.196959 2025] [ssl:warn] [pid 8368:tid 488] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Mon Nov 17 00:14:56.197960 2025] [mpm_winnt:notice] [pid 8368:tid 488] AH00455: Apache/2.4.63 (Win64) OpenSSL/3.3.2 configured -- resuming normal operations
+[Mon Nov 17 00:14:56.197960 2025] [mpm_winnt:notice] [pid 8368:tid 488] AH00456: Apache Lounge VS17 Server built: Feb  3 2025 10:10:51
+[Mon Nov 17 00:14:56.197960 2025] [core:notice] [pid 8368:tid 488] AH00094: Command line: 'D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17/bin/httpd.exe -d D:/WorkSpace/Python/LocalWebServerStacks/core/services/webservers/bin/apache/httpd-2.4.63-250207-win64-VS17'
+[Mon Nov 17 00:14:56.201608 2025] [mpm_winnt:notice] [pid 8368:tid 488] AH00418: Parent: Created child process 32592
+[Mon Nov 17 00:14:56.412349 2025] [ssl:warn] [pid 32592:tid 448] AH01873: Init: Session Cache is not configured [hint: SSLSessionCache]
+[Mon Nov 17 00:14:56.414347 2025] [mpm_winnt:notice] [pid 32592:tid 448] AH00354: Child: Starting 64 worker threads.

@@ -15,9 +15,6 @@ class DashboardPageController(QWidget):
         self.dashboard_service = DashboardServiceController()
         self.dashboard_session = DashboardSession()
 
-        # TODO: Lấy dữ liệu đã lưu từ database
-        # TODO: Thêm hàm gán dữ liệu vào các trường thông tin
-        # TODO: Thêm hàm chuẩn bị cho khởi động được các dịch vụ
         dashboard_infos = self.dashboard_service.handle_on_load_init_dashboard_info()
         if dashboard_infos is not None:
             for dashboard_info in dashboard_infos:
