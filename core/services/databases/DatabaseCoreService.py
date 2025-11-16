@@ -13,6 +13,8 @@ class DatabaseCoreService:
         self._DB_SERVICES_PATH = config.DB_SERVICES
         self._active_services: dict[str, IDatabaseServiceStrategy] = {}
 
+        event_bus.app_exit.connect(self._listener_app_exit)
+
     #noinspection PyMethodMayBeStatic
     def get_all_database_settings(self) -> list[DatabaseSetting]:
         try:
@@ -131,5 +133,8 @@ class DatabaseCoreService:
 
         print(f"Lỗi: Loại CSDL '{db_type}' chưa được hỗ trợ.")
         return None
+
+    def _listener_app_exit(self):
+        self.stop_all_services()
 
 database_core_service = DatabaseCoreService()
