@@ -6,3 +6,4 @@ __pycache__/
 database_management_systems/
 *.log
 *.pid
+core/services/tools/bin/*
