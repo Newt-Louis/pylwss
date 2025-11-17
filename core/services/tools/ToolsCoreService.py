@@ -1,5 +1,7 @@
 import subprocess
 from core.config import config
+from core.manager.EventBus import event_bus
+
 
 class ToolsCoreService:
     def __init__(self):
@@ -19,6 +21,8 @@ class ToolsCoreService:
             #     "cwd_dir": Path("C:/Program Files/Notepad++")
             # }
         }
+
+        event_bus.app_exit.connect(self._listener_app_exit)
 
     def start_redis_service(self):
         # Kiểm tra xem file thực thi có tồn tại không
@@ -99,5 +103,8 @@ class ToolsCoreService:
         # ... thêm các dịch vụ khác ở đây ...
 
         print("--- Hoàn tất dọn dẹp tất cả dịch vụ ---")
+
+    def _listener_app_exit(self):
+        self.stop_all_services()
 
 tools_core_service = ToolsCoreService()

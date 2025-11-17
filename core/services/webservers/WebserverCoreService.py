@@ -15,7 +15,7 @@ class WebserverCoreService:
         self.nginx_process: subprocess.Popen | None = None
         self.apache_process: subprocess.Popen | None = None
 
-        event_bus.app_exit.connect(self.listener_app_exit)
+        event_bus.app_exit.connect(self._listener_app_exit)
 
     # noinspection PyMethodMayBeStatic
     def load_settings(self) -> list[WebserverSetting] | None:
@@ -202,7 +202,7 @@ class WebserverCoreService:
             event_bus.log_received.emit(f"Lỗi khi chạy 'httpd.exe -t': {e}")
             return False
 
-    def listener_app_exit(self):
+    def _listener_app_exit(self):
         services_session = self.dashboard_session.get("services_status")
         if "webserver" in services_session:
             if services_session["webserver"] == 1:
