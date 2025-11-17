@@ -55,7 +55,7 @@ class ToolsCoreService:
                 stderr=subprocess.DEVNULL
             )
             self.running_processes["redis"] = process
-            print(f"Redis service đã khởi động thành công (PID: {self.process.pid}).")
+            print(f"Redis service đã khởi động thành công (PID: {process.pid}).")
             return True
 
         except FileNotFoundError:

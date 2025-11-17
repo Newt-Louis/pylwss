@@ -32,6 +32,7 @@ class CollapsibleItem(QWidget):
 
         # Checkbox bên phải
         self.checkBox = QCheckBox()
+        self.checkBox.setObjectName("$$_checkBox")
 
         # Layout header
         self.headerLayout.addWidget(self.toggleBtn)
