@@ -1,6 +1,6 @@
 {
   "redis": {
-    "port":4436,
+    "port":6379,
     "exe_path": "$$/Redis-x64-5.0.14.1/redis-server.exe",
     "cwd_dir": "$$/Redis-x64-5.0.14.1",
     "download_url": "https://github.com/tporadowski/redis/releases/download/v5.0.14.1/Redis-x64-5.0.14.1.zip"

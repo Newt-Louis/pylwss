@@ -5,12 +5,12 @@ from core.manager.EventBus import event_bus
 
 class ToolsCoreService:
     def __init__(self):
-        self.redis_process = None
         self.running_processes = {}
         self.tool_configs = {
             "redis": {
                 "exe_path": config.TOOL_SERVICES / "Redis-x64-5.0.14.1" / "redis-server.exe",
-                "cwd_dir": config.TOOL_SERVICES / "Redis-x64-5.0.14.1"
+                "cwd_dir": config.TOOL_SERVICES / "Redis-x64-5.0.14.1",
+                "port": 6379
             },
             # "mailsender": {
             #     "exe_path": config.TOOL_SERVICES / "MailSender" / "mail.exe",
@@ -25,28 +25,37 @@ class ToolsCoreService:
         event_bus.app_exit.connect(self._listener_app_exit)
 
     def start_redis_service(self):
-        # Kiểm tra xem file thực thi có tồn tại không
-        if not self.tool_configs["redis"]["exe_path"].exists():
+        redis_config = self.tool_configs["redis"]
+        exe_path = redis_config["exe_path"]
+        cwd_dir = redis_config["cwd_dir"]
+        port = str(redis_config.get("port", 6379))
+
+        if not exe_path.exists():
             print(f"LỖI: Không tìm thấy 'redis-server.exe' tại đường dẫn:")
             print(f"{self.tool_configs["redis"]["exe_path"]}")
             return False
 
         # poll() == None nghĩa là tiến trình đang chạy
         if "redis" in self.running_processes and self.running_processes["redis"].poll() is None:
-            print(f"Redis service đã chạy (PID: {self.redis_process.pid}).")
+            print(f"Redis service đã chạy (PID: {self.running_processes["redis"].pid}).")
             return True
 
         try:
             CREATE_NO_WINDOW = 0x08000000
-            self.redis_process = subprocess.Popen(
-                [str(self.tool_configs["redis"]["exe_path"])],  # Lệnh cần chạy (phải là list)
-                cwd=str(self.tool_configs["redis"]["cwd_dir"]),  # Đặt thư mục làm việc
+            command = [
+                str(exe_path),
+                "--port",
+                port
+            ]
+            process = subprocess.Popen(
+                command,  # Lệnh cần chạy (phải là list)
+                cwd=str(cwd_dir),  # Đặt thư mục làm việc
                 creationflags=CREATE_NO_WINDOW,  # Cờ để ẩn cửa sổ console
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL
             )
-
-            print(f"Redis service đã khởi động thành công (PID: {self.redis_process.pid}).")
+            self.running_processes["redis"] = process
+            print(f"Redis service đã khởi động thành công (PID: {self.process.pid}).")
             return True
 
         except FileNotFoundError:
@@ -55,7 +64,8 @@ class ToolsCoreService:
             return False
         except Exception as e:
             print(f"LỖI không xác định khi khởi động Redis: {e}")
-            self.redis_process = None
+            if "redis" in self.running_processes:
+                del self.running_processes["redis"]
             return False
 
     def stop_redis_service(self):
