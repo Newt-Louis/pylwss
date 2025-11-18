@@ -1,12 +1,11 @@
 from core.services import DashboardCoreService
-from core.services.tools import ToolsCoreService
+from core.services import tools_core_service
 from core.database.model import DashboardSetting
 from core.utils import Helper
 
 class DashboardServiceController:
     def __init__(self):
         self.dashboard_core_service = DashboardCoreService()
-        self.tools_core_service = ToolsCoreService()
 
     def handle_on_load_init_dashboard_info(self)->list[DashboardSetting] | None:
         try:
@@ -33,9 +32,9 @@ class DashboardServiceController:
     def handle_on_tools_service(self,tools_toggle_info):
         if "redis" in tools_toggle_info:
             if tools_toggle_info["redis"] == 1:
-                self.tools_core_service.start_redis_service()
+                tools_core_service.start_redis_service()
             else:
-                self.tools_core_service.stop_redis_service()
+                tools_core_service.stop_redis_service()
 
 
     def handle_on_network_service(self):

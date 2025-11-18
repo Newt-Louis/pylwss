@@ -39,7 +39,7 @@ def save_tools_setting(settings: list[ToolsSetting]):
     try:
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
-            cursor.execute(""" 
+            cursor.executemany(""" 
                 INSERT INTO tools_settings (type, port, root_path, is_chosen)
                 VALUES (?, ?, ?, ?)
                 ON CONFLICT(type) DO UPDATE SET

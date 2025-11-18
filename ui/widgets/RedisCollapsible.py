@@ -51,5 +51,5 @@ class RedisCollapsible(CollapsibleItem):
         return {
             "is_chosen": self.checkBox.isChecked(),
             "port": self.port_edit.text(),
-            "path": self.path_edit.text(),
+            "root_path": self.path_edit.text(),
         }

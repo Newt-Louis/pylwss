@@ -1,1 +1,1 @@
-from .ToolsCoreService import ToolsCoreService
+from .ToolsCoreService import tools_core_service
