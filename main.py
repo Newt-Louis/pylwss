@@ -11,6 +11,7 @@ def run_main_ui_application():
         from core.manager.PortManager import PortManager
         from core.manager.EventBus import event_bus
         from core.config import config
+        import ui.resources.icons_rc
     except ImportError as e:
         print(f"LỖI: Không thể import các module cần thiết: {e}")
         sys.exit(1)

@@ -6,7 +6,7 @@ from ui.widgets.CollapsibleItem import CollapsibleItem
 
 class RedisCollapsible(CollapsibleItem):
     def __init__(self, parent=None):
-        super().__init__("Redis Service", "redis_collapsible", parent)
+        super().__init__("Redis", "redis_collapsible", parent)
 
         self.lbl_port = QLabel("Port:")
 
@@ -30,7 +30,7 @@ class RedisCollapsible(CollapsibleItem):
         self.contentLayout.addWidget(self.path_edit, 1, 1)
         self.contentLayout.addWidget(self.browse_btn, 1, 2)
 
-        self.checkBox.stateChanged.connect(self.on_redis_checked)
+        self.checkBox.toggled.connect(self.on_redis_checked)
 
     def on_browse_path(self):
         folder = QFileDialog.getExistingDirectory(

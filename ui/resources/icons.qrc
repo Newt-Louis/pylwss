@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/">
     <file>icons/bars-1.svg</file>
+    <file>icons/white_check.png</file>
   </qresource>
 </RCC>

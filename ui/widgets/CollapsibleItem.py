@@ -1,9 +1,8 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
-    QPushButton, QLabel, QCheckBox, QSizePolicy
+    QPushButton, QLabel, QCheckBox, QFrame
 )
 from PySide6.QtCore import Qt, QEasingCurve, QPropertyAnimation, QRect
-
 
 class CollapsibleItem(QWidget):
     def __init__(self, title="Untitled", uid=None,parent=None):
@@ -11,44 +10,37 @@ class CollapsibleItem(QWidget):
         if not uid:
             raise ValueError("Tham số 'uid' là bắt buộc để định danh CollapsibleItem và CheckBox bên trong.")
         self.uid = uid
-        # ============ MAIN LAYOUT ============
+
         self.mainLayout = QVBoxLayout(self)
         self.mainLayout.setContentsMargins(0, 0, 0, 0)
         self.mainLayout.setSpacing(0)
 
-        # ============ HEADER ============
         self.header = QWidget()
         self.headerLayout = QHBoxLayout(self.header)
         self.headerLayout.setContentsMargins(8, 4, 8, 4)
 
-        # Toggle button (mũi tên)
         self.toggleBtn = QPushButton("▶")
         self.toggleBtn.setFlat(True)
         self.toggleBtn.setFixedWidth(25)
         self.toggleBtn.setFocusPolicy(Qt.NoFocus)
         self.toggleBtn.clicked.connect(self.toggle)
 
-        # Title label
         self.titleLabel = QLabel(title)
-        self.titleLabel.setStyleSheet("font-weight: 500;")
+        self.titleLabel.setStyleSheet("font-weight: 700; font-size: 14px;")
 
-        # Checkbox bên phải
         self.checkBox = QCheckBox()
         self.checkBox.setObjectName(f"{uid}_checkBox")
+        self.checkBox.setStyleSheet(self._checkbox_custom_style())
 
-        # Layout header
         self.headerLayout.addWidget(self.toggleBtn)
         self.headerLayout.addWidget(self.titleLabel)
         self.headerLayout.addStretch()
         self.headerLayout.addWidget(self.checkBox)
 
-        # Click cả header để toggle
         self.header.mousePressEvent = self._headerClicked
 
-        # Add header to layout
         self.mainLayout.addWidget(self.header)
 
-        # ============ CONTENT AREA ============
         self.content = QWidget()
         self.content.setMaximumHeight(0)  # bắt đầu ẩn
         self.content.setVisible(False)
@@ -57,15 +49,11 @@ class CollapsibleItem(QWidget):
 
         self.mainLayout.addWidget(self.content)
 
-        # Animation cho mượt
         self.anim = QPropertyAnimation(self.content, b"maximumHeight")
         self.anim.setDuration(200)
         self.anim.setEasingCurve(QEasingCurve.OutCubic)
         self.anim.finished.connect(self._on_animation_finished)
 
-    # ============================================================
-    # Toggle header click
-    # ============================================================
     def _headerClicked(self, event):
         # Nếu click lên checkbox thì không toggle
         if self.checkBox.geometry().contains(event.position().toPoint()):
@@ -73,9 +61,6 @@ class CollapsibleItem(QWidget):
         # Còn lại thì toggle
         self.toggle()
 
-    # ============================================================
-    # Toggle expand/collapse
-    # ============================================================
     def toggle(self):
         opening = not self.content.isVisible()
 
@@ -88,9 +73,6 @@ class CollapsibleItem(QWidget):
         else:
             self._animate_close()
 
-    # ============================================================
-    # Animation mở
-    # ============================================================
     def _animate_open(self):
         self.content.setMaximumHeight(0)
         self.anim.stop()
@@ -99,9 +81,6 @@ class CollapsibleItem(QWidget):
         self.anim.setEndValue(target_height)
         self.anim.start()
 
-    # ============================================================
-    # Animation đóng
-    # ============================================================
     def _animate_close(self):
         start_height = self.content.height()
         self.anim.stop()
@@ -110,19 +89,52 @@ class CollapsibleItem(QWidget):
         self.anim.start()
 
     def _on_animation_finished(self):
-        """
-        Hàm này được gọi mỗi khi animation chạy xong (cả mở và đóng).
-        Ta cần kiểm tra xem nó vừa đóng hay vừa mở.
-        """
-        # Nếu giá trị kết thúc là 0 -> Tức là vừa thực hiện thao tác Đóng
         if self.anim.endValue() == 0:
             self.content.setVisible(False)
-        # Ngược lại (mở) thì không làm gì cả (vì đã setVisible(True) lúc bắt đầu mở rồi)
 
+    def _checkbox_custom_style(self):
+        tick_icon_url = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAYklEQVR42mNgGRjwm4Hhf4L4P5D+jw0DA1Ea/jMw/IeJ/kfW9B+I/wPxfaQYgGw4sh50O0D4P1IMAnoc2Q0w/o/E/5FieMCRg/B/pBgEdDiyHmQ7/iPFIKDDkfWg2wHC/5FiEAAA1i48q/c+25gAAAAASUVORK5CYII="
 
-# =================================================================
-# DEMO CHẠY NGAY TRONG FILE (không ảnh hưởng project chính)
-# =================================================================
+        return f"""
+            QCheckBox {{
+                spacing: 5px;
+                font-size: 14px;
+            }}
+            /* Phần ô vuông (Indicator) */
+            QCheckBox::indicator {{
+                width: 16px;
+                height: 16px;
+                border-radius: 4px; /* Bo tròn nhẹ */
+                border: 1px solid #999; /* Viền xám mặc định */
+                background-color: #f0f0f0; /* Nền xám nhạt */
+            }}
+
+            /* Khi di chuột vào (Hover) */
+            QCheckBox::indicator:hover {{
+                border: 1px solid #0078d7; /* Viền xanh */
+                background-color: #ffffff;
+            }}
+
+            /* Khi đã tick (Checked) */
+            QCheckBox::indicator:checked {{
+                background-color: #0078d7; /* Nền xanh chuẩn Windows */
+                border: 1px solid #0078d7;
+                image: url(:/icons/white_check.png);
+            }}
+
+            /* Khi đã tick nhưng di chuột vào */
+            QCheckBox::indicator:checked:hover {{
+                background-color: #0063b1; /* Xanh đậm hơn chút */
+                border: 1px solid #0063b1;
+            }}
+
+            /* Khi bị disable*/
+            QCheckBox::indicator:disabled {{
+                background-color: #e0e0e0;
+                border: 1px solid #ccc;
+            }}
+        """
+
 if __name__ == "__main__":
     import sys
     from PySide6.QtWidgets import QApplication, QCheckBox, QLineEdit
