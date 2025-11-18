@@ -15,8 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QSizePolicy,
-    QSpacerItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialogButtonBox, QHBoxLayout,
+    QLabel, QSizePolicy, QSpacerItem, QVBoxLayout,
+    QWidget)
 
 class Ui_ToolsPage(object):
     def setupUi(self, ToolsPage):
@@ -40,6 +41,12 @@ class Ui_ToolsPage(object):
 
 
         self.verticalLayout.addLayout(self.tools_title_layout)
+
+        self.tools_save_buttonBox = QDialogButtonBox(ToolsPage)
+        self.tools_save_buttonBox.setObjectName(u"tools_save_buttonBox")
+        self.tools_save_buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
+
+        self.verticalLayout.addWidget(self.tools_save_buttonBox)
 
         self.content_area = QWidget(ToolsPage)
         self.content_area.setObjectName(u"content_area")

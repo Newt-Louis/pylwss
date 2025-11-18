@@ -6,9 +6,11 @@ from PySide6.QtCore import Qt, QEasingCurve, QPropertyAnimation, QRect
 
 
 class CollapsibleItem(QWidget):
-    def __init__(self, title="Untitled", parent=None):
+    def __init__(self, title="Untitled", uid=None,parent=None):
         super().__init__(parent)
-
+        if not uid:
+            raise ValueError("Tham số 'uid' là bắt buộc để định danh CollapsibleItem và CheckBox bên trong.")
+        self.uid = uid
         # ============ MAIN LAYOUT ============
         self.mainLayout = QVBoxLayout(self)
         self.mainLayout.setContentsMargins(0, 0, 0, 0)
@@ -32,7 +34,7 @@ class CollapsibleItem(QWidget):
 
         # Checkbox bên phải
         self.checkBox = QCheckBox()
-        self.checkBox.setObjectName("$$_checkBox")
+        self.checkBox.setObjectName(f"{uid}_checkBox")
 
         # Layout header
         self.headerLayout.addWidget(self.toggleBtn)
@@ -59,6 +61,7 @@ class CollapsibleItem(QWidget):
         self.anim = QPropertyAnimation(self.content, b"maximumHeight")
         self.anim.setDuration(200)
         self.anim.setEasingCurve(QEasingCurve.OutCubic)
+        self.anim.finished.connect(self._on_animation_finished)
 
     # ============================================================
     # Toggle header click
@@ -105,7 +108,16 @@ class CollapsibleItem(QWidget):
         self.anim.setStartValue(start_height)
         self.anim.setEndValue(0)
         self.anim.start()
-        self.anim.finished.connect(lambda: self.content.setVisible(False))
+
+    def _on_animation_finished(self):
+        """
+        Hàm này được gọi mỗi khi animation chạy xong (cả mở và đóng).
+        Ta cần kiểm tra xem nó vừa đóng hay vừa mở.
+        """
+        # Nếu giá trị kết thúc là 0 -> Tức là vừa thực hiện thao tác Đóng
+        if self.anim.endValue() == 0:
+            self.content.setVisible(False)
+        # Ngược lại (mở) thì không làm gì cả (vì đã setVisible(True) lúc bắt đầu mở rồi)
 
 
 # =================================================================
@@ -120,11 +132,11 @@ if __name__ == "__main__":
     w = QWidget()
     layout = QVBoxLayout(w)
 
-    item = CollapsibleItem("Utility: Network Scanner")
+    item = CollapsibleItem("Utility: Network Scanner","network")
     item.contentLayout.addWidget(QCheckBox("Enable IPv6"),0,0)
     item.contentLayout.addWidget(QLineEdit("Range: 192.168.1.1/24"),0,1)
 
-    item2 = CollapsibleItem("Utility: File Cleaner")
+    item2 = CollapsibleItem("Utility: File Cleaner","file_cleaner")
     item2.contentLayout.addWidget(QCheckBox("Include Temp Folder"),0,0)
     item2.contentLayout.addWidget(QCheckBox("Ask before deleting"),0,1)
 

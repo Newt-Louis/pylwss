@@ -6,7 +6,7 @@ from ui.widgets.CollapsibleItem import CollapsibleItem
 
 class RedisCollapsible(CollapsibleItem):
     def __init__(self, parent=None):
-        super().__init__("Redis Service", parent)
+        super().__init__("Redis Service", "redis_collapsible", parent)
 
         self.lbl_port = QLabel("Port:")
 

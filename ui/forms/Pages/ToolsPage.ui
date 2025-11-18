@@ -35,6 +35,13 @@
     </layout>
    </item>
    <item>
+    <widget class="QDialogButtonBox" name="tools_save_buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QWidget" name="content_area" native="true"/>
    </item>
    <item>
