@@ -78,7 +78,7 @@ class DatabasesPageController(QWidget):
             except AttributeError:
                 print(f"Lỗi: Không tìm thấy nút browse trong UI: {button_name}")
 
-        self.ui.database_save_change_buttonBox.clicked.connect(self.on_save_changes)
+        self.ui.database_save_change_buttonBox.accepted.connect(self.on_save_changes)
         self.ui.mysql_radio.toggled.connect(lambda: self.on_database_selected("mysql"))
         self.ui.mariadb_radio.toggled.connect(lambda: self.on_database_selected("mariadb"))
         self.ui.postgresql_radio.toggled.connect(lambda: self.on_database_selected("postgresql"))

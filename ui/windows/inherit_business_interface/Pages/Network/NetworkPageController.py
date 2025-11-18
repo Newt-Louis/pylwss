@@ -17,7 +17,7 @@ class NetworkPageController(QWidget):
         # 4. Từ đây, mọi thứ giống hệt như trước!
         # Kết nối signals và slots như bình thường.
         # IDE của bạn bây giờ sẽ gợi ý code khi bạn gõ self.ui. ...
-        self.ui.network_save_change_buttonbox.clicked.connect(self.on_save_changes)
+        self.ui.network_save_change_buttonbox.accepted.connect(self.on_save_changes)
         self.ui.telnet_checkbox.toggled.connect(self.on_telnet_selected)
 
     def on_save_changes(self):

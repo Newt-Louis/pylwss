@@ -106,7 +106,7 @@ class LanguagesPageController(QWidget):
             QMessageBox.critical(self, "Lỗi", f"Database settings có lỗi: {str(e)}")
 
         # Gán sự kiện cho các nút
-        self.ui.language_save_change_buttonbox.clicked.connect(self.on_save_changes)
+        self.ui.language_save_change_buttonbox.accepted.connect(self.on_save_changes)
         self.ui.php_radio.clicked.connect(lambda checked: self.on_language_selected("php"))
         self.ui.python_radio.clicked.connect(lambda checked: self.on_language_selected("python"))
         self.ui.java_radio.clicked.connect(lambda checked: self.on_language_selected("java"))

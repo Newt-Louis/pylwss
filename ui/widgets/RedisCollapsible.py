@@ -49,7 +49,7 @@ class RedisCollapsible(CollapsibleItem):
 
     def get_config(self):
         return {
-            "enabled": self.checkBox.isChecked(),
+            "is_chosen": self.checkBox.isChecked(),
             "port": self.port_edit.text(),
             "path": self.path_edit.text(),
         }

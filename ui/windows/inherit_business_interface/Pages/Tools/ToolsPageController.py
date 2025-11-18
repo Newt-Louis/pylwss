@@ -4,7 +4,7 @@ from ui.widgets.RedisCollapsible import RedisCollapsible
 
 
 class ToolsPageController(QWidget):
-    def __init__(self, model):
+    def __init__(self, model=None):
         super().__init__()
         self.model = model
         self.ui = Ui_ToolsPage()
@@ -13,7 +13,7 @@ class ToolsPageController(QWidget):
             self.ui.content_area.setLayout(QVBoxLayout())
         self.redis_item = RedisCollapsible()
         self.ui.content_area.layout().addWidget(self.redis_item)
-
+        self.ui.tools_save_buttonBox.accepted.connect(self.on_save_changes)
 
     def on_save_changes(self):
         redis_info = self.redis_item.get_config()

@@ -33,7 +33,7 @@ class WebserverPageController(QWidget):
         # Gắn sự kiện
         self.ui.apache_radio.clicked.connect(self.on_webserver_changed)
         self.ui.nginx_radio.clicked.connect(self.on_webserver_changed)
-        self.ui.webserver_save_change_buttonbox.clicked.connect(self.on_save_changes)
+        self.ui.webserver_save_change_buttonbox.accepted.connect(self.on_save_changes)
         for button in self.findChildren(QWidget):
             name = button.objectName()
             #Gắn sự kiện cho tất cả nút Browse
