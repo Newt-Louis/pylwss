@@ -1,11 +1,11 @@
-from core.services import DashboardCoreService
+from core.services import dashboard_core_service
 from core.services import tools_core_service
 from core.database.model import DashboardSetting
 from core.utils import Helper
 
 class DashboardServiceController:
     def __init__(self):
-        self.dashboard_core_service = DashboardCoreService()
+        self.dashboard_core_service = dashboard_core_service
 
     def handle_on_load_init_dashboard_info(self)->list[DashboardSetting] | None:
         try:

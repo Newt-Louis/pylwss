@@ -59,3 +59,5 @@ class LanguageCoreService:
         except Exception as e:
             print("Có lỗi khi lưu cấu hình language",e)
             raise e
+
+language_core_service = LanguageCoreService()

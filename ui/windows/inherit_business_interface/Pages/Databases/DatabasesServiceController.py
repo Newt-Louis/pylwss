@@ -1,4 +1,4 @@
-from core.services.databases.DatabaseCoreService import database_core_service
+from core.services import database_core_service
 
 class DatabasesServiceController:
     def __init__(self):

@@ -1,4 +1,4 @@
-from core.services.webservers.WebserverCoreService import webserver_core_service
+from core.services import webserver_core_service
 
 class WebserverServiceController:
     def __init__(self):

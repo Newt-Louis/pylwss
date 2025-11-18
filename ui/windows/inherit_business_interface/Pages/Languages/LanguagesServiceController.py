@@ -1,8 +1,8 @@
-from core.services.languages import LanguageCoreService
+from core.services import language_core_service
 
 class LanguagesServiceController:
     def __init__(self):
-        self.language_core_service = LanguageCoreService()
+        self.language_core_service = language_core_service
 
     def save_changes(self,data_to_save):
         try:

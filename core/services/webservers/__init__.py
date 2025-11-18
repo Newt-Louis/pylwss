@@ -1,1 +1,1 @@
-from .WebserverCoreService import WebserverCoreService
+from .WebserverCoreService import webserver_core_service

@@ -1,1 +1,1 @@
-from .LanguageCoreService import LanguageCoreService
+from .LanguageCoreService import language_core_service

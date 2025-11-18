@@ -92,3 +92,5 @@ class DashboardCoreService:
 
     def reset_dashboard_statuses(self):
         DashboardRepository.reset_dashboard_statuses()
+
+dashboard_core_service = DashboardCoreService()
