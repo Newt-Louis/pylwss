@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (
-    QWidget, QLabel, QLineEdit, QPushButton, QFileDialog, QGridLayout
+    QWidget, QLabel, QLineEdit, QPushButton, QFileDialog
 )
 from ui.widgets.CollapsibleItem import CollapsibleItem
 
@@ -7,9 +7,6 @@ from ui.widgets.CollapsibleItem import CollapsibleItem
 class RedisCollapsible(CollapsibleItem):
     def __init__(self, parent=None):
         super().__init__("Redis Service", parent)
-        grid = QGridLayout()
-        self.content.setLayout(grid)
-        self.contentLayout = grid
 
         self.lbl_port = QLabel("Port:")
 
@@ -26,12 +23,12 @@ class RedisCollapsible(CollapsibleItem):
         self.browse_btn = QPushButton("Browse")
         self.browse_btn.clicked.connect(self.on_browse_path)
 
-        grid.addWidget(self.lbl_port,        0, 0)
-        grid.addWidget(self.port_edit,       0, 1)
+        self.contentLayout.addWidget(self.lbl_port, 0, 0)
+        self.contentLayout.addWidget(self.port_edit, 0, 1)
 
-        grid.addWidget(self.lbl_path,        1, 0)
-        grid.addWidget(self.path_edit,       1, 1)
-        grid.addWidget(self.browse_btn,      1, 2)
+        self.contentLayout.addWidget(self.lbl_path, 1, 0)
+        self.contentLayout.addWidget(self.path_edit, 1, 1)
+        self.contentLayout.addWidget(self.browse_btn, 1, 2)
 
         self.checkBox.stateChanged.connect(self.on_redis_checked)
 
