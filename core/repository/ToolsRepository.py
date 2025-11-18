@@ -5,7 +5,7 @@ from core.database.model import ToolsSetting
 DB_PATH = config.DB_PATH
 DB_SERVICES_PATH = config.DB_SERVICES
 
-def get_all_database_settings()->list[ToolsSetting]:
+def get_all_tools_settings()->list[ToolsSetting]:
     try:
         with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
@@ -19,7 +19,7 @@ def get_all_database_settings()->list[ToolsSetting]:
         print(e)
         raise
 
-def get_current_database_setting()->ToolsSetting | None:
+def get_chosen_tools_settings()->ToolsSetting | None:
     try:
         with sqlite3.connect(DB_PATH) as conn:
             conn.row_factory = sqlite3.Row
@@ -35,7 +35,7 @@ def get_current_database_setting()->ToolsSetting | None:
         print(e)
         raise
 
-def save_database_setting(setting: ToolsSetting):
+def save_tools_setting(settings: list[ToolsSetting]):
     try:
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
@@ -46,8 +46,7 @@ def save_database_setting(setting: ToolsSetting):
                     port = excluded.port,
                     root_path = excluded.root_path,
                     is_chosen = excluded.is_chosen;
-             """,(setting.type,setting.port,setting.root_path,
-                  setting.base_data_path,setting.is_chosen))
+             """,[(s.type,s.port,s.root_path,s.is_chosen) for s in settings])
         return True
     except sqlite3.IntegrityError as e:
         print(f"Lỗi trùng port: {e}")

@@ -1,6 +1,8 @@
 import subprocess
 from core.config import config
+from core.database.model.tools.ToolsSetting import ToolsSetting
 from core.manager.EventBus import event_bus
+from core.repository import ToolsRepository
 
 
 class ToolsCoreService:
@@ -23,6 +25,13 @@ class ToolsCoreService:
         }
 
         event_bus.app_exit.connect(self._listener_app_exit)
+
+    def save_tools_config(self,raw_data):
+        data = [ToolsSetting(**tool_settings) for tool_settings in raw_data]
+        try:
+            return ToolsRepository.save_tools_setting(data)
+        except:
+            raise
 
     def start_redis_service(self):
         redis_config = self.tool_configs["redis"]
