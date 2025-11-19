@@ -109,12 +109,14 @@ class DashboardPageController(QWidget):
             if redis_status:
                 self.dashboard_service.handle_on_redis_service(0)
                 self.ui.tool_redis_start_pushButton.setText("Start")
+                self.dashboard_session.add_to_current_key("services_status", "redis", 0)
             else:
                 result = self.dashboard_service.handle_on_redis_service(1)
                 if not result["status"]:
                     QMessageBox.warning(self, "Warning", result["message"])
                     return
                 self.ui.tool_redis_start_pushButton.setText("Stop")
+                self.dashboard_session.add_to_current_key("services_status", "redis", 1)
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Lỗi dịch vụ Redis {e}")
 

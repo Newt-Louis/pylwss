@@ -31,9 +31,7 @@ class DashboardServiceController:
     def handle_on_redis_service(self,status):
         if status:
             try:
-                result = tools_core_service.start_redis_service()
-                if not result["status"]:
-                    return result
+                return tools_core_service.start_redis_service()
             except:
                 raise
         else:

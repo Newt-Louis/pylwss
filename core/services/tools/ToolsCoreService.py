@@ -11,7 +11,7 @@ class ToolsCoreService:
         self.running_processes = {}
         self.default_json_path = config.TOOL_SERVICES.parent.resolve()
         self._tool_configs = {}
-
+        self.reload_configs_from_db()
         event_bus.app_exit.connect(self._listener_app_exit)
 
     @property
@@ -82,7 +82,6 @@ class ToolsCoreService:
             settings_from_db = ToolsRepository.get_all_tools_settings()
 
             if not settings_from_db:
-                print("Chưa có cấu hình tool nào trong Database.")
                 return
 
             for setting in settings_from_db:
@@ -167,16 +166,12 @@ class ToolsCoreService:
             return {"status":True,"message":f"Redis (PID: {pid}) đã dừng trước đó. Đang dọn dẹp..."}
 
         try:
-            print(f"Đang dừng Redis service (PID: {pid})...")
             process.terminate()
             try:
                 process.wait(timeout=5)  # Chờ 5 giây
-                print(f"Redis (PID: {pid}) đã dừng (terminate).")
             except subprocess.TimeoutExpired:
-                print(f"Terminate thất bại, buộc dừng (kill) Redis (PID: {pid}).")
                 process.kill()
                 process.wait(timeout=2)
-                print(f"Redis (PID: {pid}) đã dừng (kill).")
 
             del self.running_processes["redis"]
             return {"status":True,"message":"Redis đã dừng"}
