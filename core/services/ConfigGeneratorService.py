@@ -24,8 +24,8 @@ def regenerate_config_for_project(conn: sqlite3.Connection, project_id: int):
             "ssl_port": ws_settings["ssl_port"],
             "domain": proj_settings["domain"],
             "document_root": proj_settings["project_path"].replace("\\","/"),
-            "access_log_path": ws_settings["alp_path"],
-            "error_log_path": ws_settings["elp_path"],
+            "access_log_path": ws_settings["alp_path"].replace("\\","/"),
+            "error_log_path": ws_settings["elp_path"].replace("\\","/"),
             "is_ssl_enabled": bool(proj_settings.get("is_ssl_enabled", 0)),
             "app_port": proj_settings["app_port"],
 

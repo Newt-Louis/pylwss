@@ -20,7 +20,6 @@ class DashboardCoreService:
     def webserver_service_handler(self,status):
         try:
             settings = WebserverRepository.get_current_webserver()
-            print(settings)
         except Exception as e:
             print(f"DASHBOARD SERVICE: Lỗi khi lấy cài đặt: {e}")
             event_bus.log_received.emit(f"Lỗi DB: {e}")
@@ -31,7 +30,6 @@ class DashboardCoreService:
             event_bus.log_received.emit("Lỗi: Chưa cấu hình webserver.")
             return
 
-            # Bước 2: Điều phối dựa trên server_name
         server_name = settings.server_name.lower()
 
         try:
@@ -56,7 +54,6 @@ class DashboardCoreService:
                 event_bus.log_received.emit(f"Lỗi: Webserver '{server_name}' không được hỗ trợ.")
 
         except Exception as e:
-            # Bắt các lỗi chung (ví dụ: FileNotFoundError từ CoreService)
             print(f"DASHBOARD SERVICE: Lỗi khi thực thi lệnh '{status}': {e}")
             event_bus.log_received.emit(f"Lỗi nghiêm trọng: {e}")
 

@@ -133,7 +133,6 @@ class WebserverCoreService:
             return False
 
     def start_apache_service(self, settings: WebserverSetting):
-        print("APACHE SERVICE: Đang khởi động...")
         exec_path = self._get_executable_path(settings, 'apache')
 
         if self.apache_process and self.apache_process.poll() is None:
@@ -195,8 +194,7 @@ class WebserverCoreService:
         try:
             result = subprocess.run([executable_path, "-t"], cwd=apache_dir, capture_output=True, text=True,
                                     encoding='utf-8', creationflags=CREATE_NO_WINDOW)
-            if "Syntax OK" in result.stderr:  # Apache báo OK ở stderr
-                print("APACHE SERVICE: Cấu hình OK.")
+            if "Syntax OK" in result.stderr:
                 return True
             else:
                 event_bus.log_received.emit(f"Apache Config Error:\n{result.stderr}")

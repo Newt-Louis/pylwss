@@ -163,7 +163,6 @@ class DashboardPageController(QWidget):
         self.dashboard_service.update_database_info(data)
 
     def listener_language_saved(self,data):
-        print(data)
         language_status = self.dashboard_session.get("services_status")
         status = language_status["language"] if "language" in language_status else 0
         self.ui.language_type_label.setText(data["language"])
