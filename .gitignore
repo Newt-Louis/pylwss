@@ -8,3 +8,4 @@ database_management_systems/
 *.pid
 core/services/tools/bin/*
 key_download_services.json
+core/services/webservers/bin/*

@@ -2,7 +2,7 @@
 
 <VirtualHost *:{{ http_port }}>
     ServerName {{ domain }}
-    DocumentRoot "{{ document_root }}"
+    DocumentRoot "{{ document_root }}/public"
 
     ErrorLog "{{ error_log_path }}"
     CustomLog "{{ access_log_path }}" common
@@ -62,7 +62,7 @@
         {% elif project_type == 'static_php' %}
 
         <FilesMatch \.php$>
-            SetHandler "proxy:fcgi://{{ php_fpm_socket }}"
+            SetHandler "proxy:fcgi://{{ php_fpm_socket }}/"
         </FilesMatch>
 
         {% endif %}
