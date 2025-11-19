@@ -1,16 +1,15 @@
 from core.services import dashboard_core_service
 from core.services import tools_core_service
-from core.database.model import DashboardSetting
 from core.utils import Helper
 
 class DashboardServiceController:
     def __init__(self):
         self.dashboard_core_service = dashboard_core_service
 
-    def handle_on_load_init_dashboard_info(self)->list[DashboardSetting] | None:
+    def handle_on_load_init_dashboard_info(self)->list[dict] | None:
         try:
-            dashboard_info = self.dashboard_core_service.get_init_dashboard_info()
-            return dashboard_info if dashboard_info else None
+            dashboard_infos = self.dashboard_core_service.get_init_dashboard_info()
+            return [dashboard_info.model_dump() for dashboard_info in dashboard_infos] if dashboard_infos else None
         except Exception as e:
             raise e
 

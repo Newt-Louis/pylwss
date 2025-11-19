@@ -18,18 +18,22 @@ class DashboardPageController(QWidget):
         dashboard_infos = self.dashboard_service.handle_on_load_init_dashboard_info()
         if dashboard_infos is not None:
             for dashboard_info in dashboard_infos:
-                match dashboard_info.service:
+                match dashboard_info["service"]:
                     case "language":
-                        self.ui.language_type_label.setText(dashboard_info.type)
-                        self.ui.language_version_label.setText(dashboard_info.version)
+                        self.ui.language_type_label.setText(dashboard_info["type"])
+                        self.ui.language_version_label.setText(dashboard_info["version"])
                     case "database":
-                        self.ui.database_type_label.setText(dashboard_info.type)
-                        self.ui.database_version_label.setText(dashboard_info.version)
+                        self.ui.database_type_label.setText(dashboard_info["type"])
+                        self.ui.database_version_label.setText(dashboard_info["version"])
                     case "webserver":
-                        self.ui.webserver_type_label.setText(dashboard_info.type)
-                        self.ui.webserver_version_label.setText(dashboard_info.version)
+                        self.ui.webserver_type_label.setText(dashboard_info["type"])
+                        self.ui.webserver_version_label.setText(dashboard_info["version"])
                     case "tool":
-                        print("Tools tạm thời chưa phát triển thêm")
+                        if dashboard_info["version"]:
+                            type_label = getattr(self.ui,f"tool_{dashboard_info["type"]}_type_label")
+                            version_label = getattr(self.ui,f"tool_{dashboard_info["type"]}_version_label")
+                            type_label.setText(dashboard_info["type"])
+                            version_label.setText(dashboard_info["version"])
 
         # Nghe sự kiện phát ra từ các trang dịch vụ khác
         event_bus.webserver_saved.connect(self.listener_webserver_saved)
