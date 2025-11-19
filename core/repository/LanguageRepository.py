@@ -73,7 +73,7 @@ def update_language_settings(settings: LanguageSetting):
             print("Cập nhật cấu hình language thành công",settings.language)
             return True
     except sqlite3.Error as e:
-        print("Lỗi database khi cập nhật language!",settings.language)
+        print(f"Lỗi database khi cập nhật {settings.language}: {e}")
         return False
 
 def disable_all_languages():

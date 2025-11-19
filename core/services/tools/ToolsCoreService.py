@@ -99,8 +99,6 @@ class ToolsCoreService:
                     "port": setting.port # Các tool khác không có port thì sẽ là 0 hoặc 0000
                 }
 
-            print(f"Đã reload cấu hình tools: {list(self.tool_configs.keys())}")
-
         except Exception as e:
             print(f"Lỗi khi reload config từ DB: {e}")
 

@@ -3,6 +3,7 @@ from core.manager.EventBus import event_bus
 from core.manager import DirectoryWatcher
 from core.services import SynchronizationService
 from core.repository import LanguageRepository, WebserverRepository, ProjectRepository
+from core.config import config
 
 
 class LanguageCoreService:
@@ -12,7 +13,6 @@ class LanguageCoreService:
         self.project_repository = ProjectRepository
 
     def load_settings(self) -> list[LanguageSetting] | None:
-        print(f"Language: Đang tải cấu hình...")
         try:
             settings_data = self.language_repository.get_all_languages_settings()
             return None if settings_data is {} else settings_data
@@ -30,7 +30,10 @@ class LanguageCoreService:
         success = False
         try:
             setting_model = LanguageSetting(**data_to_save)
-
+            if setting_model.language == "php":
+                exec_path = config.PHP_EXEC_PATH / setting_model.selected_version
+                setting_model.executable_path = str(exec_path)
+            print(setting_model)
             # Kiểm tra nếu lưu lại ngôn ngữ đó thì xóa các dự án đang được lưu và cập nhật lại file .conf
             current_language_in_db = self.language_repository.get_current_language_setting()
             if current_language_in_db is None:

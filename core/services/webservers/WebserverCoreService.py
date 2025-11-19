@@ -14,6 +14,7 @@ class WebserverCoreService:
     def __init__(self):
         self.nginx_process: subprocess.Popen | None = None
         self.apache_process: subprocess.Popen | None = None
+        self.php_process: subprocess.Popen | None = None
 
         event_bus.app_exit.connect(self._listener_app_exit)
 
@@ -69,7 +70,6 @@ class WebserverCoreService:
         return WebserverRepository.get_all_webserver_versions()
 
     def start_nginx_service(self,settings: WebserverSetting):
-        print("NGINX SERVICE: Đang khởi động dịch vụ...")
         exec_path = self._get_executable_path(settings, 'nginx')
 
         if self.nginx_process and self.nginx_process.poll() is None:
@@ -78,6 +78,7 @@ class WebserverCoreService:
         if not self._test_nginx_config(exec_path):
             event_bus.log_received.emit("Khởi động Nginx thất bại: File cấu hình có lỗi.")
             return
+        self._start_php_cgi() # Nếu ngôn ngữ đang chọn là php thì sẽ bật ngược lại thì hàm không làm gì hết
         nginx_dir = self._get_base_path(exec_path, 'nginx')
         self.nginx_process = subprocess.Popen([exec_path], cwd=nginx_dir, creationflags=CREATE_NO_WINDOW)
         event_bus.log_received.emit(f"Nginx đã khởi động (PID: {self.nginx_process.pid})")
@@ -93,7 +94,7 @@ class WebserverCoreService:
         if self.nginx_process:
             self.nginx_process.wait(timeout=5)
         self.nginx_process = None
-        print("Nginx đã dừng")
+        self._stop_php_cgi()
         event_bus.log_received.emit("Nginx đã dừng.")
         event_bus.service_status_changed.emit({"nginx": "stopped"})
 
@@ -143,6 +144,8 @@ class WebserverCoreService:
             event_bus.log_received.emit("Khởi động Apache thất bại: File cấu hình có lỗi.")
             return
 
+        self._start_php_cgi() # Nếu ngôn ngữ đang chọn là php thì sẽ bật ngược lại thì hàm không làm gì hết
+
         # Apache dùng Popen với lệnh httpd.exe (dạng portable)
         apache_dir = self._get_base_path(exec_path, 'apache')
         self.apache_process = subprocess.Popen([exec_path], cwd=apache_dir,
@@ -153,7 +156,7 @@ class WebserverCoreService:
     def stop_apache_service(self, settings: WebserverSetting):
         if self.apache_process is None:
             return
-        print("APACHE SERVICE: Đang dừng...")
+
         exec_path = self._get_executable_path(settings, 'apache')
         apache_dir = self._get_base_path(exec_path, 'apache')
 
@@ -168,6 +171,7 @@ class WebserverCoreService:
             print(f"Lỗi khi dừng Apache: {e}")
 
         self.apache_process = None
+        self._stop_php_cgi()
         event_bus.log_received.emit("Apache đã dừng.")
         event_bus.service_status_changed.emit({"apache": "stopped"})
 
@@ -204,6 +208,7 @@ class WebserverCoreService:
 
     def _listener_app_exit(self):
         services_session = self.dashboard_session.get("services_status")
+        self._stop_php_cgi()
         if "webserver" in services_session:
             if services_session["webserver"] == 1:
                 current_webserver = WebserverRepository.get_current_webserver()
@@ -243,5 +248,62 @@ class WebserverCoreService:
             return os.path.dirname(os.path.dirname(executable_path))
         else:
             raise ValueError(f"Unsupported server type: {server_type}")
+
+    def _start_php_cgi(self):
+        try:
+            current_lang = LanguageRepository.get_current_language_setting()
+            if not current_lang or current_lang.language.lower() != 'php':
+                return
+
+            php_dir = current_lang.executable_path
+            if not php_dir or not os.path.exists(php_dir):
+                event_bus.log_received.emit(f"Lỗi PHP: Không tìm thấy thư mục PHP tại {php_dir}")
+                return
+
+            if os.path.isfile(php_dir):
+                php_dir = os.path.dirname(php_dir)
+
+            php_cgi_path = os.path.join(php_dir, "php-cgi.exe")
+
+            if not os.path.exists(php_cgi_path):
+                event_bus.log_received.emit(f"Lỗi PHP: Không tìm thấy file {php_cgi_path}")
+                return
+
+            if self.php_process and self.php_process.poll() is None:
+                return
+
+            cmd = [php_cgi_path, "-b", "127.0.0.1:9000"]
+
+            env = os.environ.copy()
+            env["PHPRC"] = php_dir
+
+            self.php_process = subprocess.Popen(
+                cmd,
+                cwd=php_dir,
+                env=env,
+                creationflags=CREATE_NO_WINDOW
+            )
+
+            event_bus.log_received.emit(f"PHP-CGI đã khởi động (PID: {self.php_process.pid}) tại cổng 9000")
+
+        except Exception as e:
+            print(f"Lỗi khởi động PHP-CGI: {e}")
+            event_bus.log_received.emit(f"Lỗi khởi động PHP-CGI: {e}")
+
+    def _stop_php_cgi(self):
+        if self.php_process:
+            try:
+                self.php_process.terminate()
+                try:
+                    self.php_process.wait(timeout=3)
+                except subprocess.TimeoutExpired:
+                    self.php_process.kill()
+                    self.php_process.wait()
+
+                event_bus.log_received.emit("PHP-CGI đã dừng.")
+            except Exception as e:
+                print(f"Lỗi khi dừng PHP-CGI: {e}")
+            finally:
+                self.php_process = None
 
 webserver_core_service = WebserverCoreService()

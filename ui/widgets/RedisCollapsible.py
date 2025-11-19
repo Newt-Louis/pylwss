@@ -42,10 +42,7 @@ class RedisCollapsible(CollapsibleItem):
             self.path_edit.setText(folder)
 
     def on_redis_checked(self, checked):
-        if checked:
-            print("Redis đang được bật.")
-        else:
-            print("Redis đã tắt.")
+        pass
 
     def load_init_data(self, init_data:dict):
         self.path_edit.setText(init_data["root_path"])
