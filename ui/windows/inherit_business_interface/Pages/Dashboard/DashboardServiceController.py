@@ -29,12 +29,16 @@ class DashboardServiceController:
     def handle_on_language_service(self):
         print("dashboards Page Controller _on_add_new_data")
 
-    def handle_on_tools_service(self,tools_toggle_info):
-        if "redis" in tools_toggle_info:
-            if tools_toggle_info["redis"] == 1:
-                tools_core_service.start_redis_service()
-            else:
-                tools_core_service.stop_redis_service()
+    def handle_on_redis_service(self,status):
+        if status:
+            try:
+                result = tools_core_service.start_redis_service()
+                if not result["status"]:
+                    return result
+            except:
+                raise
+        else:
+            tools_core_service.stop_redis_service()
 
 
     def handle_on_network_service(self):

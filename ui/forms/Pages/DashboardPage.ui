@@ -72,9 +72,9 @@
    <item>
     <layout class="QGridLayout" name="dashboard_content_layout" rowstretch="0,0,0,0,0,0,0,0" columnstretch="0,0,0,0">
      <item row="5" column="3">
-      <widget class="QPushButton" name="tool_3_start_pushButton">
+      <widget class="QPushButton" name="tool_notepadpp_start_pushButton">
        <property name="text">
-        <string>Start</string>
+        <string>Open</string>
        </property>
       </widget>
      </item>
@@ -96,7 +96,7 @@
       </widget>
      </item>
      <item row="5" column="1">
-      <widget class="QLabel" name="tool_type_3_label">
+      <widget class="QLabel" name="tool_notepadpp_type_label">
        <property name="text">
         <string>Notepad++</string>
        </property>
@@ -127,7 +127,7 @@
       </widget>
      </item>
      <item row="3" column="3">
-      <widget class="QPushButton" name="tool_1_start_pushButton">
+      <widget class="QPushButton" name="tool_redis_start_pushButton">
        <property name="text">
         <string>Start</string>
        </property>
@@ -151,14 +151,14 @@
       </widget>
      </item>
      <item row="4" column="3">
-      <widget class="QPushButton" name="tool_2_start_pushButton">
+      <widget class="QPushButton" name="tool_mailsender_start_pushButton">
        <property name="text">
         <string>Start</string>
        </property>
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QLabel" name="tool_type_2_label">
+      <widget class="QLabel" name="tool_mailsender_type_label">
        <property name="text">
         <string>Mail Sender</string>
        </property>
@@ -170,7 +170,7 @@
      <item row="0" column="3">
       <widget class="QPushButton" name="language_start_pushButton">
        <property name="text">
-        <string>Start</string>
+        <string>Reload</string>
        </property>
       </widget>
      </item>
@@ -229,7 +229,7 @@
       </widget>
      </item>
      <item row="4" column="2">
-      <widget class="QLabel" name="tool_version_2_label">
+      <widget class="QLabel" name="tool_mailsender_version_label">
        <property name="text">
         <string>None</string>
        </property>
@@ -253,7 +253,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QLabel" name="tool_type_1_label">
+      <widget class="QLabel" name="tool_redis_type_label">
        <property name="text">
         <string>Redis</string>
        </property>
@@ -263,7 +263,7 @@
       </widget>
      </item>
      <item row="3" column="2">
-      <widget class="QLabel" name="tool_version_1_label">
+      <widget class="QLabel" name="tool_redis_version_label">
        <property name="text">
         <string>Redis-x64-5.0.14.1</string>
        </property>
@@ -283,7 +283,7 @@
       </widget>
      </item>
      <item row="5" column="2">
-      <widget class="QLabel" name="tool_version_3_label">
+      <widget class="QLabel" name="tool_notepadpp_version_label">
        <property name="text">
         <string>None</string>
        </property>

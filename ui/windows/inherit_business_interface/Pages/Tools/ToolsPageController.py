@@ -20,7 +20,7 @@ class ToolsPageController(QWidget):
 
     def on_save_changes(self):
         redis_info = self.redis_item.get_config()
-        if not redis_info["path"] or redis_info["path"] is None:
+        if not redis_info["root_path"] or redis_info["root_path"] is None:
             QMessageBox.critical(self, "Info missing", "Redis need root path")
             return
         try:

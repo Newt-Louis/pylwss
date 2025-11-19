@@ -40,14 +40,11 @@ class ToolsCoreService:
         port = str(redis_config.get("port", 6379))
 
         if not exe_path.exists():
-            print(f"LỖI: Không tìm thấy 'redis-server.exe' tại đường dẫn:")
-            print(f"{self.tool_configs["redis"]["exe_path"]}")
-            return False
+            return {"status": False, "message": f"Không tìm thấy 'redis-server.exe' tại đường dẫn: {self.tool_configs["redis"]["exe_path"]}"}
 
         # poll() == None nghĩa là tiến trình đang chạy
         if "redis" in self.running_processes and self.running_processes["redis"].poll() is None:
-            print(f"Redis service đã chạy (PID: {self.running_processes["redis"].pid}).")
-            return True
+            return {"status":True,"message": f"Redis service đã chạy (PID: {self.running_processes["redis"].pid})."}
 
         try:
             CREATE_NO_WINDOW = 0x08000000
@@ -64,18 +61,12 @@ class ToolsCoreService:
                 stderr=subprocess.DEVNULL
             )
             self.running_processes["redis"] = process
-            print(f"Redis service đã khởi động thành công (PID: {process.pid}).")
-            return True
+            return {"status":True,"message":f"Redis service đã khởi động thành công (PID: {process.pid})."}
 
         except FileNotFoundError:
-            print(f"LỖI: FileNotFoundError. Đường dẫn có đúng không?")
-            print(f"{self.tool_configs["redis"]["exe_path"]}")
-            return False
+            raise
         except Exception as e:
-            print(f"LỖI không xác định khi khởi động Redis: {e}")
-            if "redis" in self.running_processes:
-                del self.running_processes["redis"]
-            return False
+            raise
 
     def stop_redis_service(self):
         if "redis" not in self.running_processes:

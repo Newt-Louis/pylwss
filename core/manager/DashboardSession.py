@@ -4,7 +4,7 @@ class DashboardSession:
         if cls._instance is None:
             cls._instance = super(DashboardSession, cls).__new__(cls)
             cls._instance._data = {
-                "services_status":{"database": 0,"webserver": 0,},
+                "services_status":{"database": 0,"webserver": 0,"redis":0},
                 "start_all_services": 0
             }
         return cls._instance
