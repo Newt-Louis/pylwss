@@ -38,8 +38,10 @@ class DashboardServiceController:
             except:
                 raise
         else:
-            tools_core_service.stop_redis_service()
-
+            try:
+                return tools_core_service.stop_redis_service()
+            except:
+                raise
 
     def handle_on_network_service(self):
         print("dashboards Page Controller _on_load_data")

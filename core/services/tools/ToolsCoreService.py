@@ -70,16 +70,14 @@ class ToolsCoreService:
 
     def stop_redis_service(self):
         if "redis" not in self.running_processes:
-            print("Redis service không đang chạy (hoặc không được quản lý).")
-            return False
+            return {"status":False, "message":"Redis service không đang chạy (hoặc không được quản lý)."}
 
         process = self.running_processes["redis"]
         pid = process.pid
 
         if process.poll() is not None:
-            print(f"Redis (PID: {pid}) đã dừng trước đó. Đang dọn dẹp...")
             del self.running_processes["redis"]
-            return True
+            return {"status":True,"message":f"Redis (PID: {pid}) đã dừng trước đó. Đang dọn dẹp..."}
 
         try:
             print(f"Đang dừng Redis service (PID: {pid})...")
@@ -94,13 +92,13 @@ class ToolsCoreService:
                 print(f"Redis (PID: {pid}) đã dừng (kill).")
 
             del self.running_processes["redis"]
-            return True
+            return {"status":True,"message":"Redis đã dừng"}
 
         except Exception as e:
             print(f"Lỗi khi dừng Redis (PID: {pid}): {e}")
             if "redis" in self.running_processes:
                 del self.running_processes["redis"]
-            return False
+            raise
 
     def stop_all_services(self):
         if "redis" in self.running_processes:
