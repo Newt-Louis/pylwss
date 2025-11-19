@@ -22,7 +22,7 @@ def regenerate_config_for_project(conn: sqlite3.Connection, project_id: int):
             "http_port": ws_settings["http_port"],
             "ssl_port": ws_settings["ssl_port"],
             "domain": proj_settings["domain"],
-            "document_root": proj_settings["project_path"],
+            "document_root": proj_settings["project_path"].replace("\\","/"),
             "access_log_path": ws_settings["alp_path"],
             "error_log_path": ws_settings["elp_path"],
             "is_ssl_enabled": bool(proj_settings.get("is_ssl_enabled", 0)),
@@ -224,7 +224,8 @@ def regenerate_main_nginx_config(settings: WebserverSetting):
             "sites_enabled_path": sites_path,
             "language_folders": languages,
             "access_log_path": settings.alp_path.replace("\\", "/") if settings.alp_path else None,
-            "error_log_path": settings.elp_path.replace("\\", "/") if settings.elp_path else None
+            "error_log_path": settings.elp_path.replace("\\", "/") if settings.elp_path else None,
+            "http_port": settings.http_port,
         }
 
         rendered_config = template.render(context)
@@ -260,7 +261,8 @@ def regenerate_main_apache_config(settings: WebserverSetting):
             "language_folders": languages,
             "access_log_path": settings.alp_path.replace("\\", "/") if settings.alp_path else None,
             "error_log_path": settings.elp_path.replace("\\", "/") if settings.elp_path else None,
-            "base_directory": os.path.dirname(conf_dir)
+            "base_directory": os.path.dirname(conf_dir),
+            "http_port": settings.http_port,
         }
 
         rendered_config = template.render(context)

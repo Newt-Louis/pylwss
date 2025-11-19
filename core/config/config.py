@@ -19,3 +19,5 @@ LOG_PATH = PROJECT_ROOT / "tests" / "logs"
 DB_SERVICES = PROJECT_ROOT / "core" / "services" / "databases" / "database_management_systems"
 
 TOOL_SERVICES = PROJECT_ROOT / "core" / "services" / "tools" / "bin"
+
+PHP_EXEC_PATH = PROJECT_ROOT / "core" / "services" / "languages" / "bin"
