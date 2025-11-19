@@ -2,7 +2,7 @@
 
 <VirtualHost *:{{ http_port }}>
     ServerName {{ domain }}
-    DocumentRoot "{{ document_root }}/public"
+    DocumentRoot "{{ document_root }}"
 
     ErrorLog "{{ error_log_path }}"
     CustomLog "{{ access_log_path }}" common
@@ -15,7 +15,6 @@
 
     {% if project_type == 'proxy' %}
 
-    # ---- Dành cho dự án Proxy ----
     ProxyRequests Off
     ProxyPreserveHost On
     ProxyPass / http://127.0.0.1:{{ app_port }}/
@@ -23,7 +22,6 @@
 
     {% elif project_type == 'static_php' %}
 
-    # ---- Dành cho dự án Static/PHP ----
     <FilesMatch \.php$>
         # SỬ DỤNG SOCKET PHP-FPM
         SetHandler "proxy:fcgi://{{ php_fpm_socket }}"

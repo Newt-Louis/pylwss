@@ -17,7 +17,8 @@ def regenerate_config_for_project(conn: sqlite3.Connection, project_id: int):
         # 1. Lấy thông tin Webserver chung
         ws_settings = _get_webserver_settings(conn)
         proj_settings = _get_project_details(conn, project_id)
-
+        if proj_settings["language"].lower() == "php":
+            proj_settings["project_path"] += "/public"
         context = {
             "http_port": ws_settings["http_port"],
             "ssl_port": ws_settings["ssl_port"],
