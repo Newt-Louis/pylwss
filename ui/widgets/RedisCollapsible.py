@@ -5,8 +5,8 @@ from ui.widgets.CollapsibleItem import CollapsibleItem
 
 
 class RedisCollapsible(CollapsibleItem):
-    def __init__(self, parent=None):
-        super().__init__("Redis", "redis_collapsible", parent)
+    def __init__(self):
+        super().__init__("Redis", "redis_collapsible")
 
         self.lbl_port = QLabel("Port:")
 
@@ -46,6 +46,11 @@ class RedisCollapsible(CollapsibleItem):
             print("Redis đang được bật.")
         else:
             print("Redis đã tắt.")
+
+    def load_init_data(self, init_data:dict):
+        self.path_edit.setText(init_data["root_path"])
+        self.port_edit.setText(str(init_data["port"]))
+        self.checkBox.setChecked(init_data["is_chosen"])
 
     def get_config(self):
         return {

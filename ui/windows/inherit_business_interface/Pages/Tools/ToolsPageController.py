@@ -12,11 +12,20 @@ class ToolsPageController(QWidget):
         self.ui = Ui_ToolsPage()
         self.ui.setupUi(self)
         self.tools_service_controller = ToolsServiceController()
+
         if self.ui.content_area.layout() is None:
             self.ui.content_area.setLayout(QVBoxLayout())
         self.redis_item = RedisCollapsible()
         self.ui.content_area.layout().addWidget(self.redis_item)
+
         self.ui.tools_save_buttonBox.accepted.connect(self.on_save_changes)
+
+        self.init_data = self.tools_service_controller.on_load_data()
+        if self.init_data:
+            for data in self.init_data:
+                match data["type"]:
+                    case "redis":
+                        self.redis_item.load_init_data(data)
 
     def on_save_changes(self):
         redis_info = self.redis_item.get_config()

@@ -5,8 +5,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QEasingCurve, QPropertyAnimation, QRect
 
 class CollapsibleItem(QWidget):
-    def __init__(self, title="Untitled", uid=None,parent=None):
-        super().__init__(parent)
+    def __init__(self, title="Untitled", uid=None):
+        super().__init__()
         if not uid:
             raise ValueError("Tham số 'uid' là bắt buộc để định danh CollapsibleItem và CheckBox bên trong.")
         self.uid = uid

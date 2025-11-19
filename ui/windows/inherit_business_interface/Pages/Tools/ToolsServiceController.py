@@ -25,4 +25,8 @@ class ToolsServiceController:
         print("Tools Page Controller _on_update_data")
 
     def on_load_data(self):
-        print("Tools Page Controller _on_load_data")
+        try:
+            tools_settings = self.tools_core_service.get_init_tools_settings()
+            return [tool_settings.model_dump() for tool_settings in tools_settings]
+        except:
+            raise
