@@ -24,23 +24,19 @@ def build_exe():
         '--windowed',  # Ẩn màn hình đen (dành cho App GUI Qt)
         '--noconfirm',
         '--clean',
-        # Nếu bạn có icon: '--icon=icon.ico',
-        # Loại bỏ các module không cần thiết để nhẹ bớt
         '--exclude-module=tkinter',
         '--exclude-module=matplotlib',
     ])
 
 
 def copy_resources():
-    """Copy thư mục core và sắp xếp lại cấu trúc"""
-
     # Đường dẫn file exe được tạo ra trong dist
     src_dist = os.path.join("dist", APP_NAME)
 
     # Tạo thư mục Release cuối cùng
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    # 1. Copy toàn bộ nội dung của dist/App vào Release
+    # Copy toàn bộ nội dung của dist/App vào Release
     # (Gồm file exe và các thư viện dll, qt...)
     for item in os.listdir(src_dist):
         s = os.path.join(src_dist, item)

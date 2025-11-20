@@ -9,3 +9,7 @@ database_management_systems/
 core/services/tools/bin/*
 key_download_services.json
 core/services/webservers/bin/*
+Release_Build
+pylwssm.spec
+dist
+build
