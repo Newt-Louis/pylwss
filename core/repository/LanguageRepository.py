@@ -69,8 +69,6 @@ def update_language_settings(settings: LanguageSetting):
                 settings.is_chosen,
                 settings.language,
             ))
-            conn.commit()
-            print("Cập nhật cấu hình language thành công",settings.language)
             return True
     except sqlite3.Error as e:
         print(f"Lỗi database khi cập nhật {settings.language}: {e}")
@@ -81,7 +79,6 @@ def disable_all_languages():
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("UPDATE language_settings SET is_chosen = 0")
-            conn.commit()
             return True
     except sqlite3.Error as e:
         return False

@@ -81,8 +81,6 @@ def save_language(dashboard_setting: DashboardSetting):
                                 dashboard_setting.is_running,
                                 dashboard_setting.service
                            ))
-
-            print("Đã lưu thông tin language vào database")
             return True
     except Exception as e:
         print(e)

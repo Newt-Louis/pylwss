@@ -131,18 +131,17 @@ class LanguagesPageController(QWidget):
     def on_save_changes(self):
         current_language_selected = self.dashboard_session.get("language_page_selected")
         try:
-            # 1. Lấy các giá trị mới từ UI
             selected_version = getattr(self.ui, f"{current_language_selected}_combobox").currentText()
             root_folder_text = getattr(self.ui, f"{current_language_selected}_root_folder_lineedit").text()
             is_ssl_enabled = getattr(self.ui, f"{current_language_selected}_ssl_enabled_checkbox").isChecked()
             ssl_port = getattr(self.ui, f"{current_language_selected}_port_lineedit").text()
             is_chosen = getattr(self.ui, f"{current_language_selected}_radio").isChecked()
 
-            # 2. Xử lý giá trị (ví dụ: root_folder có thể là None)
+            # Xử lý giá trị (ví dụ: root_folder có thể là None)
             root_folder = root_folder_text if root_folder_text.strip() else None
             ssl_port = ssl_port if ssl_port.strip() else None
 
-            # 3. Xây dựng dictionary theo mô hình LanguageSetting
+            # Xây dựng dictionary theo mô hình LanguageSetting
             setting_dict = {
                 "language": current_language_selected,
                 "selected_version": selected_version,

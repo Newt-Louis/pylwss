@@ -33,7 +33,7 @@ class LanguageCoreService:
             if setting_model.language == "php":
                 exec_path = config.PHP_EXEC_PATH / setting_model.selected_version
                 setting_model.executable_path = str(exec_path)
-            print(setting_model)
+
             # Kiểm tra nếu lưu lại ngôn ngữ đó thì xóa các dự án đang được lưu và cập nhật lại file .conf
             current_language_in_db = self.language_repository.get_current_language_setting()
             if current_language_in_db is None:

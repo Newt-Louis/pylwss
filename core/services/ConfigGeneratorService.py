@@ -50,7 +50,7 @@ def regenerate_config_for_project(conn: sqlite3.Connection, project_id: int):
             proj_settings["language"].lower(),
             output_filename
         )
-        print(f"Bắt đầu sinh config cho: {context['domain']}...")
+
         success = generate_config_file(template_name, context, output_path)
         if success:
             print(f"Hoàn tất sinh config cho project ID: {project_id} tại {output_path}")

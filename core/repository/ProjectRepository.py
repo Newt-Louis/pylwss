@@ -37,7 +37,7 @@ def sync_root_directory_to_db(language:str, root_directory_path: str):
             if not projects_to_add and not projects_to_delete:
                 print(f"{language} Đã đồng bộ dự án, không thay đổi gì!")
                 return
-            print(projects_to_delete)
+
             if projects_to_delete:
                 delete_tuples = []
                 for name in projects_to_delete:
@@ -91,7 +91,6 @@ def sync_root_directory_to_db(language:str, root_directory_path: str):
                         new_project_id = row['id']
                         ConfigGeneratorService.regenerate_config_for_project(conn, new_project_id)
 
-                print(f"{language} Đồng bộ hoàn tất")
     except sqlite3.Error as e:
         print("Có lỗi khi đồng bộ vào db: ",e)
 

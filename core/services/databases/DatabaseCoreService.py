@@ -23,10 +23,6 @@ class DatabaseCoreService:
             raise
 
     def save_settings_and_initialize(self, settings: dict):
-        """
-        Đây là hàm quan trọng cho trang Cài đặt.
-        Nó LƯU cấu hình và CHẠY KHỞI TẠO, nhưng KHÔNG start server.
-        """
         try:
             setting_model = DatabaseSetting(**settings)
             DatabaseRepository.reset_database_statuses()
@@ -39,7 +35,6 @@ class DatabaseCoreService:
 
             strategy.initialize_if_needed()
 
-            print(f"Hoàn tất thiết lập cho {setting_model.type}. Sẵn sàng để khởi động từ Dashboard.")
             event_bus.database_saved.emit(setting_model.model_dump())
             return True
 
@@ -54,11 +49,6 @@ class DatabaseCoreService:
             return False
 
     def start_current_service(self)->bool:
-        """
-        Bật CSDL hiện tại (được đánh dấu is_chosen = 1).
-        Hàm này được gọi từ Dashboard.
-        """
-        print("Đang tìm CSDL được chọn để khởi động...")
         settings = DatabaseRepository.get_current_database_setting()
 
         if not settings:
@@ -70,7 +60,6 @@ class DatabaseCoreService:
             print(f"{service_name} đã chạy rồi.")
             return False
 
-        print(f"Đang khởi động {service_name}...")
         strategy = self._get_strategy_factory(settings)
         if not strategy:
             return False
@@ -78,7 +67,6 @@ class DatabaseCoreService:
         try:
             if strategy.start():  # Hàm start() đến từ lớp base
                 self._active_services[service_name] = strategy
-                print(f"{service_name} đã khởi động thành công.")
                 return True
             else:
                 print(f"Lỗi: Không thể khởi động {service_name}.")
