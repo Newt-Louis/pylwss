@@ -128,3 +128,8 @@ def get_last_segment(path:str)->str:
     norm = path.replace("\\", "/")
     norm = norm.rstrip("/")
     return norm.split("/")[-1]
+
+def get_base_path():
+    if getattr(sys, 'frozen', False):
+        return os.path.dirname(sys.executable)
+    return os.path.dirname(os.path.abspath(__file__))

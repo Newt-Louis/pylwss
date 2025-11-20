@@ -1,6 +1,9 @@
 import sys, os
+from core.utils.Helper import get_base_path
 
 def run_main_ui_application():
+    BASE_DIR = get_base_path()
+    os.chdir(BASE_DIR)
     try:
         from PySide6 import QtWidgets
         from ui.windows.inherit_business_interface.MainAppWindow import MainAppWindow

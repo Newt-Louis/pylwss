@@ -1,6 +1,17 @@
+import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent.resolve()
+def get_project_root():
+    if getattr(sys, 'frozen', False):
+        # Chạy EXE (PyInstaller)
+        # sys.executable là đường dẫn đầy đủ đến file pylwss.exe
+        # .parent sẽ lấy thư mục chứa file exe đó
+        return Path(sys.executable).parent
+    else:
+        # Chạy Code Python thường (.py)
+        return Path(__file__).parent.parent.parent.resolve()
+
+PROJECT_ROOT = get_project_root()
 
 DB_PATH = PROJECT_ROOT / "core" / "database" / "sqlite.db"
 
