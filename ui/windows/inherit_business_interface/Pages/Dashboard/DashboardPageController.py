@@ -151,6 +151,7 @@ class DashboardPageController(QWidget):
         self.ui.webserver_type_label.setText(data["server_name"])
         self.ui.webserver_version_label.setText(data["selected_version"])
         data["is_running"] = webserver_status["webserver"]
+        data["service"] = "webserver"
         self.dashboard_service.update_webserver_info(data)
 
     def listener_database_saved(self,data):

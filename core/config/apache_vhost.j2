@@ -1,8 +1,12 @@
-# File: core/templates/apache_vhost.j2
-
 <VirtualHost *:{{ http_port }}>
     ServerName {{ domain }}
     DocumentRoot "{{ document_root }}"
+
+    {% if project_type == 'static_php' %}
+    DirectoryIndex index.php index.html
+    {% else %}
+    DirectoryIndex index.html
+    {% endif %}
 
     ErrorLog "{{ error_log_path }}"
     CustomLog "{{ access_log_path }}" common
@@ -23,10 +27,9 @@
     {% elif project_type == 'static_php' %}
 
     <FilesMatch \.php$>
-        # SỬ DỤNG SOCKET PHP-FPM
-        SetHandler "proxy:fcgi://{{ php_fpm_socket }}"
+        SetHandler "proxy:fcgi://{{ php_fpm_socket }}/"
     </FilesMatch>
-
+    ProxyFCGISetEnvIf "true" SCRIPT_FILENAME "{{ document_root }}%{reqenv:SCRIPT_NAME}"
     {% endif %}
 
 </VirtualHost>
@@ -36,6 +39,12 @@
     <VirtualHost *:{{ ssl_port }}>
         ServerName {{ domain }}
         DocumentRoot "{{ document_root }}"
+
+        {% if project_type == 'static_php' %}
+        DirectoryIndex index.php index.html
+        {% else %}
+        DirectoryIndex index.html
+        {% endif %}
 
         ErrorLog "{{ error_log_path }}"
         CustomLog "{{ access_log_path }}" common
@@ -62,7 +71,7 @@
         <FilesMatch \.php$>
             SetHandler "proxy:fcgi://{{ php_fpm_socket }}/"
         </FilesMatch>
-
+        ProxyFCGISetEnvIf "true" SCRIPT_FILENAME "{{ document_root }}%{reqenv:SCRIPT_NAME}"
         {% endif %}
 
     </VirtualHost>
